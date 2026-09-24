@@ -22,7 +22,7 @@
   5. Integrate Sustainability Within All Project Areas
   6. Build an Empowered Culture
 - **I 7 domini**: Governance, Scope, Schedule, Finance, Stakeholders, Resources, Risk [PMI + SEC].
-- **5 Focus Areas** (Initiating, Planning, Executing, Monitoring & Controlling, Closing) × 7 domini = **40 processi** non prescrittivi [SEC, https://www.brainbok.com/blog/pmp/focus-areas-vs-process-groups-pmbok-8]. Il numero di processi per singolo dominio o focus area è [NV].
+- **5 Focus Areas** (Initiating, Planning, Executing, Monitoring & Controlling, Closing) e 7 domini, con **40 processi** non prescrittivi distribuiti nella griglia (40 non è il prodotto 5×7) [SEC, https://www.brainbok.com/blog/pmp/focus-areas-vs-process-groups-pmbok-8]. Il numero di processi per singolo dominio o focus area è [NV].
 
 ## 2. Tailoring e approccio ibrido
 

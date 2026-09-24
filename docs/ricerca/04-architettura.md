@@ -1,6 +1,6 @@
 # 04 — Architettura di un'app su misura on-premise
 
-> **Superato in parte (rev. 2):** la raccomandazione Django + Docker su VM Linux è sostituita da PWA + Node.js + PostgreSQL nativi su Windows Server, vedi `08`. Le sezioni su tempo reale, backup e GDPR restano valide.
+> **Superato in parte (rev. 2):** la raccomandazione Django + Docker su VM Linux è sostituita da PWA + Node.js + PostgreSQL nativi su Windows Server, vedi `08`. Restano validi i principi di optimistic locking, SSE/polling, backup con prova di ripristino e GDPR/art. 4; le librerie Django citate (django-concurrency, Channels, allauth, auth-ldap, Caddy, openpyxl) non si applicano più.
 
 > Ricerca web del 24/09/2026. **[NV]** = non verificato su fonte primaria.
 
@@ -54,7 +54,7 @@
 3. **Calendario**: file .ics, oppure Microsoft Graph ([Graph calendar](https://learn.microsoft.com/en-us/graph/api/resources/calendar-overview?view=graph-rest-1.0)).
 4. **SharePoint**: all'inizio solo link alle cartelle di commessa.
 5. **Issue BIM**: prima import di file BCF-XML ([BCF-XML](https://github.com/buildingSMART/BCF-XML)), poi eventualmente le API [BCF 3.0](https://github.com/buildingSMART/BCF-API) o [ACC Issues](https://aps.autodesk.com/en/docs/acc/v1/overview/field-guide/issues).
-6. **Timesheet**: leggere quello esistente, senza duplicarlo.
+6. ~~**Timesheet**: leggere quello esistente, senza duplicarlo.~~ Superato: il timesheet è interno all'app (rev. 2).
 
 ## F) GDPR e dati del personale
 
@@ -63,7 +63,10 @@
 - **DPIA** prudente: il Garante include questi trattamenti nel suo elenco ([doc. 9058979](https://www.garanteprivacy.it/home/docweb/-/docweb-display/docweb/9058979)).
 - Visibilità per ruolo, log degli accessi, tempi di conservazione definiti.
 
-## Raccomandazione dell'agente
+## ~~Raccomandazione dell'agente~~ (superata, rev. 2)
+
+> Sostituita da AdonisJS + PostgreSQL nativi su Windows Server, vedi `00` §2 e `08`.
+
 
 **Stack consigliato:** Django (LTS) + HTMX + PostgreSQL, su Docker Compose in una VM Linux, dietro Caddy, con login Entra ID, aggiornamenti via SSE e optimistic locking. Tre container in tutto.
 

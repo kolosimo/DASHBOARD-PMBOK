@@ -78,8 +78,8 @@ Formule dal LPS Workbook LCI [A], salvo dove indicato:
 
 - **PPC** = assegnazioni completate / assegnazioni promesse nella settimana.
 - **PPC2** = assegnazioni completate / assegnazioni previste dal piano di due settimane prima.
-- **TMR (AMR2)** = assegnazioni presenti sia nel piano della settimana sia in quello di due settimane prima / assegnazioni del piano di due settimane prima. Misura quanto il lookahead rende davvero eseguibili le attività.
-- **TA (AA2)** = assegnazioni presenti in entrambi i piani / assegnazioni del piano della settimana.
+- **TMR** (Tasks Made Ready; sigla AMR2 [NV]) = assegnazioni del piano della settimana w che erano già nel **lookahead** rilevato a w−2 / assegnazioni previste per w nel lookahead di w−2. Misura quanto il lookahead rende davvero eseguibili le attività.
+- **TA** (Tasks Anticipated; sigla AA2 [NV]) = assegnazioni del piano della settimana w già presenti nel lookahead di w−2 / assegnazioni del piano della settimana w.
 - **PCR** = vincoli rimossi / vincoli identificati una settimana prima (Jang & Kim, IGLC-15) [A] ([IGLC](https://www.iglc.net/papers/details/497)).
 - **Pareto delle cause** di non completamento per settimana e disciplina.
 

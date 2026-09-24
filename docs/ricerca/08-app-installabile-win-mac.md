@@ -18,14 +18,14 @@ Tenere un file condiviso su una cartella di rete (SQLite o Access su SMB) è **d
 | Costi di firma | nessuno | Apple Developer 99 USD/anno ([Apple](https://developer.apple.com/programs/enroll/)); Windows: certificato o Microsoft Artifact Signing, 9,99 USD/mese ([Azure](https://azure.microsoft.com/en-us/products/artifact-signing)) | nessuno |
 | Uso simultaneo sicuro | sì (database sul server) | sì (database sul server) | **no** |
 | Accesso a file locali, Revit, Excel | limitato | completo | — |
-| Requisito | HTTPS con certificato valido per il nome interno | — | — |
+| Requisito | HTTPS con certificato valido per il nome interno e manifest (il service worker non è più obbligatorio da Chrome 112) | — | — |
 
 Fonti PWA: [web.dev](https://web.dev/learn/pwa/installation), [MDN](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable).
 
 ## Server: nativo su Windows, senza Docker
 
-- **PostgreSQL per Windows**: installer ufficiale; PostgreSQL 18 certificato su Windows Server 2022 e 2025 ([postgresql.org](https://www.postgresql.org/download/windows/)).
-- **Applicazione Node.js** come servizio Windows, tramite NSSM o node-windows (indicazione generale, NV).
+- **PostgreSQL per Windows**: installer ufficiale; testato su Windows Server 2022; il 2025 non risultava certificato EDB (verifica 07): preferire il 2022 ([postgresql.org](https://www.postgresql.org/download/windows/)).
+- **Applicazione Node.js** come servizio Windows, tramite **WinSW** o Servy. NSSM (ultimo rilascio 2017) e node-windows (beta) risultano abbandonati (verifica 07).
 - **Docker su Windows Server** non è la strada: Docker Desktop non è supportato e LCOW è deprecato ([Docker](https://docs.docker.com/desktop/setup/install/windows-install/)). Servirebbe una VM Linux in più da gestire.
 
 ## Tempo reale
@@ -34,15 +34,14 @@ Bastano i **Server-Sent Events**: il server avvisa i client che un dato è cambi
 
 ## Login Microsoft 365
 
-**MSAL.js** in modalità "Single-page application" su Entra ID, con flusso a codice di autorizzazione e PKCE ([Microsoft](https://learn.microsoft.com/en-us/entra/identity-platform/migrate-spa-implicit-to-auth-code)). Il login dentro la web app di Safari va provato (NV). In alternativa, sul Mac si usa Edge o Chrome.
+Scelta rev. 2: **OIDC lato server** (authorization code + PKCE verso Entra ID, sessione in cookie httpOnly), non MSAL.js nel browser: su Safari il rinnovo silenzioso via iframe fallisce spesso per ITP. Il login dentro la web app del Dock va comunque provato (NV); in alternativa sul Mac si usa Edge o Chrome.
 
 ## Raccomandazione
 
-**PWA + server Node.js (TypeScript) + PostgreSQL, tutti come servizi nativi sul Windows Server aziendale.**
+**PWA + AdonisJS (Node.js, TypeScript) + PostgreSQL, tutti come servizi nativi sul Windows Server aziendale.**
 
 - Un solo linguaggio (TypeScript) sia per le schermate sia per il server.
 - Nessun installer da firmare e nessun costo annuo; gli aggiornamenti si fanno una volta sul server.
-- Se in futuro servissero funzioni native (file locali, Revit), la stessa interfaccia si può inserire in Electron senza riscrivere il server.
 
 ## Rischi
 

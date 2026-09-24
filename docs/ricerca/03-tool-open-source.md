@@ -1,5 +1,7 @@
 # 03 — Tool di project management self-hosted
 
+> **Superato (rev. 2, 24/09/2026):** si sviluppa un'app su misura (vedi `00` §2). OpenProject è scartato: il login M365 è solo Enterprise e non gestisce il Last Planner.
+
 > Ricerca web del 24/09/2026 su repository e feed GitHub. openproject.org, plane.so e redmine.org erano bloccati dal proxy: per questi ho usato la documentazione nei repository. **n.v.** = non verificato.
 
 **Nessuno dei tool valutati supporta nativamente Last Planner System, PPC o un registro vincoli.** Queste funzioni esistono solo in SaaS commerciali per l'edilizia, come [Touchplan](https://touchplan.io/digitize-lean-construction-planning/) e [vPlanner](https://vplannerapp.io/products).

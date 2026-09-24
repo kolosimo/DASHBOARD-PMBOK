@@ -1,6 +1,6 @@
 # 07 — Verifica delle affermazioni chiave (24/09/2026)
 
-Undici affermazioni dei rapporti 01–06 ricontrollate da un secondo agente, indipendente dal primo. Esito: **9 confermate, 2 parziali, nessuna smentita**.
+Undici affermazioni dei rapporti 01–08 ricontrollate da un secondo agente, indipendente dal primo. Esito: **9 confermate, 2 parziali, nessuna smentita**.
 
 | # | Affermazione | Esito | Correzione |
 |---|---|---|---|
@@ -18,3 +18,17 @@ Undici affermazioni dei rapporti 01–06 ricontrollate da un secondo agente, ind
 
 Fonti principali: pmi.org, webstore.ansi.org, iglc.net, kanbanguides.org, codiceappalti.it, docs.docker.com, learn.microsoft.com, nocodb.com, openproject.org, brocardi.it, sqlite.org.
 Alcuni siti erano bloccati dal proxy di rete; per quelli la verifica si basa sui testi mostrati dal motore di ricerca.
+
+## Seconda verifica (architettura, rapporto 08)
+
+| Affermazione | Esito | Correzione |
+|---|---|---|
+| "Aggiungi al Dock" di Safari da macOS 14, cookie separati | Confermata | — |
+| PWA installabile da Edge/Chrome su Windows e Mac | Parziale | Il service worker non è più obbligatorio da Chrome 112: bastano manifest e HTTPS |
+| HTTPS obbligatorio anche su rete interna | Confermata | Sui Mac la CA aziendale va installata a mano o via MDM |
+| PostgreSQL su Windows Server 2022/2025 | Parziale | Il 2022 è testato; il 2025 non risultava certificato EDB |
+| Node come servizio con NSSM/node-windows | Parziale | NSSM (2017) e node-windows (beta) sono abbandonati: usare **WinSW** o Servy |
+| MSAL.js con PKCE per SPA | Confermata | Su Safari il rinnovo silenzioso via iframe fallisce spesso (ITP): meglio **OIDC lato server** con cookie di sessione |
+| SSE: 6 connessioni per dominio in HTTP/1.1 | Confermata | Una connessione per scheda o HTTP/2 |
+| Apple Developer 99 USD/anno | Confermata | Non serve con una PWA |
+| Framework TypeScript con ORM e login ufficiali | — | AdonisJS è l'unico tra quelli considerati |

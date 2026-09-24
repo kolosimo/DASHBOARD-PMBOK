@@ -184,8 +184,8 @@ const BASE = {
     {id:"V-12",t:"Layout arredi P1 dall'architetto",cat:"Input da altri",att:"L1",resp:"PM",need:"29/09",aperto:true},
     {id:"V-13",t:"Planimetria architettonica rev. C",cat:"Input da altri",att:"L2",resp:"PM",need:"29/09",aperto:true},
     {id:"V-14",t:"Conferma ricambi d'aria dal committente",cat:"Approvazione",att:"L4",resp:"PM",need:"06/10",aperto:true},
-    {id:"V-15",t:"Verificatore interno disponibile",cat:"Risorsa",att:"L5",resp:"Resp. qualità",need:"29/09",aperto:false},
-    {id:"V-16",t:"Modello strutturale IFC aggiornato",cat:"Input da altri",att:"L6",resp:"BIM coordinator",need:"13/10",aperto:true},
+    {id:"V-15",t:"Verificatore interno disponibile",cat:"Risorsa",att:"L5",resp:"Resp. qualità",need:"29/09",aperto:true},
+    {id:"V-16",t:"Tavole strutturali aggiornate dallo strutturista",cat:"Input da altri",att:"L6",resp:"PM",need:"13/10",aperto:true},
     {id:"V-17",t:"Criteri illuminotecnici approvati",cat:"Criteri",att:"L3",resp:"Progettista ELE 1",need:"06/10",aperto:false}
   ],
   utente:"Progettista MEC 1",
@@ -207,7 +207,7 @@ const LOOKAHEAD = [
   {id:"L5",t:"ANT-RT-401 · Emissione relazione antincendio",da:40,a:40},
   {id:"L4",t:"MEC-PL-110 · VMC piante e schemi",da:41,a:43},
   {id:"L7",t:"IDR-PL-301 · Idrico-sanitario piante",da:41,a:42},
-  {id:"L6",t:"Coordinamento BIM MEP / strutture",da:42,a:43},
+  {id:"L6",t:"Coordinamento impianti / strutture",da:42,a:43},
   {id:"M1",t:"Milestone · Esecutivo meccanico",da:44,a:44,mile:true},
   {id:"M2",t:"Milestone · Esecutivo elettrico",da:45,a:45,mile:true}
 ];
@@ -226,7 +226,7 @@ const ALTRE = [
 ];
 
 /* ---------- stato ---------- */
-const KEY="cruscotto-climosfera-v2";
+const KEY="cruscotto-climosfera-v3";
 let S;
 function load(){ try{ const r=localStorage.getItem(KEY); if(r){ S=JSON.parse(r); return; } }catch(e){} S=JSON.parse(JSON.stringify(BASE)); }
 function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
@@ -236,16 +236,16 @@ load();
 function evm(){
   let bac=0,ev=0,pv=0,ac=0;
   S.elaborati.forEach(e=>{bac+=e.bud; ev+=e.bud*PESI[e.st]/100; pv+=e.bud*PESI[e.pv]/100; ac+=acDi(e);});
-  const spi=ev/pv, cpi=ev/ac, eac=bac/cpi;
-  return {bac,ev,pv,ac,spi,cpi,eac,etc:eac-ac,vac:bac-eac};
+  const spi=pv?ev/pv:null, cpi=ac&&ev?ev/ac:null, eac=cpi?bac/cpi:null;
+  return {bac,ev,pv,ac,spi,cpi,eac,etc:eac===null?null:eac-ac,vac:eac===null?null:bac-eac};
 }
 function oreSett(id){ let t=0; Object.values(S.ore).forEach(m=>{ (m[id]||[]).forEach(h=>t+=+h||0); }); return t; }
 function acDi(e){ return e.ac+oreSett(e.id); }
 function ppc(){ const p=S.wwp.length, f=S.wwp.filter(x=>x.f).length; return {p,f,v:p?Math.round(f/p*100):0}; }
 function pcr(){ const n=S.vincoli.length, r=S.vincoli.filter(v=>!v.aperto).length; return {n,r,v:n?Math.round(r/n*100):0}; }
-const f1=x=>x.toFixed(2).replace(".",",");
-const f0=x=>Math.round(x).toLocaleString("it-IT");
-function tone(x){ return x>=0.95?"g":x>=0.85?"w":"c"; }
+const f1=x=>x===null||!isFinite(x)?"n.d.":x.toFixed(2).replace(".",",");
+const f0=x=>x===null||!isFinite(x)?"n.d.":Math.round(x).toLocaleString("it-IT");
+function tone(x){ return x===null||!isFinite(x)?"n":x>=0.95?"g":x>=0.85?"w":"c"; }
 function tonePPC(x){ return x>=70?"g":x>=55?"w":"c"; }
 const pill=(cls,txt)=>`<span class="pill ${cls}">${txt}</span>`;
 
@@ -264,7 +264,7 @@ let tt; function toast(m){const t=document.getElementById("toast"); t.textConten
 function curvaS(h){
   const W=1100,H=h||280,L=46,R=14,T=12,B=28, n=PV_SERIE.length;
   const E=evm(); const evS=EV_FR.map(f=>f*E.ev), acS=AC_FR.map(f=>f*E.ac);
-  const ymax=Math.ceil(Math.max(E.bac,E.ac,E.eac>E.bac*1.4?E.bac:E.eac)/100)*100;
+  const ymax=Math.ceil(Math.max(E.bac,E.ac,E.eac===null||E.eac>E.bac*1.4?E.bac:E.eac)/100)*100;
   const x=i=>L+i*(W-L-R)/(n-1), y=v=>T+(H-T-B)*(1-v/ymax);
   const path=s=>s.map((v,i)=>`${i?"L":"M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join("");
   let g=""; for(let v=0;v<=ymax;v+=100){ g+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`; }
@@ -275,8 +275,7 @@ function curvaS(h){
     ${g}${xl}
     <line x1="${x(io)}" x2="${x(io)}" y1="${T}" y2="${H-B}" stroke="var(--ink-3)" stroke-dasharray="3 3"/>
     <text x="${x(io)+4}" y="${T+10}" style="fill:var(--ink-2)">oggi</text>
-    <line x1="${x(n-1)-40}" x2="${x(n-1)}" y1="${eacY}" y2="${eacY}" stroke="var(--ac)" stroke-dasharray="4 3"/>
-    <text x="${x(n-1)-44}" y="${eacY-5}" text-anchor="end" style="fill:var(--ac)">EAC ${f0(E.eac)} h</text>
+    ${E.eac===null?"":`<line x1="${x(n-1)-40}" x2="${x(n-1)}" y1="${eacY}" y2="${eacY}" stroke="var(--ac)" stroke-dasharray="4 3"/><text x="${x(n-1)-44}" y="${eacY-5}" text-anchor="end" style="fill:var(--ac)">EAC ${f0(E.eac)} h</text>`}
     <path d="${path(PV_SERIE)}" fill="none" stroke="var(--pv)" stroke-width="2" stroke-dasharray="5 4"/>
     <path d="${path(acS)}" fill="none" stroke="var(--ac)" stroke-width="2.25"/>
     <path d="${path(evS)}" fill="none" stroke="var(--ev)" stroke-width="2.5"/>
@@ -313,8 +312,8 @@ function vPortafoglio(){
 }
 function avvisi(){
   const E=evm(), out=[];
-  if(E.spi<0.9) out.push(["c",`SPI ${f1(E.spi)}: in ritardo di ${f0(E.pv-E.ev)} h di lavoro rispetto al piano`]);
-  if(E.cpi<0.9) out.push(["c",`CPI ${f1(E.cpi)}: a finire servono circa ${f0(E.eac)} h contro ${f0(E.bac)} h a budget`]);
+  if(E.spi!==null&&E.spi<0.9) out.push(["c",`SPI ${f1(E.spi)}: in ritardo di ${f0(E.pv-E.ev)} h di lavoro rispetto al piano`]);
+  if(E.cpi!==null&&E.cpi<0.9) out.push(["c",`CPI ${f1(E.cpi)}: a completamento si stimano ${f0(E.eac)} h contro ${f0(E.bac)} h a budget (servono ancora ${f0(E.etc)} h)`]);
   S.vincoli.filter(v=>v.aperto&&v.need==="29/09").forEach(v=>out.push(["w",`Vincolo ${v.id} da rimuovere entro il 29/09: ${v.t}`]));
   const inCorso=S.elaborati.filter(e=>e.st>=1&&e.st<=2).length; if(inCorso>4) out.push(["w",`Kanban: ${inCorso} elaborati in corso con limite WIP 4`]);
   S.elaborati.filter(e=>e.age>=10&&e.st<5).forEach(e=>out.push(["w",`${e.id} fermo nello stesso stato da ${e.age} giorni`]));
@@ -324,11 +323,11 @@ function vObeya(){
   const E=evm(),P=ppc(),aperti=S.vincoli.filter(v=>v.aperto).length;
   return `<div class="head"><div><div class="eyebrow">CL-2026-031 · Obeya di commessa</div><h2>Scuola primaria – impianti meccanici ed elettrici</h2>
   <p>La vista unica per la riunione settimanale del team: tempi, costi, affidabilità del piano e ostacoli.</p></div>
-  <div class="muted num" style="font-size:12px">Aggiornato in tempo reale per tutto il team</div></div>
+  <div class="muted num" style="font-size:12px">Prototipo: i dati restano solo in questo browser</div></div>
   <div class="kpis">
    <div class="kpi"><span class="eyebrow">SPI</span><span class="v">${f1(E.spi)}</span>${pill(tone(E.spi),E.spi<1?"in ritardo":"in linea")}</div>
    <div class="kpi"><span class="eyebrow">CPI</span><span class="v">${f1(E.cpi)}</span>${pill(tone(E.cpi),E.cpi<1?"ore oltre il valore":"in linea")}</div>
-   <div class="kpi"><span class="eyebrow">Stima a finire EAC</span><span class="v">${f0(E.eac)} h</span><span class="s num">budget ${f0(E.bac)} h · scarto ${f0(E.vac)} h</span></div>
+   <div class="kpi"><span class="eyebrow">Stima a completamento EAC</span><span class="v">${f0(E.eac)} h</span><span class="s num">budget ${f0(E.bac)} h · scarto ${f0(E.vac)} h</span></div>
    <div class="kpi"><span class="eyebrow">PPC settimana ${OGGI_SETT}</span><span class="v">${P.v}%</span><span class="s">${P.f} di ${P.p} impegni mantenuti</span></div>
    <div class="kpi"><span class="eyebrow">Vincoli aperti</span><span class="v">${aperti}</span><span class="s">nel lookahead a 6 settimane</span></div>
   </div>
@@ -444,23 +443,29 @@ app.addEventListener("click",e=>{
   if(t.id==="reset"){ S=JSON.parse(JSON.stringify(BASE)); save(); render(); toast("Dati di esempio ripristinati"); return; }
   if(t.dataset.wf!==undefined){ const w=S.wwp[+t.dataset.wf]; w.f=t.dataset.v==="1"; if(w.f) w.c=""; save(); render(); return; }
   if(t.dataset.vt!==undefined){ const v=S.vincoli[+t.dataset.vt]; v.aperto=!v.aperto; save(); render(); toast(v.aperto?`${v.id} riaperto`:`${v.id} rimosso`); return; }
-  if(t.dataset.mv!==undefined){ muovi(+t.dataset.mv, colDi(S.elaborati[+t.dataset.mv].st)+ +t.dataset.d); }
+  if(t.dataset.mv!==undefined){ passo(+t.dataset.mv, Number(t.dataset.d)); }
 });
 app.addEventListener("change",e=>{
   const t=e.target;
   if(t.dataset.wc!==undefined){ S.wwp[+t.dataset.wc].c=t.value; save(); render(); }
   if(t.dataset.utente){ S.utente=t.value; save(); render(); return; }
-  if(t.dataset.h){ const u=S.utente; S.ore[u]=S.ore[u]||{}; const v=S.ore[u][t.dataset.h]||[0,0,0,0,0]; v[+t.dataset.g]=Math.max(0,Math.min(12,+t.value||0)); S.ore[u][t.dataset.h]=v; save(); render();
-    const f=document.getElementById(t.id); if(f) f.focus(); const E=evm(); toast(`Ore salvate · AC ${f0(E.ac)} h, CPI ${f1(E.cpi)}`); return; }
+  if(t.dataset.h){ const u=S.utente; S.ore[u]=S.ore[u]||{}; const v=S.ore[u][t.dataset.h]||[0,0,0,0,0]; v[+t.dataset.g]=Math.max(0,Math.min(12,+t.value||0)); S.ore[u][t.dataset.h]=v; save();
+    setTimeout(()=>{ const id=document.activeElement&&document.activeElement.id; render(); const f=id&&document.getElementById(id); if(f) f.focus(); },0); const E=evm(); toast(`Ore salvate · AC ${f0(E.ac)} h, CPI ${f1(E.cpi)}`); return; }
   if(t.dataset.st!==undefined){ S.elaborati[+t.dataset.st].st=+t.value; S.elaborati[+t.dataset.st].age=0; save(); render(); }
 });
+function imposta(e,st){ e.st=st; e.age=0; save(); render(); const E=evm(); toast(`${e.id}: ${STATI[e.st].toLowerCase()} · EV totale ${f0(E.ev)} h, SPI ${f1(E.spi)}`); }
+function passo(i,d){ const e=S.elaborati[i]; const st=e.st+d; if(st<0||st>5) return; imposta(e,st); }
 function muovi(i,col){
-  if(col<0||col>3) return; const e=S.elaborati[i]; const sts=COLS[col][2];
-  if(!sts.includes(e.st)){ e.st=colDi(e.st)<col?sts[0]:sts[sts.length-1]; e.age=0; save(); render();
-    const E=evm(); toast(`${e.id}: ${STATI[e.st].toLowerCase()} · EV totale ${f0(E.ev)} h, SPI ${f1(E.spi)}`); }
+  const e=S.elaborati[i], da=colDi(e.st);
+  if(col===da) return;
+  if(Math.abs(col-da)>1){ toast("Si sposta una colonna alla volta"); return; }
+  const st=e.st+(col>da?1:-1);
+  if(colDi(st)!==col){ toast(`${e.id}: prima completa lo stato "${STATI[e.st+(col>da?1:-1)]}" con le frecce`); return; }
+  imposta(e,st);
 }
 let drag=null;
-app.addEventListener("dragstart",e=>{const c=e.target.closest("[data-card]"); if(c){drag=+c.dataset.card; e.dataTransfer.effectAllowed="move";}});
+app.addEventListener("dragstart",e=>{const c=e.target.closest("[data-card]"); if(c){drag=+c.dataset.card; e.dataTransfer.effectAllowed="move"; e.dataTransfer.setData("text/plain",c.dataset.card);}});
+app.addEventListener("dragend",()=>{drag=null;});
 app.addEventListener("dragover",e=>{if(drag!==null&&e.target.closest("[data-col]")) e.preventDefault();});
 app.addEventListener("drop",e=>{const c=e.target.closest("[data-col]"); if(c&&drag!==null){e.preventDefault(); muovi(drag,+c.dataset.col);} drag=null;});
 

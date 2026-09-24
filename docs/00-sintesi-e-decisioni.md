@@ -1,6 +1,6 @@
 # Cruscotto commesse Climosfera: sintesi e decisioni
 
-> Stato al 24/09/2026, revisione 2. I rapporti di dettaglio con le fonti sono in `docs/ricerca/01…08`. La verifica delle affermazioni chiave è in `07`.
+> Stato al 24/09/2026, revisione 3 (dopo verifica profonda). Piano di costruzione: `docs/sviluppo/piano.md`. I rapporti di dettaglio con le fonti sono in `docs/ricerca/01…08`. La verifica delle affermazioni chiave è in `07`.
 
 ## 1. Requisiti
 
@@ -23,10 +23,10 @@
 L'uso simultaneo richiede **un database unico sul server**. I PC Windows e Mac sono solo finestre sui dati. Un file condiviso su cartella di rete è scartato perché si corrompe con le scritture simultanee (vedi 08, 07 #11).
 
 ```
-PC Windows / Mac ── app installata (PWA da Edge/Chrome, o Dock su Safari)
+PC Windows / Mac ── app installata (PWA da Edge/Chrome; Dock di Safari da provare [NV])
         │ HTTPS, dentro la VPN
 Windows Server aziendale
-  ├── servizio "Cruscotto" (Node.js + TypeScript): schermate, calcoli, login M365
+  ├── servizio "Cruscotto" (AdonisJS, Node.js + TypeScript, avviato da WinSW): schermate, calcoli, login M365 lato server (OIDC)
   └── servizio PostgreSQL: il database, con backup notturno
 ```
 
@@ -36,7 +36,7 @@ Windows Server aziendale
 - niente installer da firmare e niente costi annui;
 - per aggiornare si aggiorna solo il server.
 
-**Se servirà accedere a file locali o a Revit:** la stessa interfaccia si inserisce in Electron (installer .exe/.dmg) senza riscrivere il server. Con 1–5 Mac il costo di firma Apple (99 USD/anno) va valutato solo in quel caso.
+**Fuori ambito (decisione utente):** BIM (ISO 19650, UNI 11337, BCF, Revit/IFC), client Electron, integrazione GoodDay.
 
 **Cosa cambia rispetto alla rev. 1:** Django + Docker su VM Linux è abbandonato. Era pensato per un server Linux e avrebbe richiesto Python per il server e JavaScript per le schermate, cioè due linguaggi.
 
@@ -53,7 +53,6 @@ Windows Server aziendale
 6. **Vista di commessa (Obeya)** e **portafoglio del PM**.
 
 **Rimandati:**
-- registro elaborati completo ISO 19650/UNI 11337;
 - issue BCF;
 - registri PMBOK completi (rischi, change, decisioni);
 - export Excel.
@@ -63,7 +62,7 @@ Windows Server aziendale
 - **PMBOK 8** (2025): 6 principi, 7 domini, tailoring predittivo/adattivo/ibrido. L'EVM segue lo standard ANSI/PMI 19-006-2019. → 01, verificato in 07
 - **Lean**: il Last Planner ha 5 livelli, con dati minimi e formule PPC/TMR/TA/PCR documentati. Non esiste un target di PPC validato per la progettazione. → 02
 - **Tool esistenti**: nessun tool open source fa il Last Planner. OpenProject ha il login M365 a pagamento. → 03
-- **Settore MEP/BIM**: l'EV va legato allo stato dell'elaborato, non alla percentuale dichiarata. → 05
+- **Settore progettazione impiantistica**: l'EV va legato allo stato dell'elaborato, non alla percentuale dichiarata. → 05
 - **GoodDay** (06): *archiviato*, non più rilevante dopo la decisione della rev. 2.
 
 ## 5. Decisioni aperte
@@ -75,6 +74,7 @@ Windows Server aziendale
 | D3 | Registrazione dell'app su Entra ID: chi è amministratore del tenant M365? | IT | login |
 | D4 | Informativa ai dipendenti e verifica art. 4 Statuto dei lavoratori per ore e PPC | consulente del lavoro | GDPR, visibilità per ruolo |
 | D5 | Pesi degli stati per l'EV e soglie dei semafori | PM (con il prototipo) | EVM affidabile |
+| D7 | Login M365 nella web app del Dock di Safari: prova su un Mac vero | utente al Gate 2 | piano B: Chrome/Edge su Mac |
 | D6 | GoodDay resta attivo per le vecchie commesse? Serve una data di passaggio chiara | direzione | evita il doppio inserimento |
 
 ## 6. Rischi principali
