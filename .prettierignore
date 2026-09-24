@@ -1,3 +1,10 @@
 .adonisjs
 node_modules
 build
+prototipo
+docs
+public/vendor
+public/fonts
+screenshots
+test-results
+*.md

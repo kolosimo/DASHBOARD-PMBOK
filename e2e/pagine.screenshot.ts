@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 /**
  * Screenshot di pagine × ruoli in screenshots/<ruolo>/<pagina>-<tema>.png
  */
@@ -31,7 +32,10 @@ for (const ruolo of RUOLI) {
         await page.emulateMedia({ colorScheme: tema === 'scuro' ? 'dark' : 'light' })
         await page.goto(p.percorso)
         await page.evaluate(() => document.fonts.ready)
-        await page.screenshot({ path: `screenshots/${ruolo}/${p.nome}-${tema}.png`, fullPage: true })
+        await page.screenshot({
+          path: `screenshots/${ruolo}/${p.nome}-${tema}.png`,
+          fullPage: true,
+        })
       }
     }
   })

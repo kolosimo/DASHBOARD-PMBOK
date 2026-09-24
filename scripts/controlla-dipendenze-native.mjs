@@ -42,7 +42,9 @@ for (const [percorso, info] of Object.entries(lock.packages ?? {})) {
 
   if (nome in ECCEZIONI) {
     if (!info.dev && !info.optional) {
-      problemi.push(`${nome}@${info.version}: eccezione ammessa solo come dipendenza di sviluppo o opzionale`)
+      problemi.push(
+        `${nome}@${info.version}: eccezione ammessa solo come dipendenza di sviluppo o opzionale`
+      )
     } else {
       eccezioniUsate.add(nome)
     }

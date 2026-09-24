@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 import { test, expect } from '@playwright/test'
 
 test('login di sviluppo → home con le commesse del seed', async ({ page }) => {
@@ -19,7 +20,9 @@ test('login di sviluppo → home con le commesse del seed', async ({ page }) => 
   await page.getByRole('link', { name: 'CL-2026-031' }).click()
   await expect(page.getByRole('navigation', { name: 'Schede della commessa' })).toBeVisible()
   await expect(page.getByTestId('segnaposto')).toBeVisible()
-  await expect(page.locator('#stato-connessione')).toHaveText(/tempo reale|30 s/, { timeout: 10_000 })
+  await expect(page.locator('#stato-connessione')).toHaveText(/tempo reale|30 s/, {
+    timeout: 10_000,
+  })
 
   // Uscita
   await page.getByRole('button', { name: 'Esci' }).click()
