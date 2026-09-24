@@ -1,8 +1,8 @@
 {{--
   Tabella semplice. Props:
-    colonne  [{ testo, destra? }]
-    righe    [[celle già formattate]] (testo, non HTML)
-    vuota    messaggio se non ci sono righe
+  colonne  [{ testo, destra? }]
+  righe    [[celle già formattate]] (testo, non HTML)
+  vuota    messaggio se non ci sono righe
   Per celle con HTML (pill, link) scrivere la tabella a mano con le stesse classi.
 --}}
 <table>
@@ -21,7 +21,9 @@
         @end
       </tr>
     @else
-      <tr><td colspan="{{ colonne.length }}" class="muted">{{ vuota || 'Nessun dato.' }}</td></tr>
+      <tr>
+        <td colspan="{{ colonne.length }}" class="muted">{{ vuota || 'Nessun dato.' }}</td>
+      </tr>
     @end
   </tbody>
 </table>

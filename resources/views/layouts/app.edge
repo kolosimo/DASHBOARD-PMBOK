@@ -1,7 +1,7 @@
 {{--
   Layout principale. Props:
-    titolo       titolo della pagina (obbligatorio)
-    voceAttiva   id della voce globale attiva (app/ui/nav.ts)
+  titolo       titolo della pagina (obbligatorio)
+  voceAttiva   id della voce globale attiva (app/ui/nav.ts)
   Condivisi dal contesto: utente, commessa, schedaAttiva, modalitaAuth.
 --}}
 <!DOCTYPE html>
@@ -30,6 +30,7 @@
               @if(modalitaAuth === 'dev')
                 <span class="sample">Login di sviluppo</span>
               @end
+
               <span class="avatar" aria-hidden="true">{{ utente.iniziali }}</span>
               <span>
                 <span data-testid="utente-nome">{{ utente.nome }}</span>
@@ -46,7 +47,12 @@
           <nav class="tabs" aria-label="Navigazione principale">
             @each(voce in nav.vociGlobali)
               @if(!voce.soloAdmin || utente.ruolo === 'admin')
-                <a href="{{ voce.percorso }}" aria-current="{{ voce.id === voceAttiva ? 'page' : 'false' }}">{{ voce.etichetta }}</a>
+                <a
+                  href="{{ voce.percorso }}"
+                  aria-current="{{ voce.id === voceAttiva ? 'page' : 'false' }}"
+                >
+                  {{ voce.etichetta }}
+                </a>
               @end
             @end
           </nav>
@@ -59,7 +65,12 @@
           </div>
           <nav class="tabs commessa" aria-label="Schede della commessa">
             @each(voce in nav.vociCommessa)
-              <a href="{{ voce.percorso(commessa.id) }}" aria-current="{{ voce.id === schedaAttiva ? 'page' : 'false' }}">{{ voce.etichetta }}</a>
+              <a
+                href="{{ voce.percorso(commessa.id) }}"
+                aria-current="{{ voce.id === schedaAttiva ? 'page' : 'false' }}"
+              >
+                {{ voce.etichetta }}
+              </a>
             @end
           </nav>
         @end
@@ -67,11 +78,11 @@
     </header>
 
     <main class="wrap" id="contenuto">
-      <section class="view">
-        {{{ await $slots.main() }}}
-      </section>
+      <section class="view">{{{ await $slots.main() }}}</section>
       <div class="foot">
-        <span>Formule: PPC = mantenuti / promessi · SPI = EV / PV · CPI = EV / AC · EAC = BAC / CPI</span>
+        <span>
+          Formule: PPC = mantenuti / promessi · SPI = EV / PV · CPI = EV / AC · EAC = BAC / CPI
+        </span>
         <span>Dati di esempio · Fase 0</span>
       </div>
     </main>

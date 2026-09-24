@@ -1,7 +1,12 @@
 @component('layouts/app', { titolo: 'Le mie commesse', voceAttiva })
   <div class="head">
     <div>
-      <div class="eyebrow">Settimana {{ formato.settimana(settimana) }} · {{ formato.dataEstesa(oggi) }}</div>
+      <div class="eyebrow">
+        Settimana
+        {{ formato.settimana(settimana) }}
+        ·
+        {{ formato.dataEstesa(oggi) }}
+      </div>
       <h2>Le mie commesse</h2>
       <p>
         @if(utente.ruolo === 'admin' || utente.ruolo === 'direzione')
@@ -12,7 +17,6 @@
       </p>
     </div>
   </div>
-
   @component('components/pannello', { tabella: true })
     <table data-testid="elenco-commesse">
       <thead>
@@ -32,21 +36,39 @@
             <td><a class="code" href="/commesse/{{ c.id }}">{{ c.codice }}</a></td>
             <td>{{ c.nome }}</td>
             <td>{{ formato.testo(c.pmNome) }}</td>
-            <td>{{ c.ruoloCommessa || (utente.ruolo === 'direzione' ? 'direzione' : utente.ruolo === 'admin' ? 'admin' : 'n.d.') }}</td>
+            <td>
+              {{
+                c.ruoloCommessa ||
+                (utente.ruolo === 'direzione'
+                  ? 'direzione'
+                  : utente.ruolo === 'admin'
+                    ? 'admin'
+                    : 'n.d.')
+              }}
+            </td>
             <td class="r num">{{ c.numeroElaborati }}</td>
             <td>
               @if(c.prossimaMilestone)
-                {{ c.prossimaMilestone.titolo }} · <span class="num">{{ formato.dataBreve(c.prossimaMilestone.data) }}</span>
+                {{ c.prossimaMilestone.titolo }}
+                ·
+                <span class="num">{{ formato.dataBreve(c.prossimaMilestone.data) }}</span>
               @else
                 <span class="muted">n.d.</span>
               @end
             </td>
             <td>
-              @!component('components/pill', { classe: c.stato === 'attiva' ? 'g' : 'n', testo: c.stato })
+              @!component('components/pill', {
+                classe: c.stato === 'attiva' ? 'g' : 'n',
+                testo: c.stato,
+              })
             </td>
           </tr>
         @else
-          <tr><td colspan="7" class="muted">Non fai ancora parte di nessuna commessa. Chiedi al PM di aggiungerti al team.</td></tr>
+          <tr>
+            <td colspan="7" class="muted">
+              Non fai ancora parte di nessuna commessa. Chiedi al PM di aggiungerti al team.
+            </td>
+          </tr>
         @end
       </tbody>
     </table>
