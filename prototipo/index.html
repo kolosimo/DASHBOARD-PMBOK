@@ -143,7 +143,7 @@ svg .gl{stroke:var(--line);stroke-width:1}
   <div class="top-in">
     <div class="brandrow">
       <div class="brand"><h1>Cruscotto commesse</h1><small>Climosfera · PMBOK + Last Planner</small></div>
-      <span class="sample">Prototipo con dati di esempio · in produzione ore, task e budget arrivano da GoodDay</span>
+      <span class="sample">Prototipo con dati di esempio · nessun dato reale</span>
     </div>
     <nav class="tabs" role="tablist" id="tabs"></nav>
   </div>
@@ -187,7 +187,18 @@ const BASE = {
     {id:"V-15",t:"Verificatore interno disponibile",cat:"Risorsa",att:"L5",resp:"Resp. qualità",need:"29/09",aperto:false},
     {id:"V-16",t:"Modello strutturale IFC aggiornato",cat:"Input da altri",att:"L6",resp:"BIM coordinator",need:"13/10",aperto:true},
     {id:"V-17",t:"Criteri illuminotecnici approvati",cat:"Criteri",att:"L3",resp:"Progettista ELE 1",need:"06/10",aperto:false}
-  ]
+  ],
+  utente:"Progettista MEC 1",
+  ore:{"Progettista MEC 1":{"MEC-PL-101":[4,6,3,0,0],"MEC-RT-001":[2,0,3,0,0]},"Progettista ELE 1":{"ELE-SC-201":[6,5,0,0,0]}}
+};
+const GIORNI=["Lun 21","Mar 22","Mer 23","Gio 24","Ven 25"];
+const ASSEGNAZIONI={
+  "Progettista MEC 1":["MEC-PL-101","MEC-RT-001","MEC-PL-102"],
+  "Progettista MEC 2":["MEC-PL-110","MEC-CA-002"],
+  "Progettista ELE 1":["ELE-SC-201"],
+  "Progettista ELE 2":["ELE-PL-210"],
+  "Progettista IDR 1":["IDR-PL-301"],
+  "PM":["ANT-RT-401","MEC-RT-001"]
 };
 const LOOKAHEAD = [
   {id:"L1",t:"MEC-PL-102 · Pianta P1 riscaldamento",da:40,a:41},
@@ -215,7 +226,7 @@ const ALTRE = [
 ];
 
 /* ---------- stato ---------- */
-const KEY="cruscotto-climosfera-v1";
+const KEY="cruscotto-climosfera-v2";
 let S;
 function load(){ try{ const r=localStorage.getItem(KEY); if(r){ S=JSON.parse(r); return; } }catch(e){} S=JSON.parse(JSON.stringify(BASE)); }
 function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
@@ -224,10 +235,12 @@ load();
 /* ---------- calcoli ---------- */
 function evm(){
   let bac=0,ev=0,pv=0,ac=0;
-  S.elaborati.forEach(e=>{bac+=e.bud; ev+=e.bud*PESI[e.st]/100; pv+=e.bud*PESI[e.pv]/100; ac+=e.ac;});
+  S.elaborati.forEach(e=>{bac+=e.bud; ev+=e.bud*PESI[e.st]/100; pv+=e.bud*PESI[e.pv]/100; ac+=acDi(e);});
   const spi=ev/pv, cpi=ev/ac, eac=bac/cpi;
   return {bac,ev,pv,ac,spi,cpi,eac,etc:eac-ac,vac:bac-eac};
 }
+function oreSett(id){ let t=0; Object.values(S.ore).forEach(m=>{ (m[id]||[]).forEach(h=>t+=+h||0); }); return t; }
+function acDi(e){ return e.ac+oreSett(e.id); }
 function ppc(){ const p=S.wwp.length, f=S.wwp.filter(x=>x.f).length; return {p,f,v:p?Math.round(f/p*100):0}; }
 function pcr(){ const n=S.vincoli.length, r=S.vincoli.filter(v=>!v.aperto).length; return {n,r,v:n?Math.round(r/n*100):0}; }
 const f1=x=>x.toFixed(2).replace(".",",");
@@ -237,7 +250,7 @@ function tonePPC(x){ return x>=70?"g":x>=55?"w":"c"; }
 const pill=(cls,txt)=>`<span class="pill ${cls}">${txt}</span>`;
 
 /* ---------- navigazione ---------- */
-const TABS=[["portafoglio","Le mie commesse"],["obeya","Commessa"],["settimana","Piano settimanale"],["lookahead","Lookahead e vincoli"],["kanban","Kanban"],["evm","Avanzamento EVM"]];
+const TABS=[["portafoglio","Le mie commesse"],["obeya","Commessa"],["settimana","Piano settimanale"],["lookahead","Lookahead e vincoli"],["kanban","Kanban"],["ore","Ore"],["evm","Avanzamento EVM"]];
 let cur="obeya";
 try{ const h=location.hash.replace("#",""); if(TABS.some(t=>t[0]===h)) cur=h; }catch(e){}
 function go(id){ cur=id; try{history.replaceState(null,"","#"+id);}catch(e){} render(); window.scrollTo({top:0}); }
@@ -269,7 +282,7 @@ function curvaS(h){
     <path d="${path(evS)}" fill="none" stroke="var(--ev)" stroke-width="2.5"/>
     <circle cx="${x(io)}" cy="${y(E.ev)}" r="4" fill="var(--ev)"/><circle cx="${x(io)}" cy="${y(E.ac)}" r="4" fill="var(--ac)"/><circle cx="${x(io)}" cy="${y(E.pv)}" r="3.5" fill="var(--pv)"/>
   </svg>
-  <div class="legend"><span><i style="background:var(--pv)"></i>PV pianificato ${f0(E.pv)} h</span><span><i style="background:var(--ev)"></i>EV guadagnato ${f0(E.ev)} h</span><span><i style="background:var(--ac)"></i>AC ore GoodDay ${f0(E.ac)} h</span><span class="muted">BAC ${f0(E.bac)} h</span></div>`;
+  <div class="legend"><span><i style="background:var(--pv)"></i>PV pianificato ${f0(E.pv)} h</span><span><i style="background:var(--ev)"></i>EV guadagnato ${f0(E.ev)} h</span><span><i style="background:var(--ac)"></i>AC ore registrate ${f0(E.ac)} h</span><span class="muted">BAC ${f0(E.bac)} h</span></div>`;
 }
 function graficoPPC(h){
   const W=520,H=h||220,L=36,R=10,T=12,B=26; const dati=[...PPC_STORIA,[OGGI_SETT,ppc().v]]; const n=dati.length;
@@ -311,7 +324,7 @@ function vObeya(){
   const E=evm(),P=ppc(),aperti=S.vincoli.filter(v=>v.aperto).length;
   return `<div class="head"><div><div class="eyebrow">CL-2026-031 · Obeya di commessa</div><h2>Scuola primaria – impianti meccanici ed elettrici</h2>
   <p>La vista unica per la riunione settimanale del team: tempi, costi, affidabilità del piano e ostacoli.</p></div>
-  <div class="muted num" style="font-size:12px">Ultima lettura GoodDay: oggi 08:00 (simulata)</div></div>
+  <div class="muted num" style="font-size:12px">Aggiornato in tempo reale per tutto il team</div></div>
   <div class="kpis">
    <div class="kpi"><span class="eyebrow">SPI</span><span class="v">${f1(E.spi)}</span>${pill(tone(E.spi),E.spi<1?"in ritardo":"in linea")}</div>
    <div class="kpi"><span class="eyebrow">CPI</span><span class="v">${f1(E.cpi)}</span>${pill(tone(E.cpi),E.cpi<1?"ore oltre il valore":"in linea")}</div>
@@ -367,37 +380,54 @@ const COLS=[["Da fare",null,[0]],["In corso",4,[1,2]],["In verifica",3,[3,4]],["
 function colDi(st){ return COLS.findIndex(c=>c[2].includes(st)); }
 function vKanban(){
   return `<div class="head"><div><div class="eyebrow">Flusso degli elaborati</div><h2>Kanban di commessa</h2>
-  <p>Ogni scheda è un elaborato. Spostarla cambia il suo stato e quindi il valore guadagnato (EV). La colonna si evidenzia quando supera il limite WIP. In produzione le schede sono i task di GoodDay.</p></div></div>
+  <p>Ogni scheda è un elaborato. Spostarla cambia il suo stato e quindi il valore guadagnato (EV). La colonna si evidenzia quando supera il limite WIP.</p></div></div>
   <div class="kb">${COLS.map(([nome,lim,sts],ci)=>{const cards=S.elaborati.map((e,i)=>({...e,i})).filter(e=>sts.includes(e.st)); const over=lim&&cards.length>lim;
    return `<section class="col ${over?"over":""}" data-col="${ci}"><div class="col-h"><h3>${nome}</h3><span class="num ${over?"age-old":"muted"}">${cards.length}${lim?" / "+lim:""}</span></div>
    ${cards.map(e=>`<article class="card" draggable="true" data-card="${e.i}"><div class="row"><span class="code">${e.id}</span>${e.cls==="Data fissa"?pill("w","data fissa"):""}</div>
     <div class="t">${e.t}</div><div class="row"><span class="muted" style="font-size:12px">${STATI[e.st]}</span><span class="num ${e.age>=10&&e.st<5?"age-old":"muted"}" style="font-size:12px">${e.st<5?e.age+" gg":""}</span></div>
-    <div class="row"><span class="muted num" style="font-size:12px">${e.ac} / ${e.bud} h</span><span class="mv">${ci>0?`<button data-mv="${e.i}" data-d="-1" aria-label="Sposta indietro">←</button>`:""}${ci<3?`<button data-mv="${e.i}" data-d="1" aria-label="Sposta avanti">→</button>`:""}</span></div></article>`).join("")}
+    <div class="row"><span class="muted num" style="font-size:12px">${f0(acDi(e))} / ${e.bud} h</span><span class="mv">${ci>0?`<button data-mv="${e.i}" data-d="-1" aria-label="Sposta indietro">←</button>`:""}${ci<3?`<button data-mv="${e.i}" data-d="1" aria-label="Sposta avanti">→</button>`:""}</span></div></article>`).join("")}
    </section>`;}).join("")}</div>
   <p class="muted" style="font-size:12.5px;margin:0">Età in giorni = tempo nello stato attuale (Work Item Age). Le schede ferme da 10 giorni o più sono in rosso.</p>`;
+}
+function vOre(){
+  const u=S.utente, righe=ASSEGNAZIONI[u], m=S.ore[u]||{};
+  const tot=GIORNI.map((_,g)=>righe.reduce((a,id)=>a+(+((m[id]||[])[g])||0),0));
+  const totSett=tot.reduce((a,b)=>a+b,0);
+  return `<div class="head"><div><div class="eyebrow">Timesheet · settimana ${OGGI_SETT}</div><h2>Ore sulle commesse</h2>
+  <p>Ogni persona registra le ore sugli elaborati che ha assegnati. Queste ore sono il costo effettivo (AC) dell'EVM: SPI, CPI ed EAC si aggiornano appena si salva.</p></div>
+  <label class="muted" style="display:flex;gap:8px;align-items:center" for="utente">Stai registrando come
+   <select id="utente" data-utente="1">${Object.keys(ASSEGNAZIONI).map(p=>`<option ${p===u?"selected":""}>${p}</option>`).join("")}</select></label></div>
+  <div class="panel tbl"><table><thead><tr><th>Elaborato</th>${GIORNI.map(g=>`<th class="r">${g}</th>`).join("")}<th class="r">Totale</th><th class="r">Ore a oggi / budget</th></tr></thead><tbody>
+  ${righe.map(id=>{const e=S.elaborati.find(x=>x.id===id); const v=m[id]||[0,0,0,0,0]; const t=v.reduce((a,b)=>a+(+b||0),0);
+   return `<tr><td><span class="code">${id}</span><div class="muted" style="font-size:12px">${e.t}</div></td>
+   ${GIORNI.map((_,g)=>`<td class="r"><input id="h-${id}-${g}" data-h="${id}" data-g="${g}" type="number" min="0" max="12" step="0.5" value="${v[g]||""}" inputmode="decimal" aria-label="Ore ${id} ${GIORNI[g]}" style="width:58px;text-align:right;font:inherit;font-family:var(--mono);background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:3px 6px"></td>`).join("")}
+   <td class="r num"><b>${t||""}</b></td><td class="r num">${f0(acDi(e))} / ${e.bud} ${acDi(e)>e.bud?pill("c","oltre"):""}</td></tr>`;}).join("")}
+  <tr><td class="muted">Totale giorno</td>${tot.map(t=>`<td class="r num ${t>8?"age-old":""}">${t||""}</td>`).join("")}<td class="r num"><b>${totSett}</b></td><td></td></tr>
+  </tbody></table></div>
+  <p class="muted" style="font-size:12.5px;margin:0">Le ore servono al controllo di commessa. Il PM vede le ore della sua commessa, la direzione solo i totali, ognuno le proprie: nessuna classifica individuale.</p>`;
 }
 function vEvm(){
   const E=evm();
   return `<div class="head"><div><div class="eyebrow">Earned Value in ore</div><h2>Avanzamento per elaborato</h2>
   <p>Il valore guadagnato si calcola dallo stato dell'elaborato, non da una percentuale dichiarata. Pesi per stato: ${STATI.slice(1).map((s,i)=>`${s.toLowerCase()} ${PESI[i+1]}%`).join(", ")}. I pesi sono di esempio e vanno tarati.</p></div></div>
   <div class="kpis">
-   <div class="kpi"><span class="eyebrow">BAC budget</span><span class="v">${f0(E.bac)} h</span><span class="s">da stime GoodDay</span></div>
+   <div class="kpi"><span class="eyebrow">BAC budget</span><span class="v">${f0(E.bac)} h</span><span class="s">ore a budget per elaborato</span></div>
    <div class="kpi"><span class="eyebrow">PV pianificato</span><span class="v">${f0(E.pv)} h</span></div>
    <div class="kpi"><span class="eyebrow">EV guadagnato</span><span class="v">${f0(E.ev)} h</span></div>
-   <div class="kpi"><span class="eyebrow">AC consuntivo</span><span class="v">${f0(E.ac)} h</span><span class="s">ore registrate in GoodDay</span></div>
+   <div class="kpi"><span class="eyebrow">AC consuntivo</span><span class="v">${f0(E.ac)} h</span><span class="s">storico + ore della settimana</span></div>
    <div class="kpi"><span class="eyebrow">SPI · CPI</span><span class="v">${f1(E.spi)} · ${f1(E.cpi)}</span></div>
    <div class="kpi"><span class="eyebrow">EAC · ETC</span><span class="v">${f0(E.eac)} · ${f0(E.etc)}</span><span class="s">EAC = BAC / CPI</span></div>
   </div>
   <div class="panel">${curvaS()}</div>
   <div class="panel tbl"><div class="panel-h"><h3>Registro elaborati</h3><span class="note">cambia lo stato per vedere EV, SPI e CPI ricalcolati</span></div>
-  <table><thead><tr><th>Elaborato</th><th>Titolo</th><th>Disc.</th><th>Stato attuale</th><th class="r">Budget h</th><th class="r">EV h</th><th class="r">Ore GoodDay</th><th class="r">CPI</th></tr></thead><tbody>
-  ${S.elaborati.map((e,i)=>{const ev=e.bud*PESI[e.st]/100; const c=e.ac?ev/e.ac:0; return `<tr><td class="code">${e.id}</td><td>${e.t}</td><td>${e.d}</td>
+  <table><thead><tr><th>Elaborato</th><th>Titolo</th><th>Disc.</th><th>Stato attuale</th><th class="r">Budget h</th><th class="r">EV h</th><th class="r">Ore registrate</th><th class="r">CPI</th></tr></thead><tbody>
+  ${S.elaborati.map((e,i)=>{const ev=e.bud*PESI[e.st]/100; const a=acDi(e); const c=a?ev/a:0; return `<tr><td class="code">${e.id}</td><td>${e.t}</td><td>${e.d}</td>
    <td><select id="stato-${i}" data-st="${i}" aria-label="Stato di ${e.id}">${STATI.map((s,k)=>`<option value="${k}" ${k===e.st?"selected":""}>${s} (${PESI[k]}%)</option>`).join("")}</select></td>
-   <td class="r num">${e.bud}</td><td class="r num">${f0(ev)}</td><td class="r num">${e.ac}</td><td class="r">${pill(tone(c),f1(c))}</td></tr>`;}).join("")}
+   <td class="r num">${e.bud}</td><td class="r num">${f0(ev)}</td><td class="r num">${f0(a)}</td><td class="r">${pill(tone(c),f1(c))}</td></tr>`;}).join("")}
   </tbody></table></div>`;
 }
 
-const VIEWS={portafoglio:vPortafoglio,obeya:vObeya,settimana:vSettimana,lookahead:vLookahead,kanban:vKanban,evm:vEvm};
+const VIEWS={ore:vOre,portafoglio:vPortafoglio,obeya:vObeya,settimana:vSettimana,lookahead:vLookahead,kanban:vKanban,evm:vEvm};
 function render(){
   tabs();
   document.getElementById("app").innerHTML=`<section class="view">${VIEWS[cur]()}</section>
@@ -419,6 +449,9 @@ app.addEventListener("click",e=>{
 app.addEventListener("change",e=>{
   const t=e.target;
   if(t.dataset.wc!==undefined){ S.wwp[+t.dataset.wc].c=t.value; save(); render(); }
+  if(t.dataset.utente){ S.utente=t.value; save(); render(); return; }
+  if(t.dataset.h){ const u=S.utente; S.ore[u]=S.ore[u]||{}; const v=S.ore[u][t.dataset.h]||[0,0,0,0,0]; v[+t.dataset.g]=Math.max(0,Math.min(12,+t.value||0)); S.ore[u][t.dataset.h]=v; save(); render();
+    const f=document.getElementById(t.id); if(f) f.focus(); const E=evm(); toast(`Ore salvate · AC ${f0(E.ac)} h, CPI ${f1(E.cpi)}`); return; }
   if(t.dataset.st!==undefined){ S.elaborati[+t.dataset.st].st=+t.value; S.elaborati[+t.dataset.st].age=0; save(); render(); }
 });
 function muovi(i,col){

@@ -64,7 +64,7 @@ Nella 7ª edizione gli artefatti sono raggruppati in famiglie ("Models, Methods,
 ## 4. Standard collegati (confermati)
 
 - **ANSI/PMI 19-006-2019 Standard for Earned Value Management**: vale anche in contesti agili e ibridi, include l'earned schedule [PMI, https://www.pmi.org/standards/earned-value-management].
-- **Agile Practice Guide 2ª ed.** (PMI + Agile Alliance) [PMI, https://www.pmi.org/standards/agile]. Uscita 27/07/2026 [SEC].
+- **Agile Practice Guide 2ª ed.** (PMI + Agile Alliance) [PMI, https://www.pmi.org/standards/agile]. Data di uscita incerta: 27/07/2026 secondo il distributore, 02/09/2026 secondo la verifica successiva [SEC].
 - **Process Groups: A Practice Guide** (2022): 5 gruppi di processi e 49 processi, per l'approccio predittivo [PMI, https://www.pmi.org/standards/process-groups].
 - **ISO 21502:2020** (guida al project management) e **ISO 21500:2021** (contesto e concetti), che sostituiscono la ISO 21500:2012 [ISO, https://www.iso.org/standard/74947.html, https://www.iso.org/standard/75704.html].
 - **GPM P5** sostenibilità [PMI, https://www.pmi.org/standards/gpm-p5-standard-for-sustainability-in-project-management].

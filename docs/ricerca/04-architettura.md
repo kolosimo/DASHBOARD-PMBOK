@@ -1,5 +1,7 @@
 # 04 — Architettura di un'app su misura on-premise
 
+> **Superato in parte (rev. 2):** la raccomandazione Django + Docker su VM Linux è sostituita da PWA + Node.js + PostgreSQL nativi su Windows Server, vedi `08`. Le sezioni su tempo reale, backup e GDPR restano valide.
+
 > Ricerca web del 24/09/2026. **[NV]** = non verificato su fonte primaria.
 
 ## A) Piattaforme low-code self-hosted

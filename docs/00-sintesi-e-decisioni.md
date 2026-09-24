@@ -1,95 +1,87 @@
-# Dashboard commesse Climosfera: sintesi della ricerca e decisioni aperte
+# Cruscotto commesse Climosfera: sintesi e decisioni
 
-> Stato al 24/09/2026. I rapporti di dettaglio, con tutte le fonti, sono in `docs/ricerca/01…06`.
+> Stato al 24/09/2026, revisione 2. I rapporti di dettaglio con le fonti sono in `docs/ricerca/01…08`. La verifica delle affermazioni chiave è in `07`.
 
-## 1. Requisiti raccolti
+## 1. Requisiti
 
 | Voce | Valore | Fonte |
 |---|---|---|
-| PM | 16 | utente |
-| Commesse per PM | ≤ 3, quindi circa 50 commesse attive | utente |
-| Risorse per commessa | fino a circa 10, quindi circa 100 utenti potenziali | stima |
-| Server | uno solo, probabilmente Windows | utente (da verificare) |
-| IT | un referente interno e un'azienda esterna per la sicurezza | utente |
+| PM | 16, ciascuno con al massimo 3 commesse: circa 50 commesse attive | utente |
+| Utenti | fino a circa 10 per commessa, circa 100 in tutto | stima |
+| Dati | **app autonoma, si parte da zero sulle nuove commesse**. Nessuna migrazione né lettura da GoodDay | utente, rev. 2 |
+| Ore | registrate **solo nella nuova app** (timesheet interno) | utente, rev. 2 |
+| Client | **installabile su Windows e su Mac** (su Mac 1–5 utenti) | utente, rev. 2 |
+| Server | uno solo, probabilmente Windows Server | utente (da verificare) |
 | Identità | Microsoft 365 (Entra ID) | utente |
-| Ore consuntive | **GoodDay (goodday.work)**, confermato. Contiene ore, task e budget ore, ma "lo usiamo male" | utente |
-| Accesso remoto | via VPN | utente |
+| Accesso remoto | VPN | utente |
 | MVP | Kanban + Last Planner System; ore e budget (EVM) | utente |
 | Vincolo | non eccessivamente complessa | utente |
-| Manutenzione | l'utente con Claude (codice su GitHub) | utente |
-| Prossimo passo | prototipo cliccabile con dati finti, da mostrare ai PM | utente |
+| Manutenzione | l'utente con Claude, codice su GitHub | utente |
 
-## 2. Cosa dice la ricerca, in una riga per filone
+## 2. Architettura consigliata (rev. 2)
 
-- **PMBOK**: l'8ª edizione (novembre 2025) ha 6 principi, 7 domini (Governance, Scope, Schedule, Finance, Stakeholders, Resources, Risk) e un tailoring predittivo, adattivo o ibrido. Per la dashboard servono i registri (rischi, issue, change, decisioni) e l'EVM (ANSI/PMI 19-006-2019). → 01
-- **Lean**: LPS ha 5 livelli; i dati minimi sono chiari (vedi 02 §1). KPI: PPC, TMR, PCR e Pareto delle cause. In più le metriche Kanban (WIP, Work Item Age, throughput, CFD). Non esiste un target di PPC validato per la progettazione. → 02
-- **Tool esistenti**: nessun tool open source self-hosted fa LPS o PPC. OpenProject è il più completo lato PMBOK, ma il login M365 (SSO) richiede Enterprise. → 03
-- **Architettura su misura**: consigliati Django + HTMX + PostgreSQL in Docker su una VM Linux, login Entra ID, SSE e optimistic locking. Su Windows Server serve una VM Linux, perché Docker per container Linux non è supportato nativamente. → 04
-- **Settore MEP/BIM**: l'EV va legato al cambio di stato dell'elaborato, non alla percentuale dichiarata. Registro elaborati con stati ISO 19650/UNI 11337. Nessun gestionale di mercato unisce elaborati, stati BIM e issue BCF. → 05
-- **GoodDay**: l'API Time Reports fornisce il consuntivo ore per progetto, task e utente. GoodDay ha già task e Kanban: bisogna evitare il doppio inserimento. → 06
+L'uso simultaneo richiede **un database unico sul server**. I PC Windows e Mac sono solo finestre sui dati. Un file condiviso su cartella di rete è scartato perché si corrompe con le scritture simultanee (vedi 08, 07 #11).
 
-## 3. Raccomandazione (baseline, da confermare)
+```
+PC Windows / Mac ── app installata (PWA da Edge/Chrome, o Dock su Safari)
+        │ HTTPS, dentro la VPN
+Windows Server aziendale
+  ├── servizio "Cruscotto" (Node.js + TypeScript): schermate, calcoli, login M365
+  └── servizio PostgreSQL: il database, con backup notturno
+```
 
-**App su misura "sottile", che si affianca a GoodDay e non lo sostituisce.**
+**Perché questa soluzione:**
+- un solo linguaggio (TypeScript);
+- niente Docker e niente VM Linux;
+- niente installer da firmare e niente costi annui;
+- per aggiornare si aggiorna solo il server.
 
-**GoodDay** resta la fonte delle ore consuntive. È già in uso e il timesheet non va duplicato.
+**Se servirà accedere a file locali o a Revit:** la stessa interfaccia si inserisce in Electron (installer .exe/.dmg) senza riscrivere il server. Con 1–5 Mac il costo di firma Apple (99 USD/anno) va valutato solo in quel caso.
 
-**App Climosfera** (Django + PostgreSQL, VM Linux sul server aziendale, login M365) fa solo ciò che GoodDay non fa:
-1. **Last Planner System**:
-   - milestone;
+**Cosa cambia rispetto alla rev. 1:** Django + Docker su VM Linux è abbandonato. Era pensato per un server Linux e avrebbe richiesto Python per il server e JavaScript per le schermate, cioè due linguaggi.
+
+## 3. Moduli dell'MVP
+
+1. **Commesse e team**: anagrafica, milestone contrattuali, elaborati con budget ore.
+2. **Last Planner**:
    - lookahead a 6 settimane con registro vincoli;
-   - piano settimanale con promessa e completamento;
-   - cause di non completamento;
-   - PPC, TMR e PCR.
-2. **Kanban di commessa** con limiti WIP e classi di servizio, *solo se* GoodDay oggi non è già usato per i task (vedi D2).
-3. **EVM**:
-   - BAC e budget ore per fase o elaborato, inseriti nell'app;
-   - AC dalle ore GoodDay (API);
-   - EV dal cambio di stato degli elaborati (milestone ponderate);
-   - SPI, CPI ed EAC.
+   - piano settimanale (promesso / fatto / causa);
+   - PPC, PCR e Pareto delle cause.
+3. **Kanban degli elaborati** con limiti WIP. Lo stato dell'elaborato determina l'EV, con pesi 20/50/70/85/100 da tarare.
+4. **Ore**: timesheet settimanale per elaborato. Fornisce il consuntivo AC all'EVM.
+5. **EVM in ore**: PV, EV, AC, SPI, CPI, EAC e curva S.
+6. **Vista di commessa (Obeya)** e **portafoglio del PM**.
 
-**Da rimandare dopo l'MVP:** registro elaborati completo ISO 19650/UNI, issue BCF, registri PMBOK completi, integrazione SharePoint.
+**Rimandati:**
+- registro elaborati completo ISO 19650/UNI 11337;
+- issue BCF;
+- registri PMBOK completi (rischi, change, decisioni);
+- export Excel.
 
-**Perché non OpenProject:**
-- duplica GoodDay (task e ore);
-- il login M365 è a pagamento;
-- non fa LPS: andrebbe comunque personalizzato.
+## 4. Cosa dice la ricerca (sintesi)
 
-**Perché non low-code:** nelle versioni gratuite mancano permessi per commessa e SSO, e le licenze cambiano (NocoDB, 2026).
+- **PMBOK 8** (2025): 6 principi, 7 domini, tailoring predittivo/adattivo/ibrido. L'EVM segue lo standard ANSI/PMI 19-006-2019. → 01, verificato in 07
+- **Lean**: il Last Planner ha 5 livelli, con dati minimi e formule PPC/TMR/TA/PCR documentati. Non esiste un target di PPC validato per la progettazione. → 02
+- **Tool esistenti**: nessun tool open source fa il Last Planner. OpenProject ha il login M365 a pagamento. → 03
+- **Settore MEP/BIM**: l'EV va legato allo stato dell'elaborato, non alla percentuale dichiarata. → 05
+- **GoodDay** (06): *archiviato*, non più rilevante dopo la decisione della rev. 2.
 
-## 3-bis. Aggiornamento dopo le risposte (24/09)
+## 5. Decisioni aperte
 
-GoodDay contiene già **task, ore e budget ore**. Di conseguenza:
-- **La nuova app non deve avere una sua Kanban né un suo timesheet.**
-  - I task e le ore si leggono da GoodDay, via API in sola lettura.
-  - Il BAC si legge da GoodDay, se l'API espone le stime; da verificare.
-- **L'app aggiunge solo lo strato che manca:**
-  - LPS: promessa settimanale, vincoli, cause di non completamento, PPC;
-  - EVM calcolato;
-  - vista "Obeya" di commessa.
-- **Obiezione:** "lo usiamo male" è un problema di processo prima che di software. Una seconda app su dati GoodDay sporchi (task non aggiornati, ore su commesse sbagliate) produce KPI sbagliati. Il prototipo serve anche a definire **le regole minime d'uso di GoodDay** che la dashboard presuppone.
-
-Regole minime d'uso di GoodDay (bozza):
-1. un progetto GoodDay per ogni commessa, con codice commessa nel nome o in un campo;
-2. le fasi o gli elaborati come task, con stima ore;
-3. ore registrate sempre su un task, non sul progetto generico;
-4. lo stato del task aggiornato al cambio di stato dell'elaborato.
-
-## 4. Decisioni aperte (servono per partire)
-
-| # | Domanda | Chi risponde | Impatto |
+| # | Domanda | Chi | Impatto |
 |---|---|---|---|
-| D1 | ~~È GoodDay?~~ Confermato. Resta da capire il piano (SSO, API) | admin GoodDay | fonte delle ore e SSO |
-| D2 | ~~Solo ore?~~ Ore + task + budget. Resta da capire la struttura: commessa = progetto? elaborato = task? | PM / admin | mappatura dei dati |
-| D3 | Il server: sistema operativo, hypervisor (Hyper-V?), RAM e CPU liberi. Si può creare una VM Linux? | IT interno / esterno | deploy |
-| D4 | ~~Dove sono i budget?~~ In GoodDay. Verificare se l'API li espone | admin GoodDay | come si carica il BAC |
-| D5 | ~~Chi mantiene?~~ L'utente con Claude | — | serve documentazione nel repo |
-| D6 | Informativa dipendenti / art. 4 Statuto dei lavoratori per dati ore e PPC | consulente del lavoro | GDPR, visibilità per ruolo |
+| D1 | Server: versione di Windows Server, RAM, CPU e disco liberi; si possono installare servizi (Node, PostgreSQL)? | IT interno / esterno | installazione |
+| D2 | Certificato HTTPS per il nome interno del server (CA aziendale?) | IT / sicurezza esterna | PWA e login M365 |
+| D3 | Registrazione dell'app su Entra ID: chi è amministratore del tenant M365? | IT | login |
+| D4 | Informativa ai dipendenti e verifica art. 4 Statuto dei lavoratori per ore e PPC | consulente del lavoro | GDPR, visibilità per ruolo |
+| D5 | Pesi degli stati per l'EV e soglie dei semafori | PM (con il prototipo) | EVM affidabile |
+| D6 | GoodDay resta attivo per le vecchie commesse? Serve una data di passaggio chiara | direzione | evita il doppio inserimento |
 
-## 5. Rischi principali
+## 6. Rischi principali
 
-1. **Doppio inserimento** GoodDay / app: il rischio numero uno per l'adozione.
-2. **PPC usato per valutare le persone**: rischio legale (art. 4) e culturale. Va mostrato per team o commessa.
-3. **EV "a opinione"**: se l'avanzamento è una percentuale dichiarata, l'EVM non è affidabile.
-4. **Persona chiave** sulla manutenzione del codice.
-5. **Crescita dei requisiti** verso un "MS Project 2": l'MVP va tenuto su LPS + EVM.
+1. **Doppio inserimento** se qualcuno continua a segnare le ore anche su GoodDay per le nuove commesse: serve una regola chiara (D6).
+2. **PPC e ore usati per valutare le persone**: rischio legale (art. 4, commi 1–3) e culturale. I dati vanno mostrati per team o commessa.
+3. **EV "a opinione"**: evitato legando l'EV agli stati dell'elaborato.
+4. **Persona chiave**: servono codice su GitHub, documentazione e un ambiente di prova.
+5. **Crescita dei requisiti**: l'MVP resta su Last Planner + EVM.
+6. **Operatività del server**: certificato HTTPS, backup di PostgreSQL con prova di ripristino, aggiornamenti.

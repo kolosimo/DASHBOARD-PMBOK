@@ -1,5 +1,7 @@
 # 06 — "Gooday": fonte delle ore consuntive
 
+> **Archiviato (rev. 2, 24/09/2026):** Climosfera ha deciso di non leggere dati da GoodDay; la nuova app ha il proprio timesheet. Il documento resta come riferimento.
+
 > Ricerca web del 24/09/2026. Il proxy bloccava goodday.work: le informazioni vengono dagli estratti dei motori di ricerca, **da ricontrollare aprendo i link**.
 
 ## Identificazione (ipotesi da confermare in azienda)

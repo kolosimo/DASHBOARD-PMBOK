@@ -36,7 +36,7 @@ Regole per misurare l'avanzamento ([Gather Insights](https://www.gatherinsights.
   - I codici di idoneità S0–S7 sono dell'Annesso nazionale UK, non universali.
 - **UNI 11337-4**: stati di lavorazione L0–L3 e di approvazione A0–A3 ([BibLus](https://biblus.acca.it/stati-di-approvazione-e-livelli-di-verifica-bim/), solo estratto). Il significato dei singoli codici va verificato sul testo della norma.
 - **D.Lgs. 36/2023, art. 43** (fonti secondarie concordanti, testo di legge non letto):
-  - obbligo di gestione informativa digitale dal 01/01/2025 per opere di valore stimato ≥ 2 milioni di euro;
+  - obbligo di gestione informativa digitale dal 01/01/2025 per opere di costo presunto **superiore a** 2 milioni di euro (corretto dopo la verifica del 24/09: non "≥"), stimato sul costo presunto dei lavori e non sulla base di gara. Sono escluse la manutenzione ordinaria e straordinaria; per i beni culturali vincolati vale la soglia UE; non c'è obbligo se il DOCFAP è stato approvato entro il 31/12/2024 ([codiceappalti.it art. 43](https://www.codiceappalti.it/DLGS_36_2023/Articolo_43__Metodi_e_strumenti_di_gestione_informativa_digitale_delle_costruzioni_/12649), [ANCE](https://ance.it/wp-content/uploads/allegati/Analisi_decreto_Correttivo_Codice_Contratti.pdf));
   - la soglia è stata portata da 1 a 2 milioni dal D.Lgs. 209/2024;
   - l'Allegato I.9 regola requisiti e figure ([BIM Portale](https://www.bimportale.com/obbligatorieta-bim-2025-la-soglia-minima-si-alza-2-milioni-euro/));
   - Linee guida MIT del 23/02/2026 (Edilportale, solo estratto).
