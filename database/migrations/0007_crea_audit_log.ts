@@ -21,7 +21,7 @@ export default class extends BaseSchema {
       t.index(['entita', 'entita_id'])
     })
     this.schema.raw(`
-      CREATE FUNCTION audit_log_solo_inserimenti() RETURNS trigger AS $$
+      CREATE OR REPLACE FUNCTION audit_log_solo_inserimenti() RETURNS trigger AS $$
       BEGIN
         RAISE EXCEPTION 'audit_log accetta solo inserimenti';
       END;

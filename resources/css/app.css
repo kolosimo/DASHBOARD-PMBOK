@@ -159,6 +159,7 @@ a{color:var(--accent)}
 /* segnaposto dei moduli */
 .segnaposto{border:1px dashed var(--line);background:var(--surface);border-radius:6px;padding:24px;display:flex;flex-direction:column;gap:8px}
 .segnaposto p{margin:0;color:var(--ink-2);max-width:68ch}
+.segnaposto .pill{align-self:flex-start}
 
 /* messaggi */
 .messaggio{padding:10px 12px;border-radius:5px;display:flex;gap:10px;align-items:baseline}
