@@ -13,7 +13,10 @@ export interface SchedaElaborato {
   transizioni: { daStato: string | null; aStato: string; il: string; motivo: string | null }[]
 }
 
-export async function schedaElaborato(commessaId: number, elaboratoId: number): Promise<SchedaElaborato | null> {
+export async function schedaElaborato(
+  commessaId: number,
+  elaboratoId: number
+): Promise<SchedaElaborato | null> {
   void commessaId
   void elaboratoId
   throw new Error('non implementato')

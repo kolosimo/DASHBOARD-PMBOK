@@ -81,7 +81,9 @@ async function configurazioneClient(): Promise<client.Configuration> {
 }
 
 /** Prepara la redirezione verso il provider */
-export async function iniziaLogin(ritorno: string): Promise<{ url: string; richiesta: RichiestaOidc }> {
+export async function iniziaLogin(
+  ritorno: string
+): Promise<{ url: string; richiesta: RichiestaOidc }> {
   const c = configurazioneOidc()
   const config = await configurazioneClient()
   const codeVerifier = client.randomPKCECodeVerifier()
@@ -104,7 +106,10 @@ export async function iniziaLogin(ritorno: string): Promise<{ url: string; richi
  * Completa il login: scambia il codice, verifica state, nonce e PKCE,
  * valida l'ID token e restituisce i claim utili.
  */
-export async function completaLogin(urlCallback: URL, richiesta: RichiestaOidc): Promise<ClaimsUtente> {
+export async function completaLogin(
+  urlCallback: URL,
+  richiesta: RichiestaOidc
+): Promise<ClaimsUtente> {
   const config = await configurazioneClient()
   const tokens = await client.authorizationCodeGrant(config, urlCallback, {
     pkceCodeVerifier: richiesta.codeVerifier,

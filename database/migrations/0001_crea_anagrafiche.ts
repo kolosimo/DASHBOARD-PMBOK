@@ -21,7 +21,9 @@ export default class extends BaseSchema {
       t.unique(['oidc_issuer', 'oidc_sub'])
     })
     this.schema.raw(checkValori('utenti', 'ruolo', ['admin', 'direzione', 'pm', 'progettista']))
-    this.schema.raw('ALTER TABLE utenti ADD CONSTRAINT utenti_email_minuscola CHECK (email = lower(email))')
+    this.schema.raw(
+      'ALTER TABLE utenti ADD CONSTRAINT utenti_email_minuscola CHECK (email = lower(email))'
+    )
 
     this.schema.createTable('commesse', (t) => {
       t.increments('id')
@@ -40,7 +42,11 @@ export default class extends BaseSchema {
 
     this.schema.createTable('membri_commessa', (t) => {
       t.increments('id')
-      t.integer('commessa_id').notNullable().references('id').inTable('commesse').onDelete('CASCADE')
+      t.integer('commessa_id')
+        .notNullable()
+        .references('id')
+        .inTable('commesse')
+        .onDelete('CASCADE')
       t.integer('utente_id').notNullable().references('id').inTable('utenti').onDelete('CASCADE')
       t.string('ruolo_commessa', 20).notNullable().defaultTo('progettista')
       colonneModificabili(t, now)
@@ -58,7 +64,11 @@ export default class extends BaseSchema {
 
     this.schema.createTable('milestone', (t) => {
       t.increments('id')
-      t.integer('commessa_id').notNullable().references('id').inTable('commesse').onDelete('CASCADE')
+      t.integer('commessa_id')
+        .notNullable()
+        .references('id')
+        .inTable('commesse')
+        .onDelete('CASCADE')
       t.string('titolo', 300).notNullable()
       t.date('data_prevista').notNullable()
       t.date('data_effettiva').nullable()

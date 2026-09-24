@@ -53,7 +53,10 @@ for (const { pkg, pesi } of famiglie) {
       for (const nome of nomi) copyFileSync(nm(pkg, 'files', nome), join(fonts, nome))
       css +=
         blocco
-          .replace(/url\(\.\/files\/([^)]+\.woff2)\) format\('woff2'\), url\(\.\/files\/[^)]+\.woff\) format\('woff'\)/g, "url(/fonts/$1) format('woff2')")
+          .replace(
+            /url\(\.\/files\/([^)]+\.woff2)\) format\('woff2'\), url\(\.\/files\/[^)]+\.woff\) format\('woff'\)/g,
+            "url(/fonts/$1) format('woff2')"
+          )
           .replace(/\/\*.*?\*\//gs, '')
           .trim() + '\n'
     }

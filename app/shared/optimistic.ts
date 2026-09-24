@@ -21,7 +21,12 @@ export interface OpzioniAggiornamento<R> {
   /** Transazione esterna; se assente se ne apre una */
   client?: TransactionClientContract
   /** Se presente, registra la modifica nell'audit nella stessa transazione */
-  audit?: { utenteId: number | null; azione: string; commessaId?: number | null; ip?: string | null }
+  audit?: {
+    utenteId: number | null
+    azione: string
+    commessaId?: number | null
+    ip?: string | null
+  }
   /**
    * Rende il frammento aggiornato da mostrare in caso di conflitto (409).
    * Riceve la riga attuale e il messaggio: il frammento deve mostrare il
@@ -117,7 +122,9 @@ export async function aggiornaConVersione<M extends LucidModel>(
       .first()) as (InstanceType<M> & ConVersione) | null
 
     if (!riga) {
-      const attuale = (await Modello.query({ client: trx }).where('id', id).first()) as InstanceType<M> | null
+      const attuale = (await Modello.query({ client: trx })
+        .where('id', id)
+        .first()) as InstanceType<M> | null
       throw new ConflittoVersione<InstanceType<M>>(attuale, versioneAttesa, opzioni.rendiFrammento)
     }
 

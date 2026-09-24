@@ -17,6 +17,12 @@ export default class HttpExceptionHandler extends ExceptionHandler {
   protected renderStatusPages = app.inProduction
 
   /**
+   * Errori attesi che non vanno nel log come anomalie: 409 (conflitto di
+   * versione, gestito con un messaggio) e i soliti 400/401/404/422.
+   */
+  protected ignoreStatuses = [400, 401, 404, 409, 422]
+
+  /**
    * Status pages is a collection of error code range and a callback
    * to return the HTML contents to send as a response.
    */

@@ -51,7 +51,11 @@ export default class extends BaseSchema {
 
     this.schema.createTable('limiti_wip_commessa', (t) => {
       t.increments('id')
-      t.integer('commessa_id').notNullable().references('id').inTable('commesse').onDelete('CASCADE')
+      t.integer('commessa_id')
+        .notNullable()
+        .references('id')
+        .inTable('commesse')
+        .onDelete('CASCADE')
       t.integer('colonna_kanban_id')
         .notNullable()
         .references('id')
@@ -80,7 +84,11 @@ export default class extends BaseSchema {
       t.jsonb('valore').notNullable()
       t.string('descrizione', 500).notNullable()
       t.boolean('di_esempio').notNullable().defaultTo(true)
-      t.integer('aggiornato_da_id').nullable().references('id').inTable('utenti').onDelete('SET NULL')
+      t.integer('aggiornato_da_id')
+        .nullable()
+        .references('id')
+        .inTable('utenti')
+        .onDelete('SET NULL')
       colonneModificabili(t, now)
     })
   }

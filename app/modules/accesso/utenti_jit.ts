@@ -32,7 +32,9 @@ export async function utenteDaClaims(claims: ClaimsUtente): Promise<Utente> {
 
     if (!utente) {
       if (!claims.email) {
-        throw new AccessoNegato("Il tuo account Microsoft non comunica un'email: contatta l'amministratore.")
+        throw new AccessoNegato(
+          "Il tuo account Microsoft non comunica un'email: contatta l'amministratore."
+        )
       }
       utente = await Utente.create(
         {

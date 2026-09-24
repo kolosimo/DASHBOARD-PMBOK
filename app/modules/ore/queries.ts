@@ -9,7 +9,13 @@ export interface OreCommessa {
   commessaId: number
   settimana: Lunedi
   /** Totale della settimana per elaborato */
-  perElaborato: { elaboratoId: number; codice: string; minutiSettimana: Minuti; minutiTotali: Minuti; budgetMinuti: Minuti }[]
+  perElaborato: {
+    elaboratoId: number
+    codice: string
+    minutiSettimana: Minuti
+    minutiTotali: Minuti
+    budgetMinuti: Minuti
+  }[]
   totaleSettimanaMinuti: Minuti
   totaleCommessaMinuti: Minuti
 }

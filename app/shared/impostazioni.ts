@@ -100,7 +100,8 @@ export async function leggiTutteLeImpostazioni(): Promise<MappaImpostazioni> {
 export function valoreValido(chiave: string, valore: unknown): boolean {
   if (!(chiave in IMPOSTAZIONI_DEFAULT)) return false
   const esempio = IMPOSTAZIONI_DEFAULT[chiave as ChiaveImpostazione].valore
-  if (typeof esempio === 'number') return typeof valore === 'number' && Number.isFinite(valore) && valore >= 0
+  if (typeof esempio === 'number')
+    return typeof valore === 'number' && Number.isFinite(valore) && valore >= 0
   if (typeof esempio === 'boolean') return typeof valore === 'boolean'
   if (typeof valore !== 'object' || valore === null) return false
   const s = valore as Record<string, unknown>

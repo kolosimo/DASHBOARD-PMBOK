@@ -12,13 +12,21 @@ export default class extends BaseSchema {
 
     this.schema.createTable('baseline', (t) => {
       t.increments('id')
-      t.integer('commessa_id').notNullable().references('id').inTable('commesse').onDelete('CASCADE')
+      t.integer('commessa_id')
+        .notNullable()
+        .references('id')
+        .inTable('commesse')
+        .onDelete('CASCADE')
       t.integer('numero').notNullable()
       t.string('stato', 20).notNullable().defaultTo('bozza')
       // { "<codice stato>": peso_percento } congelati all'approvazione
       t.jsonb('pesi_stati').notNullable()
       t.integer('bac_minuti').notNullable().defaultTo(0)
-      t.integer('approvata_da_id').nullable().references('id').inTable('utenti').onDelete('SET NULL')
+      t.integer('approvata_da_id')
+        .nullable()
+        .references('id')
+        .inTable('utenti')
+        .onDelete('SET NULL')
       t.timestamp('approvata_il', { useTz: true }).nullable()
       t.text('note').nullable()
       colonneModificabili(t, now)
@@ -32,8 +40,16 @@ export default class extends BaseSchema {
 
     this.schema.createTable('baseline_date_stato', (t) => {
       t.increments('id')
-      t.integer('baseline_id').notNullable().references('id').inTable('baseline').onDelete('CASCADE')
-      t.integer('elaborato_id').notNullable().references('id').inTable('elaborati').onDelete('CASCADE')
+      t.integer('baseline_id')
+        .notNullable()
+        .references('id')
+        .inTable('baseline')
+        .onDelete('CASCADE')
+      t.integer('elaborato_id')
+        .notNullable()
+        .references('id')
+        .inTable('elaborati')
+        .onDelete('CASCADE')
       t.integer('stato_id').notNullable().references('id').inTable('stati_elaborato')
       // budget dell'elaborato congelato nella baseline
       t.integer('budget_minuti').notNullable()
@@ -44,7 +60,11 @@ export default class extends BaseSchema {
 
     this.schema.createTable('baseline_pv_settimana', (t) => {
       t.increments('id')
-      t.integer('baseline_id').notNullable().references('id').inTable('baseline').onDelete('CASCADE')
+      t.integer('baseline_id')
+        .notNullable()
+        .references('id')
+        .inTable('baseline')
+        .onDelete('CASCADE')
       t.date('settimana').notNullable()
       // PV cumulato alla fine della settimana
       t.integer('pv_minuti').notNullable()
@@ -55,8 +75,16 @@ export default class extends BaseSchema {
 
     this.schema.createTable('snapshot_evm', (t) => {
       t.increments('id')
-      t.integer('commessa_id').notNullable().references('id').inTable('commesse').onDelete('CASCADE')
-      t.integer('baseline_id').notNullable().references('id').inTable('baseline').onDelete('CASCADE')
+      t.integer('commessa_id')
+        .notNullable()
+        .references('id')
+        .inTable('commesse')
+        .onDelete('CASCADE')
+      t.integer('baseline_id')
+        .notNullable()
+        .references('id')
+        .inTable('baseline')
+        .onDelete('CASCADE')
       t.date('settimana').notNullable()
       t.integer('bac_minuti').notNullable()
       t.integer('pv_minuti').notNullable()
@@ -74,8 +102,16 @@ export default class extends BaseSchema {
 
     this.schema.createTable('snapshot_evm_elaborato', (t) => {
       t.increments('id')
-      t.integer('snapshot_id').notNullable().references('id').inTable('snapshot_evm').onDelete('CASCADE')
-      t.integer('elaborato_id').notNullable().references('id').inTable('elaborati').onDelete('CASCADE')
+      t.integer('snapshot_id')
+        .notNullable()
+        .references('id')
+        .inTable('snapshot_evm')
+        .onDelete('CASCADE')
+      t.integer('elaborato_id')
+        .notNullable()
+        .references('id')
+        .inTable('elaborati')
+        .onDelete('CASCADE')
       t.integer('stato_id').notNullable().references('id').inTable('stati_elaborato')
       t.integer('budget_minuti').notNullable()
       t.integer('pv_minuti').notNullable()

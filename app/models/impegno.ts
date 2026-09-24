@@ -36,7 +36,9 @@ export default class Impegno extends BaseModel {
   declare causaId: number | null
 
   /** Risposte dell'analisi "5 perché" */
-  @column({ prepare: (valore: string[] | null) => (valore === null ? null : JSON.stringify(valore)) })
+  @column({
+    prepare: (valore: string[] | null) => (valore === null ? null : JSON.stringify(valore)),
+  })
   declare cinquePerche: string[] | null
 
   /** Escluso dal PPC */

@@ -11,7 +11,11 @@ export default class extends BaseSchema {
 
     this.schema.createTable('elaborati', (t) => {
       t.increments('id')
-      t.integer('commessa_id').notNullable().references('id').inTable('commesse').onDelete('CASCADE')
+      t.integer('commessa_id')
+        .notNullable()
+        .references('id')
+        .inTable('commesse')
+        .onDelete('CASCADE')
       t.string('codice', 40).notNullable()
       t.string('titolo', 300).notNullable()
       t.integer('disciplina_id')
@@ -22,7 +26,11 @@ export default class extends BaseSchema {
       t.integer('budget_minuti').notNullable().defaultTo(0)
       t.string('classe_servizio', 20).notNullable().defaultTo('standard')
       t.date('data_fissa').nullable()
-      t.integer('responsabile_id').nullable().references('id').inTable('utenti').onDelete('SET NULL')
+      t.integer('responsabile_id')
+        .nullable()
+        .references('id')
+        .inTable('utenti')
+        .onDelete('SET NULL')
       t.integer('stato_id')
         .notNullable()
         .references('id')
@@ -38,13 +46,22 @@ export default class extends BaseSchema {
       'ALTER TABLE elaborati ADD CONSTRAINT elaborati_budget_non_negativo CHECK (budget_minuti >= 0)'
     )
     this.schema.raw(
-      checkValori('elaborati', 'classe_servizio', ['standard', 'data_fissa', 'urgente', 'intangibile'])
+      checkValori('elaborati', 'classe_servizio', [
+        'standard',
+        'data_fissa',
+        'urgente',
+        'intangibile',
+      ])
     )
 
     // Storico: solo inserimenti, niente version.
     this.schema.createTable('transizioni_elaborato', (t) => {
       t.increments('id')
-      t.integer('elaborato_id').notNullable().references('id').inTable('elaborati').onDelete('CASCADE')
+      t.integer('elaborato_id')
+        .notNullable()
+        .references('id')
+        .inTable('elaborati')
+        .onDelete('CASCADE')
       t.integer('da_stato_id').nullable().references('id').inTable('stati_elaborato')
       t.integer('a_stato_id').notNullable().references('id').inTable('stati_elaborato')
       t.integer('utente_id').nullable().references('id').inTable('utenti').onDelete('SET NULL')

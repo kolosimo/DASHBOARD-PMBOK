@@ -28,8 +28,16 @@ export const vociGlobali: VoceGlobale[] = [
 
 export const vociCommessa: VoceCommessa[] = [
   { id: 'obeya', etichetta: 'Commessa', percorso: (id) => `/commesse/${id}` },
-  { id: 'settimana', etichetta: 'Piano settimanale', percorso: (id) => `/commesse/${id}/lps/settimana` },
-  { id: 'lookahead', etichetta: 'Lookahead e vincoli', percorso: (id) => `/commesse/${id}/lps/lookahead` },
+  {
+    id: 'settimana',
+    etichetta: 'Piano settimanale',
+    percorso: (id) => `/commesse/${id}/lps/settimana`,
+  },
+  {
+    id: 'lookahead',
+    etichetta: 'Lookahead e vincoli',
+    percorso: (id) => `/commesse/${id}/lps/lookahead`,
+  },
   { id: 'kanban', etichetta: 'Kanban', percorso: (id) => `/commesse/${id}/flusso` },
   { id: 'ore', etichetta: 'Ore', percorso: (id) => `/commesse/${id}/ore` },
   { id: 'evm', etichetta: 'Avanzamento EVM', percorso: (id) => `/commesse/${id}/evm` },

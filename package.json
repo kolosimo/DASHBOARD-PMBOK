@@ -100,5 +100,9 @@
       "./app/middleware/*.ts"
     ]
   },
-  "prettier": "@adonisjs/prettier-config"
+  "prettier": "@adonisjs/prettier-config",
+  "allowScripts": {
+    "@swc/core": true,
+    "fsevents": false
+  }
 }

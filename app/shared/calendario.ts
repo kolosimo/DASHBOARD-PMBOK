@@ -70,8 +70,10 @@ export function lunediDaSettimanaIso(anno: number, settimana: number): Lunedi {
   if (!Number.isInteger(settimana) || settimana < 1 || settimana > settimaneNellAnno(anno)) {
     throw new Error(`La settimana ${settimana} non esiste nell'anno ISO ${anno}`)
   }
-  return DateTime.fromObject({ weekYear: anno, weekNumber: settimana, weekday: 1 }, { zone: FUSO })
-    .toISODate()!
+  return DateTime.fromObject(
+    { weekYear: anno, weekNumber: settimana, weekday: 1 },
+    { zone: FUSO }
+  ).toISODate()!
 }
 
 /** Sposta un lunedì di n settimane (n può essere negativo) */

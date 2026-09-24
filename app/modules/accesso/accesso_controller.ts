@@ -109,7 +109,9 @@ export default class AccessoController {
   /** Login di sviluppo: /dev/login?come=<parte locale dell'email> */
   async loginSviluppo(ctx: HttpContext) {
     const { request, response, auth, session } = ctx
-    const come = String(request.input('come') ?? '').trim().toLowerCase()
+    const come = String(request.input('come') ?? '')
+      .trim()
+      .toLowerCase()
     if (!come) return response.redirect('/accesso')
 
     const utente = await Utente.query()

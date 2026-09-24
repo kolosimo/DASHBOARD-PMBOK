@@ -59,7 +59,11 @@ export class Browser {
   }
 
   /** POST di un form (application/x-www-form-urlencoded) */
-  async post(percorso: string, campi: Record<string, string>, intestazioni: Record<string, string> = {}) {
+  async post(
+    percorso: string,
+    campi: Record<string, string>,
+    intestazioni: Record<string, string> = {}
+  ) {
     const r = await fetch(this.url(percorso), {
       method: 'POST',
       redirect: 'manual',

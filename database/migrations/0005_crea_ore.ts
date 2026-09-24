@@ -12,7 +12,11 @@ export default class extends BaseSchema {
     this.schema.createTable('registrazioni_ore', (t) => {
       t.increments('id')
       t.integer('utente_id').notNullable().references('id').inTable('utenti').onDelete('RESTRICT')
-      t.integer('elaborato_id').notNullable().references('id').inTable('elaborati').onDelete('RESTRICT')
+      t.integer('elaborato_id')
+        .notNullable()
+        .references('id')
+        .inTable('elaborati')
+        .onDelete('RESTRICT')
       t.date('data').notNullable()
       t.integer('minuti').notNullable()
       t.string('nota', 500).nullable()

@@ -25,7 +25,8 @@ export async function registraAudit(voce: VoceAudit, client?: TransactionClientC
       utenteId: voce.utenteId,
       azione: voce.azione,
       entita: voce.entita,
-      entitaId: voce.entitaId === undefined || voce.entitaId === null ? null : String(voce.entitaId),
+      entitaId:
+        voce.entitaId === undefined || voce.entitaId === null ? null : String(voce.entitaId),
       commessaId: voce.commessaId ?? null,
       datiPrima: voce.prima ?? null,
       datiDopo: voce.dopo ?? null,

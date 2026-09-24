@@ -40,7 +40,10 @@ function feriali(dal: string, al: string): string[] {
 
 /** Distribuisce `unita` in `n` parti intere il più uniformi possibile */
 function distribuisci(unita: number, n: number): number[] {
-  return Array.from({ length: n }, (_, i) => Math.floor(((i + 1) * unita) / n) - Math.floor((i * unita) / n))
+  return Array.from(
+    { length: n },
+    (_, i) => Math.floor(((i + 1) * unita) / n) - Math.floor((i * unita) / n)
+  )
 }
 
 export default class extends BaseSeeder {
@@ -282,7 +285,10 @@ export default class extends BaseSeeder {
     elaborati: Mappa
   ) {
     // Milestone per le righe M1/M2 del lookahead
-    const milestone = await trx.from('milestone').where('commessa_id', commessaId).select('id', 'titolo')
+    const milestone = await trx
+      .from('milestone')
+      .where('commessa_id', commessaId)
+      .select('id', 'titolo')
     const milestoneId: Mappa = Object.fromEntries(milestone.map((m) => [m.titolo, m.id]))
 
     const attivita: Mappa = {}
@@ -443,10 +449,7 @@ export default class extends BaseSeeder {
     )
 
     // Snapshot W30–W38 (la W39 è la settimana corrente, calcolata dal vivo)
-    const evAttuale = D.ELABORATI.reduce(
-      (a, e) => a + (e.bud * 60 * D.STATI[e.st].peso) / 100,
-      0
-    )
+    const evAttuale = D.ELABORATI.reduce((a, e) => a + (e.bud * 60 * D.STATI[e.st].peso) / 100, 0)
     for (let i = 0; i < 9; i++) {
       const settimana = aggiungiSettimane(lunediDaSettimanaIso(2026, 30), i)
       const pv = D.PV_SERIE[i] * 60
