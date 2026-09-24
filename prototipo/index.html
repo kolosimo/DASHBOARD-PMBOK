@@ -1,0 +1,435 @@
+<title>Cruscotto Commesse Climosfera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#F2F5F4; --surface:#FFFFFF; --sunken:#E8EEEC; --ink:#15201E; --ink-2:#4A5A57; --ink-3:#7A8986;
+  --line:#D3DCD9; --accent:#0E6F74; --accent-ink:#FFFFFF; --accent-soft:#D6EBEA;
+  --good:#2B7A4B; --good-soft:#DDF0E3; --warn:#9A6414; --warn-soft:#F7E9CF; --crit:#B42318; --crit-soft:#F8DEDA;
+  --pv:#7A8986; --ev:#0E6F74; --ac:#C2572B;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --cond:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0E1513; --surface:#161F1D; --sunken:#1D2826; --ink:#E2EBE8; --ink-2:#A9B8B4; --ink-3:#7D8D89;
+    --line:#2C3A37; --accent:#4DB1B6; --accent-ink:#0B1413; --accent-soft:#17383A;
+    --good:#5CC085; --good-soft:#15301F; --warn:#E0A74A; --warn-soft:#352812; --crit:#F0806F; --crit-soft:#3A1A16;
+    --pv:#8C9C98; --ev:#4DB1B6; --ac:#E5895F;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0E1513; --surface:#161F1D; --sunken:#1D2826; --ink:#E2EBE8; --ink-2:#A9B8B4; --ink-3:#7D8D89;
+  --line:#2C3A37; --accent:#4DB1B6; --accent-ink:#0B1413; --accent-soft:#17383A;
+  --good:#5CC085; --good-soft:#15301F; --warn:#E0A74A; --warn-soft:#352812; --crit:#F0806F; --crit-soft:#3A1A16;
+  --pv:#8C9C98; --ev:#4DB1B6; --ac:#E5895F;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:0 48px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.num{font-variant-numeric:tabular-nums}
+h1,h2,h3{font-family:var(--cond);font-weight:600;margin:0;text-wrap:balance;letter-spacing:.005em}
+h1{font-size:22px} h2{font-size:18px} h3{font-size:15px}
+.eyebrow{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* testata */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);border-bottom:1px solid var(--line)}
+.top-in{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:12px 0;display:flex;flex-direction:column;gap:10px}
+.brandrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;justify-content:space-between}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.brand small{color:var(--ink-3);font-size:12px}
+.sample{font-size:12px;color:var(--warn);background:var(--warn-soft);padding:3px 9px;border-radius:4px}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:8px 12px;color:var(--ink-2);white-space:nowrap;font-weight:500}
+.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.tabs button:hover{color:var(--ink)}
+
+.view{display:flex;flex-direction:column;gap:20px;padding-top:22px}
+.head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:8px 20px}
+.head p{margin:4px 0 0;color:var(--ink-2);max-width:68ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px}
+.panel-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.panel-h .note{color:var(--ink-3);font-size:12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:20px}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.kpi{background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.kpi .v{font-family:var(--mono);font-size:24px;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.15}
+.kpi .s{font-size:12px;color:var(--ink-3)}
+.kpi .pill{align-self:flex-start}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:1px 8px;border-radius:999px;white-space:nowrap}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.g{color:var(--good);background:var(--good-soft)} .w{color:var(--warn);background:var(--warn-soft)} .c{color:var(--crit);background:var(--crit-soft)} .n{color:var(--ink-2);background:var(--sunken)}
+.pill.plain::before{display:none}
+
+/* tabelle */
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:500;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td.r,th.r{text-align:right}
+.code{font-family:var(--mono);font-size:12.5px;color:var(--accent);white-space:nowrap}
+.muted{color:var(--ink-3)}
+tr.click{cursor:pointer} tr.click:hover td{background:var(--sunken)}
+select,.btn{font:inherit;font-size:13px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:4px 8px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.ghost{border-color:transparent;background:none;color:var(--ink-2)}
+.toggle{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.toggle button{border:0;background:var(--surface);padding:4px 12px;font-size:13px;color:var(--ink-2)}
+.toggle button[aria-pressed="true"].yes{background:var(--good);color:#fff}
+.toggle button[aria-pressed="true"].no{background:var(--crit);color:#fff}
+
+/* milestone */
+.ms{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0}
+.ms div{position:relative;padding:18px 10px 0 0;border-top:3px solid var(--line)}
+.ms div.done{border-top-color:var(--accent)}
+.ms div::before{content:"";position:absolute;top:-8px;left:0;width:12px;height:12px;border-radius:50%;background:var(--surface);border:3px solid var(--line)}
+.ms div.done::before{background:var(--accent);border-color:var(--accent)}
+.ms div.next::before{border-color:var(--accent)}
+.ms b{display:block;font-weight:500}
+.ms span{font-size:12px;color:var(--ink-3)}
+
+.alerts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.alerts li{display:flex;gap:10px;align-items:baseline;padding:8px 10px;border-radius:4px;background:var(--sunken)}
+
+/* lookahead */
+.la td.wk{padding:6px 2px;min-width:64px}
+.bar{height:22px;border-radius:3px}
+.bar.ready{background:var(--good-soft);border:1px solid var(--good)}
+.bar.blocked{background:var(--crit-soft);border:1px dashed var(--crit)}
+.bar.mile{background:var(--accent);height:14px;width:14px;transform:rotate(45deg);margin:4px auto;border-radius:2px}
+.la th.wk{text-align:center}
+.la th.now{color:var(--accent)}
+
+/* kanban */
+.kb{display:grid;grid-template-columns:repeat(4,minmax(220px,1fr));gap:12px;overflow-x:auto;padding-bottom:4px}
+.col{background:var(--sunken);border-radius:6px;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:180px}
+.col.over{outline:2px solid var(--crit);outline-offset:-2px}
+.col-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:9px 10px;display:flex;flex-direction:column;gap:6px}
+.card[draggable="true"]{cursor:grab}
+.card .t{font-size:13px}
+.card .row{display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap}
+.card .mv{display:flex;gap:4px}
+.card .mv button{border:1px solid var(--line);background:var(--surface);border-radius:3px;padding:0 7px;font-size:13px;line-height:20px}
+.age-old{color:var(--crit);font-weight:500}
+
+/* grafici */
+svg text{fill:var(--ink-3);font-family:var(--mono);font-size:11px}
+svg .gl{stroke:var(--line);stroke-width:1}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2)}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.pareto{display:flex;flex-direction:column;gap:6px}
+.pareto .r{display:grid;grid-template-columns:minmax(0,190px) 1fr 28px;gap:10px;align-items:center;font-size:13px}
+.pareto .b{height:12px;background:var(--accent-soft);border-radius:2px;position:relative;overflow:hidden}
+.pareto .b span{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:2px}
+.foot{color:var(--ink-3);font-size:12px;display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;border-top:1px solid var(--line);padding-top:14px;margin-top:8px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--ground);padding:8px 14px;border-radius:5px;font-size:13px;max-width:calc(100% - 32px)}
+@media (max-width:560px){ .wrap,.top-in{padding-inline:16px} .kpi .v{font-size:20px} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brandrow">
+      <div class="brand"><h1>Cruscotto commesse</h1><small>Climosfera · PMBOK + Last Planner</small></div>
+      <span class="sample">Prototipo con dati di esempio · in produzione ore, task e budget arrivano da GoodDay</span>
+    </div>
+    <nav class="tabs" role="tablist" id="tabs"></nav>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ---------- dati di esempio ---------- */
+const OGGI_SETT = 39;           // settimana ISO corrente (24/09/2026)
+const PESI = [0,20,50,70,85,100];
+const STATI = ["Non iniziato","Impostato","Calcoli e dimensionamento","Emissione interna","Verificato","Emesso al cliente"];
+const CAUSE = ["Input mancante da altri","Criteri o requisiti cambiati","Approvazione cliente/ente attesa","Risorsa non disponibile","Stima troppo ottimista","Errore o rilavorazione","Priorità cambiata dal PM","Altro"];
+
+const BASE = {
+  elaborati:[
+    {id:"MEC-RT-001",t:"Relazione tecnica impianti meccanici",d:"MEC",bud:40,st:3,ac:31,pv:4,age:6,cls:"Standard"},
+    {id:"MEC-CA-002",t:"Calcolo carichi termici invernali ed estivi",d:"MEC",bud:60,st:5,ac:66,pv:5,age:0,cls:"Standard"},
+    {id:"MEC-PL-101",t:"Pianta PT – impianto di riscaldamento",d:"MEC",bud:48,st:2,ac:30,pv:4,age:12,cls:"Standard"},
+    {id:"MEC-PL-102",t:"Pianta P1 – impianto di riscaldamento",d:"MEC",bud:48,st:1,ac:14,pv:3,age:4,cls:"Standard"},
+    {id:"MEC-PL-110",t:"VMC – piante e schemi funzionali",d:"MEC",bud:56,st:2,ac:38,pv:3,age:9,cls:"Standard"},
+    {id:"ELE-SC-201",t:"Schemi quadri elettrici",d:"ELE",bud:64,st:2,ac:40,pv:2,age:15,cls:"Standard"},
+    {id:"ELE-PL-210",t:"Pianta PT – illuminazione",d:"ELE",bud:36,st:3,ac:24,pv:3,age:3,cls:"Standard"},
+    {id:"IDR-PL-301",t:"Impianto idrico-sanitario – piante",d:"IDR",bud:40,st:1,ac:18,pv:2,age:5,cls:"Standard"},
+    {id:"ANT-RT-401",t:"Relazione tecnica antincendio",d:"ANT",bud:32,st:4,ac:30,pv:4,age:2,cls:"Data fissa"}
+  ],
+  wwp:[
+    {a:"Completare dimensionamento radiatori PT",e:"MEC-PL-101",lp:"Progettista MEC 1",f:true,c:""},
+    {a:"Schemi VMC aula tipo",e:"MEC-PL-110",lp:"Progettista MEC 2",f:true,c:""},
+    {a:"Schema quadro elettrico generale",e:"ELE-SC-201",lp:"Progettista ELE 1",f:false,c:"Input mancante da altri"},
+    {a:"Impostazione tavola idrico PT",e:"IDR-PL-301",lp:"Progettista IDR 1",f:true,c:""},
+    {a:"Verifica interna relazione antincendio",e:"ANT-RT-401",lp:"PM",f:false,c:"Risorsa non disponibile"},
+    {a:"Revisione relazione dopo commenti di verifica",e:"MEC-RT-001",lp:"Progettista MEC 1",f:true,c:""},
+    {a:"Calcolo illuminotecnico corridoi",e:"ELE-PL-210",lp:"Progettista ELE 2",f:true,c:""}
+  ],
+  vincoli:[
+    {id:"V-12",t:"Layout arredi P1 dall'architetto",cat:"Input da altri",att:"L1",resp:"PM",need:"29/09",aperto:true},
+    {id:"V-13",t:"Planimetria architettonica rev. C",cat:"Input da altri",att:"L2",resp:"PM",need:"29/09",aperto:true},
+    {id:"V-14",t:"Conferma ricambi d'aria dal committente",cat:"Approvazione",att:"L4",resp:"PM",need:"06/10",aperto:true},
+    {id:"V-15",t:"Verificatore interno disponibile",cat:"Risorsa",att:"L5",resp:"Resp. qualità",need:"29/09",aperto:false},
+    {id:"V-16",t:"Modello strutturale IFC aggiornato",cat:"Input da altri",att:"L6",resp:"BIM coordinator",need:"13/10",aperto:true},
+    {id:"V-17",t:"Criteri illuminotecnici approvati",cat:"Criteri",att:"L3",resp:"Progettista ELE 1",need:"06/10",aperto:false}
+  ]
+};
+const LOOKAHEAD = [
+  {id:"L1",t:"MEC-PL-102 · Pianta P1 riscaldamento",da:40,a:41},
+  {id:"L2",t:"ELE-SC-201 · Schemi quadri elettrici",da:40,a:42},
+  {id:"L3",t:"ELE-PL-210 · Emissione illuminazione PT",da:40,a:40},
+  {id:"L5",t:"ANT-RT-401 · Emissione relazione antincendio",da:40,a:40},
+  {id:"L4",t:"MEC-PL-110 · VMC piante e schemi",da:41,a:43},
+  {id:"L7",t:"IDR-PL-301 · Idrico-sanitario piante",da:41,a:42},
+  {id:"L6",t:"Coordinamento BIM MEP / strutture",da:42,a:43},
+  {id:"M1",t:"Milestone · Esecutivo meccanico",da:44,a:44,mile:true},
+  {id:"M2",t:"Milestone · Esecutivo elettrico",da:45,a:45,mile:true}
+];
+const PV_SERIE = [0,18,45,80,122,168,212,252,285,312,340,362,382,398,410,419,424]; // W30..W46, ore
+const EV_FR = [0,.05,.13,.23,.35,.48,.6,.72,.86,1];
+const AC_FR = [0,.07,.16,.27,.39,.52,.64,.76,.88,1];
+const PPC_STORIA = [[31,52],[32,58],[33,55],[34,63],[35,61],[36,68],[37,66],[38,72]];
+const CAUSE_STORIA = {"Input mancante da altri":9,"Approvazione cliente/ente attesa":5,"Risorsa non disponibile":4,"Stima troppo ottimista":4,"Criteri o requisiti cambiati":3,"Errore o rilavorazione":2,"Priorità cambiata dal PM":2,"Altro":1};
+const MILESTONE = [
+  {t:"Avvio commessa",d:"01/07",s:"done"},{t:"Definitivo approvato",d:"04/09",s:"done"},
+  {t:"Esecutivo meccanico",d:"30/10 · W44",s:"next"},{t:"Esecutivo elettrico",d:"06/11 · W45",s:""},{t:"Emissione finale",d:"13/11 · W46",s:""}
+];
+const ALTRE = [
+  {cod:"CL-2026-018",nome:"Uffici Lotto B – HVAC e BMS",spi:1.04,cpi:0.97,ppc:78,vinc:2,ms:"Definitivo · 02/10"},
+  {cod:"CL-2025-077",nome:"RSA – antincendio e idrico-sanitario",spi:0.86,cpi:0.81,ppc:58,vinc:7,ms:"Pratica VVF · 30/09"}
+];
+
+/* ---------- stato ---------- */
+const KEY="cruscotto-climosfera-v1";
+let S;
+function load(){ try{ const r=localStorage.getItem(KEY); if(r){ S=JSON.parse(r); return; } }catch(e){} S=JSON.parse(JSON.stringify(BASE)); }
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
+load();
+
+/* ---------- calcoli ---------- */
+function evm(){
+  let bac=0,ev=0,pv=0,ac=0;
+  S.elaborati.forEach(e=>{bac+=e.bud; ev+=e.bud*PESI[e.st]/100; pv+=e.bud*PESI[e.pv]/100; ac+=e.ac;});
+  const spi=ev/pv, cpi=ev/ac, eac=bac/cpi;
+  return {bac,ev,pv,ac,spi,cpi,eac,etc:eac-ac,vac:bac-eac};
+}
+function ppc(){ const p=S.wwp.length, f=S.wwp.filter(x=>x.f).length; return {p,f,v:p?Math.round(f/p*100):0}; }
+function pcr(){ const n=S.vincoli.length, r=S.vincoli.filter(v=>!v.aperto).length; return {n,r,v:n?Math.round(r/n*100):0}; }
+const f1=x=>x.toFixed(2).replace(".",",");
+const f0=x=>Math.round(x).toLocaleString("it-IT");
+function tone(x){ return x>=0.95?"g":x>=0.85?"w":"c"; }
+function tonePPC(x){ return x>=70?"g":x>=55?"w":"c"; }
+const pill=(cls,txt)=>`<span class="pill ${cls}">${txt}</span>`;
+
+/* ---------- navigazione ---------- */
+const TABS=[["portafoglio","Le mie commesse"],["obeya","Commessa"],["settimana","Piano settimanale"],["lookahead","Lookahead e vincoli"],["kanban","Kanban"],["evm","Avanzamento EVM"]];
+let cur="obeya";
+try{ const h=location.hash.replace("#",""); if(TABS.some(t=>t[0]===h)) cur=h; }catch(e){}
+function go(id){ cur=id; try{history.replaceState(null,"","#"+id);}catch(e){} render(); window.scrollTo({top:0}); }
+function tabs(){
+  document.getElementById("tabs").innerHTML=TABS.map(([id,l])=>`<button role="tab" aria-selected="${id===cur}" data-tab="${id}">${l}</button>`).join("");
+}
+document.getElementById("tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]"); if(b) go(b.dataset.tab);});
+let tt; function toast(m){const t=document.getElementById("toast"); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true,2600);}
+
+/* ---------- grafici ---------- */
+function curvaS(h){
+  const W=1100,H=h||280,L=46,R=14,T=12,B=28, n=PV_SERIE.length;
+  const E=evm(); const evS=EV_FR.map(f=>f*E.ev), acS=AC_FR.map(f=>f*E.ac);
+  const ymax=Math.ceil(Math.max(E.bac,E.ac,E.eac>E.bac*1.4?E.bac:E.eac)/100)*100;
+  const x=i=>L+i*(W-L-R)/(n-1), y=v=>T+(H-T-B)*(1-v/ymax);
+  const path=s=>s.map((v,i)=>`${i?"L":"M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join("");
+  let g=""; for(let v=0;v<=ymax;v+=100){ g+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`; }
+  let xl=""; for(let i=0;i<n;i+=2){ xl+=`<text x="${x(i)}" y="${H-8}" text-anchor="middle">W${30+i}</text>`; }
+  const io=OGGI_SETT-30;
+  const eacY=y(Math.min(E.eac,ymax));
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Curva S: valore pianificato, guadagnato e costo effettivo in ore">
+    ${g}${xl}
+    <line x1="${x(io)}" x2="${x(io)}" y1="${T}" y2="${H-B}" stroke="var(--ink-3)" stroke-dasharray="3 3"/>
+    <text x="${x(io)+4}" y="${T+10}" style="fill:var(--ink-2)">oggi</text>
+    <line x1="${x(n-1)-40}" x2="${x(n-1)}" y1="${eacY}" y2="${eacY}" stroke="var(--ac)" stroke-dasharray="4 3"/>
+    <text x="${x(n-1)-44}" y="${eacY-5}" text-anchor="end" style="fill:var(--ac)">EAC ${f0(E.eac)} h</text>
+    <path d="${path(PV_SERIE)}" fill="none" stroke="var(--pv)" stroke-width="2" stroke-dasharray="5 4"/>
+    <path d="${path(acS)}" fill="none" stroke="var(--ac)" stroke-width="2.25"/>
+    <path d="${path(evS)}" fill="none" stroke="var(--ev)" stroke-width="2.5"/>
+    <circle cx="${x(io)}" cy="${y(E.ev)}" r="4" fill="var(--ev)"/><circle cx="${x(io)}" cy="${y(E.ac)}" r="4" fill="var(--ac)"/><circle cx="${x(io)}" cy="${y(E.pv)}" r="3.5" fill="var(--pv)"/>
+  </svg>
+  <div class="legend"><span><i style="background:var(--pv)"></i>PV pianificato ${f0(E.pv)} h</span><span><i style="background:var(--ev)"></i>EV guadagnato ${f0(E.ev)} h</span><span><i style="background:var(--ac)"></i>AC ore GoodDay ${f0(E.ac)} h</span><span class="muted">BAC ${f0(E.bac)} h</span></div>`;
+}
+function graficoPPC(h){
+  const W=520,H=h||220,L=36,R=10,T=12,B=26; const dati=[...PPC_STORIA,[OGGI_SETT,ppc().v]]; const n=dati.length;
+  const bw=(W-L-R)/n; const y=v=>T+(H-T-B)*(1-v/100);
+  let g=""; [0,25,50,75,100].forEach(v=>{g+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`;});
+  const bars=dati.map(([w,v],i)=>{const last=i===n-1; const bx=L+i*bw+bw*0.2; return `<rect x="${bx}" y="${y(v)}" width="${bw*0.6}" height="${y(0)-y(v)}" rx="2" fill="${last?"var(--accent)":"var(--accent-soft)"}" ${last?"":`stroke="var(--accent)" stroke-width="1"`}/>
+    <text x="${bx+bw*0.3}" y="${y(v)-5}" text-anchor="middle" style="fill:${last?"var(--ink)":"var(--ink-3)"}">${v}</text>
+    <text x="${bx+bw*0.3}" y="${H-8}" text-anchor="middle">W${w}</text>`;}).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="PPC per settimana, in percentuale">${g}${bars}</svg>`;
+}
+
+/* ---------- viste ---------- */
+function vPortafoglio(){
+  const E=evm(), P=ppc(), aperti=S.vincoli.filter(v=>v.aperto).length;
+  const righe=[{cod:"CL-2026-031",nome:"Scuola primaria – impianti meccanici ed elettrici",spi:E.spi,cpi:E.cpi,ppc:Math.round((66+72+P.v+68)/4),vinc:aperti,ms:"Esecutivo MEC · 30/10",det:true},...ALTRE];
+  return `<div class="head"><div><div class="eyebrow">Portafoglio PM · settimana ${OGGI_SETT}</div><h2>Le mie commesse attive</h2>
+  <p>Un PM segue al massimo tre commesse. Da qui si vede subito quale ha bisogno di attenzione; si apre la commessa cliccando sulla riga.</p></div></div>
+  <div class="panel tbl"><table><thead><tr><th>Commessa</th><th>Descrizione</th><th class="r">SPI</th><th class="r">CPI</th><th class="r">PPC 4 sett.</th><th class="r">Vincoli aperti</th><th>Prossima milestone</th></tr></thead><tbody>
+  ${righe.map(r=>`<tr class="click" data-open="${r.det?1:0}"><td class="code">${r.cod}</td><td>${r.nome}</td>
+    <td class="r">${pill(tone(r.spi),f1(r.spi))}</td><td class="r">${pill(tone(r.cpi),f1(r.cpi))}</td><td class="r">${pill(tonePPC(r.ppc),r.ppc+"%")}</td>
+    <td class="r num">${r.vinc}</td><td>${r.ms}</td></tr>`).join("")}
+  </tbody></table></div>
+  <div class="panel"><div class="panel-h"><h3>Come leggere gli indicatori</h3><span class="note">soglie di esempio, da tarare con i PM</span></div>
+  <div class="grid2" style="gap:12px">
+   <div><b>SPI</b> (EV/PV): sotto 1 la commessa produce meno di quanto pianificato. <b>CPI</b> (EV/AC): sotto 1 servono più ore del previsto per il lavoro fatto.</div>
+   <div><b>PPC</b>: impegni settimanali mantenuti sul totale promesso. Misura l'affidabilità del piano del team, non la bravura dei singoli.</div>
+  </div><p style="margin:12px 0 0" class="num">${pill("g","≥ 0,95 / ≥ 70%")} ${pill("w","0,85–0,95 / 55–70%")} ${pill("c","< 0,85 / < 55%")}</p></div>`;
+}
+function avvisi(){
+  const E=evm(), out=[];
+  if(E.spi<0.9) out.push(["c",`SPI ${f1(E.spi)}: in ritardo di ${f0(E.pv-E.ev)} h di lavoro rispetto al piano`]);
+  if(E.cpi<0.9) out.push(["c",`CPI ${f1(E.cpi)}: a finire servono circa ${f0(E.eac)} h contro ${f0(E.bac)} h a budget`]);
+  S.vincoli.filter(v=>v.aperto&&v.need==="29/09").forEach(v=>out.push(["w",`Vincolo ${v.id} da rimuovere entro il 29/09: ${v.t}`]));
+  const inCorso=S.elaborati.filter(e=>e.st>=1&&e.st<=2).length; if(inCorso>4) out.push(["w",`Kanban: ${inCorso} elaborati in corso con limite WIP 4`]);
+  S.elaborati.filter(e=>e.age>=10&&e.st<5).forEach(e=>out.push(["w",`${e.id} fermo nello stesso stato da ${e.age} giorni`]));
+  return out;
+}
+function vObeya(){
+  const E=evm(),P=ppc(),aperti=S.vincoli.filter(v=>v.aperto).length;
+  return `<div class="head"><div><div class="eyebrow">CL-2026-031 · Obeya di commessa</div><h2>Scuola primaria – impianti meccanici ed elettrici</h2>
+  <p>La vista unica per la riunione settimanale del team: tempi, costi, affidabilità del piano e ostacoli.</p></div>
+  <div class="muted num" style="font-size:12px">Ultima lettura GoodDay: oggi 08:00 (simulata)</div></div>
+  <div class="kpis">
+   <div class="kpi"><span class="eyebrow">SPI</span><span class="v">${f1(E.spi)}</span>${pill(tone(E.spi),E.spi<1?"in ritardo":"in linea")}</div>
+   <div class="kpi"><span class="eyebrow">CPI</span><span class="v">${f1(E.cpi)}</span>${pill(tone(E.cpi),E.cpi<1?"ore oltre il valore":"in linea")}</div>
+   <div class="kpi"><span class="eyebrow">Stima a finire EAC</span><span class="v">${f0(E.eac)} h</span><span class="s num">budget ${f0(E.bac)} h · scarto ${f0(E.vac)} h</span></div>
+   <div class="kpi"><span class="eyebrow">PPC settimana ${OGGI_SETT}</span><span class="v">${P.v}%</span><span class="s">${P.f} di ${P.p} impegni mantenuti</span></div>
+   <div class="kpi"><span class="eyebrow">Vincoli aperti</span><span class="v">${aperti}</span><span class="s">nel lookahead a 6 settimane</span></div>
+  </div>
+  <div class="panel"><div class="panel-h"><h3>Master schedule</h3><span class="note">milestone contrattuali</span></div>
+   <div class="ms">${MILESTONE.map(m=>`<div class="${m.s}"><b>${m.t}</b><span class="num">${m.d}</span></div>`).join("")}</div></div>
+  <div class="grid2">
+   <div class="panel"><div class="panel-h"><h3>Da affrontare in riunione</h3><span class="note">generato dai dati</span></div>
+    <ul class="alerts">${avvisi().map(([t,m])=>`<li>${pill(t,t==="c"?"critico":"attenzione")}<span>${m}</span></li>`).join("")||"<li>Nessun avviso.</li>"}</ul></div>
+   <div class="panel"><div class="panel-h"><h3>Affidabilità del piano (PPC)</h3><button class="btn ghost" data-go="settimana">Apri piano →</button></div>${graficoPPC(230)}</div>
+  </div>
+  <div class="panel"><div class="panel-h"><h3>Curva S in ore</h3><button class="btn ghost" data-go="evm">Dettaglio EVM →</button></div>${curvaS(260)}</div>`;
+}
+function vSettimana(){
+  const P=ppc();
+  const cnt={...CAUSE_STORIA}; S.wwp.filter(w=>!w.f&&w.c).forEach(w=>cnt[w.c]=(cnt[w.c]||0)+1);
+  const par=Object.entries(cnt).sort((a,b)=>b[1]-a[1]); const mx=par[0]?par[0][1]:1;
+  return `<div class="head"><div><div class="eyebrow">Last Planner · Weekly Work Plan</div><h2>Piano settimanale – settimana ${OGGI_SETT}</h2>
+  <p>Ogni progettista promette solo attività pronte, cioè senza vincoli aperti. A fine settimana si segna sì o no; per ogni "no" si sceglie una causa. Il PPC si aggiorna subito.</p></div>
+  <div class="kpis" style="min-width:220px"><div class="kpi"><span class="eyebrow">PPC</span><span class="v">${P.v}%</span><span class="s">${P.f} / ${P.p} mantenuti</span></div></div></div>
+  <div class="panel tbl"><table><thead><tr><th>Impegno</th><th>Elaborato</th><th>Last planner</th><th>Fatto?</th><th>Causa se non fatto</th></tr></thead><tbody>
+  ${S.wwp.map((w,i)=>`<tr><td>${w.a}</td><td class="code">${w.e}</td><td>${w.lp}</td>
+   <td><span class="toggle"><button class="yes" aria-pressed="${w.f}" data-wf="${i}" data-v="1">Sì</button><button class="no" aria-pressed="${!w.f}" data-wf="${i}" data-v="0">No</button></span></td>
+   <td>${w.f?'<span class="muted">—</span>':`<select id="causa-${i}" data-wc="${i}" aria-label="Causa di non completamento"><option value="">Scegli la causa…</option>${CAUSE.map(c=>`<option ${c===w.c?"selected":""}>${c}</option>`).join("")}</select>`}</td></tr>`).join("")}
+  </tbody></table></div>
+  <div class="grid2">
+   <div class="panel"><div class="panel-h"><h3>PPC nelle ultime settimane</h3><span class="note">W31–W38 esempio · W${OGGI_SETT} dal piano sopra</span></div>${graficoPPC()}</div>
+   <div class="panel"><div class="panel-h"><h3>Cause di mancato completamento</h3><span class="note">ultime 9 settimane, Pareto</span></div>
+    <div class="pareto">${par.map(([k,v])=>`<div class="r"><span>${k}</span><span class="b"><span style="width:${v/mx*100}%"></span></span><span class="num r">${v}</span></div>`).join("")}</div>
+    <p class="muted" style="margin:12px 0 0;font-size:12.5px">"Input mancante da altri" in testa suggerisce di anticipare nel lookahead le richieste all'architetto e allo strutturista.</p></div>
+  </div>`;
+}
+function vLookahead(){
+  const W=[40,41,42,43,44,45]; const C=pcr();
+  const bloccata=id=>S.vincoli.some(v=>v.att===id&&v.aperto);
+  return `<div class="head"><div><div class="eyebrow">Last Planner · make-ready</div><h2>Lookahead a 6 settimane e registro vincoli</h2>
+  <p>Le attività delle prossime sei settimane con lo stato dei loro vincoli. Un'attività entra nel piano settimanale solo quando tutti i vincoli sono rimossi.</p></div>
+  <div class="kpis" style="min-width:220px"><div class="kpi"><span class="eyebrow">Vincoli rimossi (PCR)</span><span class="v">${C.v}%</span><span class="s">${C.r} di ${C.n} identificati</span></div></div></div>
+  <div class="panel tbl la"><table><thead><tr><th>Attività</th>${W.map(w=>`<th class="wk">W${w}</th>`).join("")}<th>Stato</th></tr></thead><tbody>
+  ${LOOKAHEAD.map(a=>{const b=!a.mile&&bloccata(a.id);return `<tr><td>${a.t}</td>${W.map(w=>`<td class="wk">${w>=a.da&&w<=a.a?(a.mile?'<div class="bar mile" title="milestone"></div>':`<div class="bar ${b?"blocked":"ready"}"></div>`):""}</td>`).join("")}
+   <td>${a.mile?pill("n","milestone"):b?pill("c","vincolata"):pill("g","pronta")}</td></tr>`;}).join("")}
+  </tbody></table></div>
+  <div class="panel tbl"><div class="panel-h"><h3>Registro vincoli</h3><span class="note">clicca per segnare un vincolo come rimosso o riaprirlo</span></div>
+  <table><thead><tr><th>ID</th><th>Vincolo</th><th>Categoria</th><th>Attività</th><th>Chi lo rimuove</th><th>Serve entro</th><th>Stato</th><th></th></tr></thead><tbody>
+  ${S.vincoli.map((v,i)=>{const att=LOOKAHEAD.find(a=>a.id===v.att);return `<tr><td class="code">${v.id}</td><td>${v.t}</td><td>${v.cat}</td><td class="muted">${att?att.t.split(" · ")[0]:""}</td><td>${v.resp}</td><td class="num">${v.need}</td>
+   <td>${v.aperto?pill("c","aperto"):pill("g","rimosso")}</td><td><button class="btn" data-vt="${i}">${v.aperto?"Segna rimosso":"Riapri"}</button></td></tr>`;}).join("")}
+  </tbody></table></div>`;
+}
+const COLS=[["Da fare",null,[0]],["In corso",4,[1,2]],["In verifica",3,[3,4]],["Emesso",null,[5]]];
+function colDi(st){ return COLS.findIndex(c=>c[2].includes(st)); }
+function vKanban(){
+  return `<div class="head"><div><div class="eyebrow">Flusso degli elaborati</div><h2>Kanban di commessa</h2>
+  <p>Ogni scheda è un elaborato. Spostarla cambia il suo stato e quindi il valore guadagnato (EV). La colonna si evidenzia quando supera il limite WIP. In produzione le schede sono i task di GoodDay.</p></div></div>
+  <div class="kb">${COLS.map(([nome,lim,sts],ci)=>{const cards=S.elaborati.map((e,i)=>({...e,i})).filter(e=>sts.includes(e.st)); const over=lim&&cards.length>lim;
+   return `<section class="col ${over?"over":""}" data-col="${ci}"><div class="col-h"><h3>${nome}</h3><span class="num ${over?"age-old":"muted"}">${cards.length}${lim?" / "+lim:""}</span></div>
+   ${cards.map(e=>`<article class="card" draggable="true" data-card="${e.i}"><div class="row"><span class="code">${e.id}</span>${e.cls==="Data fissa"?pill("w","data fissa"):""}</div>
+    <div class="t">${e.t}</div><div class="row"><span class="muted" style="font-size:12px">${STATI[e.st]}</span><span class="num ${e.age>=10&&e.st<5?"age-old":"muted"}" style="font-size:12px">${e.st<5?e.age+" gg":""}</span></div>
+    <div class="row"><span class="muted num" style="font-size:12px">${e.ac} / ${e.bud} h</span><span class="mv">${ci>0?`<button data-mv="${e.i}" data-d="-1" aria-label="Sposta indietro">←</button>`:""}${ci<3?`<button data-mv="${e.i}" data-d="1" aria-label="Sposta avanti">→</button>`:""}</span></div></article>`).join("")}
+   </section>`;}).join("")}</div>
+  <p class="muted" style="font-size:12.5px;margin:0">Età in giorni = tempo nello stato attuale (Work Item Age). Le schede ferme da 10 giorni o più sono in rosso.</p>`;
+}
+function vEvm(){
+  const E=evm();
+  return `<div class="head"><div><div class="eyebrow">Earned Value in ore</div><h2>Avanzamento per elaborato</h2>
+  <p>Il valore guadagnato si calcola dallo stato dell'elaborato, non da una percentuale dichiarata. Pesi per stato: ${STATI.slice(1).map((s,i)=>`${s.toLowerCase()} ${PESI[i+1]}%`).join(", ")}. I pesi sono di esempio e vanno tarati.</p></div></div>
+  <div class="kpis">
+   <div class="kpi"><span class="eyebrow">BAC budget</span><span class="v">${f0(E.bac)} h</span><span class="s">da stime GoodDay</span></div>
+   <div class="kpi"><span class="eyebrow">PV pianificato</span><span class="v">${f0(E.pv)} h</span></div>
+   <div class="kpi"><span class="eyebrow">EV guadagnato</span><span class="v">${f0(E.ev)} h</span></div>
+   <div class="kpi"><span class="eyebrow">AC consuntivo</span><span class="v">${f0(E.ac)} h</span><span class="s">ore registrate in GoodDay</span></div>
+   <div class="kpi"><span class="eyebrow">SPI · CPI</span><span class="v">${f1(E.spi)} · ${f1(E.cpi)}</span></div>
+   <div class="kpi"><span class="eyebrow">EAC · ETC</span><span class="v">${f0(E.eac)} · ${f0(E.etc)}</span><span class="s">EAC = BAC / CPI</span></div>
+  </div>
+  <div class="panel">${curvaS()}</div>
+  <div class="panel tbl"><div class="panel-h"><h3>Registro elaborati</h3><span class="note">cambia lo stato per vedere EV, SPI e CPI ricalcolati</span></div>
+  <table><thead><tr><th>Elaborato</th><th>Titolo</th><th>Disc.</th><th>Stato attuale</th><th class="r">Budget h</th><th class="r">EV h</th><th class="r">Ore GoodDay</th><th class="r">CPI</th></tr></thead><tbody>
+  ${S.elaborati.map((e,i)=>{const ev=e.bud*PESI[e.st]/100; const c=e.ac?ev/e.ac:0; return `<tr><td class="code">${e.id}</td><td>${e.t}</td><td>${e.d}</td>
+   <td><select id="stato-${i}" data-st="${i}" aria-label="Stato di ${e.id}">${STATI.map((s,k)=>`<option value="${k}" ${k===e.st?"selected":""}>${s} (${PESI[k]}%)</option>`).join("")}</select></td>
+   <td class="r num">${e.bud}</td><td class="r num">${f0(ev)}</td><td class="r num">${e.ac}</td><td class="r">${pill(tone(c),f1(c))}</td></tr>`;}).join("")}
+  </tbody></table></div>`;
+}
+
+const VIEWS={portafoglio:vPortafoglio,obeya:vObeya,settimana:vSettimana,lookahead:vLookahead,kanban:vKanban,evm:vEvm};
+function render(){
+  tabs();
+  document.getElementById("app").innerHTML=`<section class="view">${VIEWS[cur]()}</section>
+  <div class="foot"><span>Formule: PPC = mantenuti / promessi · PCR = vincoli rimossi / identificati · SPI = EV/PV · CPI = EV/AC · EAC = BAC/CPI</span>
+  <button class="btn ghost" id="reset">Ripristina i dati di esempio</button></div>`;
+}
+
+/* ---------- interazioni ---------- */
+const app=document.getElementById("app");
+app.addEventListener("click",e=>{
+  const t=e.target.closest("button,tr.click"); if(!t) return;
+  if(t.dataset.go) return go(t.dataset.go);
+  if(t.matches("tr.click")){ if(t.dataset.open==="1") go("obeya"); else toast("Nel prototipo solo CL-2026-031 ha il dettaglio completo"); return; }
+  if(t.id==="reset"){ S=JSON.parse(JSON.stringify(BASE)); save(); render(); toast("Dati di esempio ripristinati"); return; }
+  if(t.dataset.wf!==undefined){ const w=S.wwp[+t.dataset.wf]; w.f=t.dataset.v==="1"; if(w.f) w.c=""; save(); render(); return; }
+  if(t.dataset.vt!==undefined){ const v=S.vincoli[+t.dataset.vt]; v.aperto=!v.aperto; save(); render(); toast(v.aperto?`${v.id} riaperto`:`${v.id} rimosso`); return; }
+  if(t.dataset.mv!==undefined){ muovi(+t.dataset.mv, colDi(S.elaborati[+t.dataset.mv].st)+ +t.dataset.d); }
+});
+app.addEventListener("change",e=>{
+  const t=e.target;
+  if(t.dataset.wc!==undefined){ S.wwp[+t.dataset.wc].c=t.value; save(); render(); }
+  if(t.dataset.st!==undefined){ S.elaborati[+t.dataset.st].st=+t.value; S.elaborati[+t.dataset.st].age=0; save(); render(); }
+});
+function muovi(i,col){
+  if(col<0||col>3) return; const e=S.elaborati[i]; const sts=COLS[col][2];
+  if(!sts.includes(e.st)){ e.st=colDi(e.st)<col?sts[0]:sts[sts.length-1]; e.age=0; save(); render();
+    const E=evm(); toast(`${e.id}: ${STATI[e.st].toLowerCase()} · EV totale ${f0(E.ev)} h, SPI ${f1(E.spi)}`); }
+}
+let drag=null;
+app.addEventListener("dragstart",e=>{const c=e.target.closest("[data-card]"); if(c){drag=+c.dataset.card; e.dataTransfer.effectAllowed="move";}});
+app.addEventListener("dragover",e=>{if(drag!==null&&e.target.closest("[data-col]")) e.preventDefault();});
+app.addEventListener("drop",e=>{const c=e.target.closest("[data-col]"); if(c&&drag!==null){e.preventDefault(); muovi(drag,+c.dataset.col);} drag=null;});
+
+render();
+</script>

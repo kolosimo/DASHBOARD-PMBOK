@@ -12,10 +12,12 @@
 | Server | uno solo, probabilmente Windows | utente (da verificare) |
 | IT | un referente interno e un'azienda esterna per la sicurezza | utente |
 | Identità | Microsoft 365 (Entra ID) | utente |
-| Ore consuntive | "Gooday", probabilmente GoodDay (goodday.work), SaaS con API | utente + ricerca 06 |
+| Ore consuntive | **GoodDay (goodday.work)**, confermato. Contiene ore, task e budget ore, ma "lo usiamo male" | utente |
 | Accesso remoto | via VPN | utente |
 | MVP | Kanban + Last Planner System; ore e budget (EVM) | utente |
 | Vincolo | non eccessivamente complessa | utente |
+| Manutenzione | l'utente con Claude (codice su GitHub) | utente |
+| Prossimo passo | prototipo cliccabile con dati finti, da mostrare ai PM | utente |
 
 ## 2. Cosa dice la ricerca, in una riga per filone
 
@@ -55,15 +57,33 @@
 
 **Perché non low-code:** nelle versioni gratuite mancano permessi per commessa e SSO, e le licenze cambiano (NocoDB, 2026).
 
+## 3-bis. Aggiornamento dopo le risposte (24/09)
+
+GoodDay contiene già **task, ore e budget ore**. Di conseguenza:
+- **La nuova app non deve avere una sua Kanban né un suo timesheet.**
+  - I task e le ore si leggono da GoodDay, via API in sola lettura.
+  - Il BAC si legge da GoodDay, se l'API espone le stime; da verificare.
+- **L'app aggiunge solo lo strato che manca:**
+  - LPS: promessa settimanale, vincoli, cause di non completamento, PPC;
+  - EVM calcolato;
+  - vista "Obeya" di commessa.
+- **Obiezione:** "lo usiamo male" è un problema di processo prima che di software. Una seconda app su dati GoodDay sporchi (task non aggiornati, ore su commesse sbagliate) produce KPI sbagliati. Il prototipo serve anche a definire **le regole minime d'uso di GoodDay** che la dashboard presuppone.
+
+Regole minime d'uso di GoodDay (bozza):
+1. un progetto GoodDay per ogni commessa, con codice commessa nel nome o in un campo;
+2. le fasi o gli elaborati come task, con stima ore;
+3. ore registrate sempre su un task, non sul progetto generico;
+4. lo stato del task aggiornato al cambio di stato dell'elaborato.
+
 ## 4. Decisioni aperte (servono per partire)
 
 | # | Domanda | Chi risponde | Impatto |
 |---|---|---|---|
-| D1 | Il prodotto è davvero GoodDay (goodday.work)? Quale piano? | admin GoodDay | fonte delle ore e SSO |
-| D2 | In GoodDay si registrano **solo ore** o anche **task e Kanban**? | PM / admin | se sì, la Kanban si legge da GoodDay invece di duplicarla |
+| D1 | ~~È GoodDay?~~ Confermato. Resta da capire il piano (SSO, API) | admin GoodDay | fonte delle ore e SSO |
+| D2 | ~~Solo ore?~~ Ore + task + budget. Resta da capire la struttura: commessa = progetto? elaborato = task? | PM / admin | mappatura dei dati |
 | D3 | Il server: sistema operativo, hypervisor (Hyper-V?), RAM e CPU liberi. Si può creare una VM Linux? | IT interno / esterno | deploy |
-| D4 | Dove vivono oggi i budget ore di commessa (offerta, Excel)? | direzione / PM | come si carica il BAC |
-| D5 | Chi mantiene l'app nel tempo (competenze Python?) | direzione | rischio persona chiave |
+| D4 | ~~Dove sono i budget?~~ In GoodDay. Verificare se l'API li espone | admin GoodDay | come si carica il BAC |
+| D5 | ~~Chi mantiene?~~ L'utente con Claude | — | serve documentazione nel repo |
 | D6 | Informativa dipendenti / art. 4 Statuto dei lavoratori per dati ore e PPC | consulente del lavoro | GDPR, visibilità per ruolo |
 
 ## 5. Rischi principali
