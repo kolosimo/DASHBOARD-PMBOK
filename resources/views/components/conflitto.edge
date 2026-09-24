@@ -1,0 +1,8 @@
+{{--
+  Messaggio di conflitto (409): un altro utente ha salvato prima.
+  Props: messaggio
+--}}
+<div class="messaggio conflitto" role="alert" data-testid="conflitto">
+  @!component('components/pill', { classe: 'w', testo: 'conflitto' })
+  <p>{{ messaggio }}</p>
+</div>

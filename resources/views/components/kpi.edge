@@ -1,0 +1,18 @@
+{{--
+  Riquadro KPI. Props:
+    etichetta    testo piccolo in alto (per esempio "SPI")
+    valore       testo già formattato (usare formato.*)
+    sotto        testo facoltativo sotto il valore
+    semaforo     facoltativo: { classe: 'g'|'w'|'c'|'n', testo }
+  Da usare dentro <div class="kpis">.
+--}}
+<div class="kpi">
+  <span class="eyebrow">{{ etichetta }}</span>
+  <span class="v">{{ valore }}</span>
+  @if(semaforo)
+    @!component('components/pill', { classe: semaforo.classe, testo: semaforo.testo })
+  @end
+  @if(sotto)
+    <span class="s num">{{ sotto }}</span>
+  @end
+</div>

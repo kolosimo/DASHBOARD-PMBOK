@@ -1,0 +1,20 @@
+{{--
+  Pannello con intestazione. Props:
+    titolo   titolo h3
+    nota     testo piccolo a destra (facoltativo)
+    tabella  true se il contenuto è una tabella scorrevole
+  Slot: main (contenuto), azioni (a destra dell'intestazione, facoltativo).
+--}}
+<div class="panel {{ tabella ? 'tbl' : '' }}">
+  @if(titolo || $slots.azioni)
+    <div class="panel-h">
+      <h3>{{ titolo }}</h3>
+      @if($slots.azioni)
+        {{{ await $slots.azioni() }}}
+      @elseif(nota)
+        <span class="note">{{ nota }}</span>
+      @end
+    </div>
+  @end
+  {{{ await $slots.main() }}}
+</div>

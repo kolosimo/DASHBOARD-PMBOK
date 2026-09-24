@@ -1,0 +1,15 @@
+{{--
+  Pagina segnaposto di un modulo non ancora costruito.
+  Props: eyebrow, titolo, descrizione, fase, agente
+--}}
+<div class="head">
+  <div>
+    <div class="eyebrow">{{ eyebrow }}</div>
+    <h2>{{ titolo }}</h2>
+    <p>{{ descrizione }}</p>
+  </div>
+</div>
+<div class="segnaposto" data-testid="segnaposto">
+  @!component('components/pill', { classe: 'n', testo: 'in costruzione' })
+  <p>Questa vista arriva nella {{ fase }} ({{ agente }}). Il modello dati e i permessi sono già pronti.</p>
+</div>

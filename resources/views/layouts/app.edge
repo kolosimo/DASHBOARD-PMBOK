@@ -1,0 +1,80 @@
+{{--
+  Layout principale. Props:
+    titolo       titolo della pagina (obbligatorio)
+    voceAttiva   id della voce globale attiva (app/ui/nav.ts)
+  Condivisi dal contesto: utente, commessa, schedaAttiva, modalitaAuth.
+--}}
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content="{{ csrfToken }}" />
+    <title>{{ titolo }} · Cruscotto commesse</title>
+    <link rel="stylesheet" href="/fonts/plex.css" />
+    <script src="/vendor/htmx-2.0.11.min.js" defer></script>
+    <script src="/vendor/alpine-3.17.4.min.js" defer></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+  </head>
+  <body data-commessa-id="{{ commessa ? commessa.id : '' }}">
+    <a class="skip" href="#contenuto">Vai al contenuto</a>
+    <header class="top">
+      <div class="top-in">
+        <div class="brandrow">
+          <div class="brand">
+            <h1><a href="/">Cruscotto commesse</a></h1>
+            <small>Climosfera · PMBOK + Last Planner</small>
+          </div>
+          @if(utente)
+            <div class="utente">
+              @if(modalitaAuth === 'dev')
+                <span class="sample">Login di sviluppo</span>
+              @end
+              <span class="avatar" aria-hidden="true">{{ utente.iniziali }}</span>
+              <span>
+                <span data-testid="utente-nome">{{ utente.nome }}</span>
+                <span class="ruolo">· {{ utente.ruolo }}</span>
+              </span>
+              <form method="POST" action="/auth/logout">
+                {{ csrfField() }}
+                <button class="btn ghost" type="submit">Esci</button>
+              </form>
+            </div>
+          @end
+        </div>
+        @if(utente)
+          <nav class="tabs" aria-label="Navigazione principale">
+            @each(voce in nav.vociGlobali)
+              @if(!voce.soloAdmin || utente.ruolo === 'admin')
+                <a href="{{ voce.percorso }}" aria-current="{{ voce.id === voceAttiva ? 'page' : 'false' }}">{{ voce.etichetta }}</a>
+              @end
+            @end
+          </nav>
+        @end
+        @if(commessa)
+          <div class="commessa-titolo">
+            <span class="code">{{ commessa.codice }}</span>
+            <b>{{ commessa.nome }}</b>
+            <span class="stato-connessione" id="stato-connessione" aria-live="polite"></span>
+          </div>
+          <nav class="tabs commessa" aria-label="Schede della commessa">
+            @each(voce in nav.vociCommessa)
+              <a href="{{ voce.percorso(commessa.id) }}" aria-current="{{ voce.id === schedaAttiva ? 'page' : 'false' }}">{{ voce.etichetta }}</a>
+            @end
+          </nav>
+        @end
+      </div>
+    </header>
+
+    <main class="wrap" id="contenuto">
+      <section class="view">
+        {{{ await $slots.main() }}}
+      </section>
+      <div class="foot">
+        <span>Formule: PPC = mantenuti / promessi · SPI = EV / PV · CPI = EV / AC · EAC = BAC / CPI</span>
+        <span>Dati di esempio · Fase 0</span>
+      </div>
+    </main>
+    @!component('components/toast')
+  </body>
+</html>

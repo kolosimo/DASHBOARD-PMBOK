@@ -1,0 +1,27 @@
+{{--
+  Tabella semplice. Props:
+    colonne  [{ testo, destra? }]
+    righe    [[celle già formattate]] (testo, non HTML)
+    vuota    messaggio se non ci sono righe
+  Per celle con HTML (pill, link) scrivere la tabella a mano con le stesse classi.
+--}}
+<table>
+  <thead>
+    <tr>
+      @each(c in colonne)
+        <th class="{{ c.destra ? 'r' : '' }}">{{ c.testo }}</th>
+      @end
+    </tr>
+  </thead>
+  <tbody>
+    @each(riga in righe)
+      <tr>
+        @each((cella, i) in riga)
+          <td class="{{ colonne[i] && colonne[i].destra ? 'r num' : '' }}">{{ cella }}</td>
+        @end
+      </tr>
+    @else
+      <tr><td colspan="{{ colonne.length }}" class="muted">{{ vuota || 'Nessun dato.' }}</td></tr>
+    @end
+  </tbody>
+</table>

@@ -1,0 +1,45 @@
+{{--
+  Frammento di una impostazione (sostituito da HTMX dopo il salvataggio).
+  Variabili: imp, salvata?, conflitto? (messaggio 409), errore? (422)
+--}}
+<div class="impostazione" id="imp-{{ imp.id }}" data-testid="imp-{{ imp.chiave }}">
+  @if(conflitto)
+    @!component('components/conflitto', { messaggio: conflitto })
+  @end
+  @if(errore)
+    <div class="messaggio errore" role="alert"><p>{{ errore }}</p></div>
+  @end
+  <div class="panel-h" style="margin:0">
+    <div>
+      <b>{{ imp.descrizione }}</b>
+      <div class="chiave">{{ imp.chiave }} · versione {{ imp.version }}</div>
+    </div>
+    @if(imp.diEsempio)
+      <span class="sample">valore di esempio</span>
+    @elseif(salvata)
+      @!component('components/pill', { classe: 'g', testo: 'salvata' })
+    @end
+  </div>
+  <form class="campi" method="POST" action="/admin/impostazioni/{{ imp.id }}"
+        hx-post="/admin/impostazioni/{{ imp.id }}" hx-target="#imp-{{ imp.id }}" hx-swap="outerHTML">
+    {{ csrfField() }}
+    <input type="hidden" name="version" value="{{ imp.version }}" />
+    @if(typeof imp.valore === 'boolean')
+      <label style="flex-direction:row;align-items:center;gap:6px">
+        <input type="checkbox" name="attivo" value="on" {{ imp.valore ? 'checked' : '' }} /> attivo
+      </label>
+    @elseif(typeof imp.valore === 'number')
+      <label>Valore
+        <input type="text" inputmode="decimal" name="valore" value="{{ formato.numero(imp.valore, Number.isInteger(imp.valore) ? 0 : 2) }}" style="width:110px" />
+      </label>
+    @else
+      <label>Verde da
+        <input type="text" inputmode="decimal" name="verde" value="{{ formato.numero(imp.valore.verde, 2) }}" style="width:90px" />
+      </label>
+      <label>Giallo da
+        <input type="text" inputmode="decimal" name="giallo" value="{{ formato.numero(imp.valore.giallo, 2) }}" style="width:90px" />
+      </label>
+    @end
+    <button class="btn primary" type="submit">Salva</button>
+  </form>
+</div>

@@ -1,0 +1,8 @@
+{{--
+  Pill / semaforo. Props:
+    classe   'g' verde, 'w' giallo, 'c' rosso, 'n' neutro (n.d.)
+    testo    etichetta
+    semplice true per nascondere il pallino
+  Per calcolare la classe: formato.classe(valore, soglia) (app/domain/soglie.ts).
+--}}
+<span class="pill {{ classe || 'n' }} {{ semplice ? 'plain' : '' }}">{{ testo }}</span>

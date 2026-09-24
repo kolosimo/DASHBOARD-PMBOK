@@ -1,0 +1,33 @@
+@component('layouts/app', { titolo: 'Accesso' })
+  <div class="accesso">
+    <div>
+      <div class="eyebrow">Cruscotto commesse Climosfera</div>
+      <h2>Accedi</h2>
+      <p class="muted">Usa il tuo account Microsoft 365 aziendale.</p>
+    </div>
+    @if(uscito)
+      <div class="messaggio ok" role="status"><p>Sei uscito dall'app.</p></div>
+    @end
+    @if(oidcDisponibile)
+      <p><a class="btn primary" href="/auth/login?ritorno={{ encodeURIComponent(ritorno) }}">Accedi con Microsoft 365</a></p>
+    @else
+      <div class="messaggio errore"><p>Il login Microsoft 365 non è ancora configurato su questo server.</p></div>
+    @end
+
+    @if(modalitaAuth === 'dev')
+      @component('components/pannello', { titolo: 'Login di sviluppo', nota: 'solo con AUTH_MODE=dev' })
+        <p class="muted" style="margin:0 0 10px">Scegli un utente dei dati di esempio. In produzione questa sezione non esiste e il server rifiuta di partire con AUTH_MODE=dev.</p>
+        <ul class="elenco-dev">
+          @each(u in utentiDev)
+            <li>
+              <a href="/dev/login?come={{ u.email.split('@')[0] }}&ritorno={{ encodeURIComponent(ritorno) }}" data-testid="dev-{{ u.email.split('@')[0] }}">
+                <b>{{ u.nome }}</b>
+                <span class="ruolo">{{ u.ruolo }} · {{ u.email.split('@')[0] }}</span>
+              </a>
+            </li>
+          @end
+        </ul>
+      @end
+    @end
+  </div>
+@end
