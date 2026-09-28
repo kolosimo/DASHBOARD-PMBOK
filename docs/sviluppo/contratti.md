@@ -22,15 +22,23 @@ Le formule esatte sono nei JSDoc e in `docs/formule/formule.md`.
 | Modulo | Funzione | Stato |
 |---|---|---|
 | anagrafiche | `commesseVisibili(utente)` | **implementata** (home) |
-| anagrafiche | `commessaConTeam(commessaId)`, `milestoneProssime(commessaId, daData, limite)` | firma |
-| lps | `riepilogoLps(commessaId, settimana)`, `paretoCause(commessaId, da, a)` | firma |
-| flusso | `riepilogoFlusso(commessaId, oggi)` | firma |
-| ore | `oreCommessa(commessaId, settimana)` | firma |
-| evm | `riepilogoEvm(commessaId, dataStato)`, `serieCurvaS(commessaId)` | firma |
+| anagrafiche | `commessaConTeam(commessaId)`, `milestoneProssime(commessaId, daData, limite)` | **implementata** (Fase 1, A1) |
+| lps | `riepilogoLps(commessaId, settimana)`, `paretoCause(commessaId, da, a)` | **implementata** (Fase 1, A2) |
+| flusso | `riepilogoFlusso(commessaId, oggi)` | **implementata** (Fase 1, A3) |
+| ore | `oreCommessa(commessaId, settimana)` | **implementata** (Fase 1, A4)⁵ |
+| evm | `riepilogoEvm(commessaId, dataStato)`, `serieCurvaS(commessaId, oggi?)` | **implementata** (Fase 1, A5)⁶ |
 | obeya | `avvisiCommessa(commessaId)` | firma |
 | portafoglio | `righePortafoglio(utente)` | firma |
 | admin | `elencoImpostazioni()` | **implementata** |
 | elaborato_dettaglio | `schedaElaborato(commessaId, elaboratoId)` | firma |
+
+5. `oreCommessa`: `perElaborato[].minutiTotali` e `totaleCommessaMinuti` sono il **cumulato
+   fino alla domenica della settimana** indicata (utilizzabile dall'EVM come AC a quella
+   data). Campo additivo `perElaborato[].titolo`.
+6. Campi additivi e compatibili: `RiepilogoEvm` estende gli indicatori con `commessaId`,
+   `baselineId`, `baselineNumero` e altri dati della baseline; `PuntoCurvaSEvm` estende
+   `PuntoCurvaS` con `rettificato` e `acRettificatoMinuti` (snapshot rettificati dopo lo
+   scatto). `serieCurvaS` ha il parametro facoltativo `oggi` (default: oggi a Roma).
 
 Regola: un modulo **legge** i dati degli altri solo tramite queste funzioni e **scrive**
 solo sulle proprie tabelle (`docs/sviluppo/proprieta-file.md`).
@@ -59,4 +67,9 @@ solo sulle proprie tabelle (`docs/sviluppo/proprieta-file.md`).
 
 I moduli definiscono i job in `app/modules/<modulo>/jobs.ts` (per esempio lo snapshot
 settimanale del lookahead e dell'EVM, lunedì alle 06:00 ora di Roma) e l'orchestratore
-li importa in `start/scheduler.ts`.
+li importa in `start/scheduler.ts`. Registrati in Fase 1:
+
+| Job | Modulo | Quando |
+|---|---|---|
+| `lps.snapshot_settimanali` | lps | ogni giorno alle 06:10 (Roma), idempotente |
+| `evm.snapshot` | evm | ogni giorno alle 06:10 (Roma), idempotente; segna le rettifiche |

@@ -203,7 +203,7 @@ Restano aperte D1 (server) e D3 (tenant Entra) con l'IT. Non bloccano la Fase 1.
 | A1 Anagrafiche + admin | CRUD commesse/team/milestone/elaborati, import CSV/incolla da Excel, pannello di configurazione |
 | A2 Last Planner | lookahead a 6 settimane, vincoli molti-a-molti, piano bozza→promesso→chiuso (causa obbligatoria per ogni "no"), PPC/PCR/Pareto, job di snapshot |
 | A3 Flusso/Kanban | avanzamento di uno stato alla volta, WIP, Work Item Age reale, throughput/cycle time, CFD; `CambioStatoService` è l'unico che scrive lo stato |
-| A4 Ore | timesheet settimanale solo per sé (403 per gli altri), blocco dopo la scadenza, vista aggregata per il PM; ore per persona disattivate di default |
+| A4 Ore | timesheet settimanale solo per sé (403 per gli altri), blocco dopo la scadenza, vista aggregata per il PM; ore per persona visibili a PM e admin (attive di default, Gate 0), disattivabili; mai alla direzione |
 | A5 EVM | editor e approvazione della baseline con PV settimanale congelato, calcolo live, `snapshot_evm`, curva S dagli snapshot, nessuna divisione per zero |
 | T1 Verificatore formule | test **scritti prima** del codice, con casi calcolati a mano: normali, limite, divisione per zero, W53, ora legale. Gli agenti di modulo non possono modificarli |
 | T2 Revisore | per ogni branch controlla: permessi, 409, audit, italiano, nessuna classifica per persona, N+1, dipendenze |
@@ -263,7 +263,7 @@ Restano aperte D1 (server) e D3 (tenant Entra) con l'IT. Non bloccano la Fase 1.
 | Conflitti tra agenti | schema e contratti fissati in Fase 0, proprietà dei file, merge in serie |
 | Storia EVM riscritta | snapshot e pesi congelati nella baseline, test T1 |
 | Differenze Linux/Windows | script portabili, nessuna dipendenza nativa, staging Windows al Gate 2 |
-| Art. 4 Statuto dei lavoratori | solo KPI per commessa o team, ore per persona disattivate, test B3 |
+| Art. 4 Statuto dei lavoratori | solo KPI per commessa o team, ore per persona solo per PM e admin (disattivabili), mai classifiche; informativa prima del go-live; test B3 |
 | Crescita dei requisiti | solo l'MVP; BIM escluso per decisione dell'utente |
 
 ## Verifica end-to-end

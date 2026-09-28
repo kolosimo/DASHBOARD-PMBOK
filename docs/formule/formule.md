@@ -100,16 +100,33 @@ Dati di esempio W31–W38: Input mancante 9, Approvazione attesa 5, Risorsa non 
 Stima troppo ottimista 4, Criteri cambiati 3, Errore o rilavorazione 2, Priorità cambiata 2,
 Altro 1 (W39 aggiunge 1 "Input mancante" e 1 "Risorsa non disponibile").
 
+**Scelte di implementazione (Fase 1, A2) — da confermare con l'utente e con T1**
+
+- Pareto: esclusi gli impegni aggiunti dopo la promessa (il totale del Pareto è quello dei
+  promessi non fatti, coerente con il PPC).
+- TMR/TA: un codice attività per impegno promesso collegato a un'attività (con ripetizioni);
+  TA conta le voci, TMR le attività distinte.
+- PCR: un vincolo annullato senza data di annullamento è escluso dal calcolo.
+- Riaprire un vincolo azzera `rimosso_il` e `annullato_il` (lo storico resta negli snapshot).
+
 ## Flusso (Kanban)
 
 - Si avanza di **uno** stato alla volta; per tornare indietro serve un motivo.
-- Superare il limite WIP di una colonna va confermato e finisce nell'audit.
+- Superare il limite WIP di una colonna va confermato **con un motivo obbligatorio** e
+  finisce nell'audit (come per il ritorno indietro).
 - **Work Item Age** = giorni di calendario (Europe/Rome) da `stato_dal` a oggi; solo per gli
   elaborati non emessi. Esempio: ELE-SC-201 nello stato "Calcoli" dal 09/09/2026 → al
   24/09/2026 età **15 giorni** (oltre la soglia di esempio di 10 → segnalato).
 - **Cycle time** = giorni tra l'uscita dallo stato iniziale e l'arrivo allo stato finale.
 - **Throughput(w)** = elaborati distinti arrivati allo stato finale nella settimana w.
 - **CFD** = numero di elaborati per colonna a fine giornata, ricostruito da `transizioni_elaborato`.
+
+Scelte di implementazione (Fase 1, A3) — da confermare con T1:
+
+- `cycleTime`: se manca l'uscita dallo stato iniziale (elaborato nato già in uno stato
+  successivo) si usa la transizione di nascita; se l'arrivo allo stato finale precede
+  l'inizio, l'elaborato non si conta.
+- `controllaPassaggioStato(da, a)` con `da = a` restituisce un errore ("già in questo stato").
 
 ## Semafori (soglie di esempio, tabella `impostazioni`) — da tarare con i PM durante il pilota
 
