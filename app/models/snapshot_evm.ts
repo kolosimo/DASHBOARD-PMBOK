@@ -52,6 +52,16 @@ export default class SnapshotEvm extends BaseModel {
   @column.dateTime({ autoCreate: true })
   declare creatoIl: DateTime
 
+  /** Le ore della settimana sono cambiate dopo lo scatto (i valori storici restano) */
+  @column()
+  declare rettificato: boolean
+
+  @column()
+  declare acRettificatoMinuti: Minuti | null
+
+  @column.dateTime()
+  declare rettificatoIl: DateTime | null
+
   @belongsTo(() => Commessa)
   declare commessa: BelongsTo<typeof Commessa>
 

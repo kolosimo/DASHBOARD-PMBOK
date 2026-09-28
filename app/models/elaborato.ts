@@ -4,6 +4,7 @@ import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import type { ClasseServizio, DataIso, Minuti } from '#domain/types'
 import Commessa from '#models/commessa'
 import Disciplina from '#models/disciplina'
+import Milestone from '#models/milestone'
 import StatoElaborato from '#models/stato_elaborato'
 import Utente from '#models/utente'
 import TransizioneElaborato from '#models/transizione_elaborato'
@@ -39,6 +40,10 @@ export default class Elaborato extends BaseModel {
   @column()
   declare responsabileId: number | null
 
+  /** Milestone di riferimento (facoltativa; migrazione additiva di A1) */
+  @column()
+  declare milestoneId: number | null
+
   /** Lo scrive solo il servizio di cambio stato del modulo flusso */
   @column()
   declare statoId: number
@@ -64,6 +69,9 @@ export default class Elaborato extends BaseModel {
 
   @belongsTo(() => StatoElaborato, { foreignKey: 'statoId' })
   declare stato: BelongsTo<typeof StatoElaborato>
+
+  @belongsTo(() => Milestone)
+  declare milestone: BelongsTo<typeof Milestone>
 
   @belongsTo(() => Utente, { foreignKey: 'responsabileId' })
   declare responsabile: BelongsTo<typeof Utente>

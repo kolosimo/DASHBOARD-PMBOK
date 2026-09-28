@@ -3,6 +3,7 @@ import { BaseModel, belongsTo, column, manyToMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import type { Lunedi, TipoAttivitaLookahead } from '#domain/types'
 import Commessa from '#models/commessa'
+import Disciplina from '#models/disciplina'
 import Elaborato from '#models/elaborato'
 import Milestone from '#models/milestone'
 import Utente from '#models/utente'
@@ -35,6 +36,10 @@ export default class AttivitaLookahead extends BaseModel {
   @column()
   declare responsabileId: number | null
 
+  /** Disciplina facoltativa: se vuota vale quella dell'elaborato collegato */
+  @column()
+  declare disciplinaId: number | null
+
   @column()
   declare settimanaInizio: Lunedi
 
@@ -58,6 +63,9 @@ export default class AttivitaLookahead extends BaseModel {
 
   @belongsTo(() => Milestone)
   declare milestone: BelongsTo<typeof Milestone>
+
+  @belongsTo(() => Disciplina)
+  declare disciplina: BelongsTo<typeof Disciplina>
 
   @belongsTo(() => Utente, { foreignKey: 'responsabileId' })
   declare responsabile: BelongsTo<typeof Utente>

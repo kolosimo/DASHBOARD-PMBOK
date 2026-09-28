@@ -6,6 +6,10 @@ import app from '@adonisjs/core/services/app'
 import env from '#start/env'
 import { avviaScheduler, fermaScheduler } from '#shared/scheduler'
 
+// Job dei moduli (si registrano all'import)
+import '#modules/lps/jobs'
+import '#modules/evm/jobs'
+
 if (env.get('SCHEDULER_ATTIVO', true) && app.getEnvironment() === 'web') {
   app.ready(() => avviaScheduler())
   app.terminating(() => fermaScheduler())
