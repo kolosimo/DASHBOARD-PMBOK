@@ -27,6 +27,17 @@ const validatoreSpostamento = vine.create(
   })
 )
 
+/**
+ * Valore di HX-Trigger per un toast. I caratteri non ASCII (→, lettere
+ * accentate) vanno come \uXXXX: nelle intestazioni HTTP non sono ammessi.
+ */
+function eventoToast(messaggio: string): string {
+  return JSON.stringify({ toast: messaggio }).replace(
+    /[\u007f-\uffff]/g,
+    (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`
+  )
+}
+
 /** Dati aggiuntivi per il frammento del Kanban (messaggi e conferme) */
 interface Extra {
   errore?: string
@@ -95,6 +106,8 @@ export default class FlussoController {
     const dati = await this.dati(ctx, commessa, extra)
     const htmx = ctx.request.header('hx-request') === 'true'
     ctx.response.status(status)
+    // Il messaggio compare anche come avviso in basso: la board può essere scorsa
+    if (htmx && extra.errore) ctx.response.header('HX-Trigger', eventoToast(extra.errore))
     return ctx.view.render(htmx ? 'modules/flusso/_flusso' : 'modules/flusso/kanban', dati)
   }
 
@@ -182,7 +195,7 @@ export default class FlussoController {
       const testo =
         `${esito.elaborato.codice}: ${esito.aStato.nome.toLowerCase()}` +
         (esito.wipSforato ? ' (limite WIP superato)' : '')
-      response.header('HX-Trigger', JSON.stringify({ toast: testo }))
+      response.header('HX-Trigger', eventoToast(testo))
       if (request.header('hx-request') !== 'true') {
         return response.redirect(`/commesse/${commessa.id}/flusso`)
       }

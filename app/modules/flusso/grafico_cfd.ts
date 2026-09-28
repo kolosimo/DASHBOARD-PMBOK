@@ -32,7 +32,7 @@ export interface GraficoCfd {
 
 const L = 720
 const H = 240
-const M = { sinistra: 36, destra: 12, alto: 10, basso: 26 }
+const M = { sinistra: 36, destra: 24, alto: 10, basso: 26 }
 
 function arrotonda(n: number): number {
   return Math.round(n * 10) / 10

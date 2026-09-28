@@ -23,61 +23,70 @@
     </div>
   @end
   @if(confermaWip)
-    <div
-      class="messaggio conflitto conferma-wip"
-      role="alertdialog"
+    {{-- Finestra modale (Alpine); senza JavaScript resta visibile in cima alla board --}}
+    <dialog
+      open
+      class="conferma-wip"
       aria-labelledby="conferma-wip-testo"
       data-testid="conferma-wip"
+      x-data
+      x-init="$el.close(); $el.showModal()"
     >
-      @!component('components/pill', { classe: 'w', testo: 'limite WIP' })
-      <div>
-        <p id="conferma-wip-testo">
-          <b>{{ confermaWip.codice }}</b>
-          →
-          {{ confermaWip.aStatoNome }}.
-          {{ confermaWip.messaggio }}
-        </p>
-        <form
-          class="campi"
-          method="POST"
-          action="/commesse/{{ commessa.id }}/flusso/elaborati/{{ confermaWip.elaboratoId }}/stato"
-          hx-post="/commesse/{{ commessa.id }}/flusso/elaborati/{{ confermaWip.elaboratoId }}/stato"
-          hx-target="#flusso"
-          hx-swap="outerHTML"
-        >
-          {{ csrfField() }}
-          <input type="hidden" name="version" value="{{ confermaWip.version }}" />
-          <input type="hidden" name="a_stato_id" value="{{ confermaWip.aStatoId }}" />
-          <input type="hidden" name="conferma_wip" value="1" />
-          <label>
+      <div class="messaggio conflitto">
+        @!component('components/pill', { classe: 'w', testo: 'limite WIP' })
+        <div>
+          <p id="conferma-wip-testo">
+            <b>{{ confermaWip.codice }}</b>
+            →
+            {{ confermaWip.aStatoNome }}.
+            {{ confermaWip.messaggio }}
+          </p>
+          <form
+            class="campi"
+            method="POST"
+            action="/commesse/{{ commessa.id }}/flusso/elaborati/{{ confermaWip.elaboratoId }}/stato"
+            hx-post="/commesse/{{ commessa.id }}/flusso/elaborati/{{ confermaWip.elaboratoId }}/stato"
+            hx-target="#flusso"
+            hx-swap="outerHTML"
+          >
+            {{ csrfField() }}
+            <input type="hidden" name="version" value="{{ confermaWip.version }}" />
+            <input type="hidden" name="a_stato_id" value="{{ confermaWip.aStatoId }}" />
+            <input type="hidden" name="conferma_wip" value="1" />
+            <label>
+              
+              
             
             
             Motivo dello sforamento
 
 
-            <input
-              type="text"
-              name="motivo"
-              required
-              maxlength="1000"
-              value="{{ confermaWip.motivo || '' }}"
-              style="min-width:280px"
-              autofocus
-            />
-          </label>
-          <button class="btn primary" type="submit">Conferma lo spostamento</button>
-          <button
-            class="btn ghost"
-            type="button"
-            hx-get="/commesse/{{ commessa.id }}/flusso/frammento"
-            hx-target="#flusso"
-            hx-swap="outerHTML"
-          >
-            Annulla
-          </button>
-        </form>
+
+
+              <input
+                type="text"
+                name="motivo"
+                required
+                maxlength="1000"
+                value="{{ confermaWip.motivo || '' }}"
+                style="min-width:280px"
+                autofocus
+              />
+            </label>
+            <button class="btn primary" type="submit">Conferma lo spostamento</button>
+            <button
+              class="btn ghost"
+              type="button"
+              hx-get="/commesse/{{ commessa.id }}/flusso/frammento"
+              hx-target="#flusso"
+              hx-swap="outerHTML"
+            >
+              Annulla
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    </dialog>
   @end
 
   <div class="kpis">
@@ -244,15 +253,27 @@
   <p class="muted" style="font-size:12.5px;margin:0">
     {{ glossario.WIA.nome }}
     
+    
+    
      in giorni di calendario =
+
+
 
     {{ glossario.WIA.spiegazione.toLowerCase() }}
     
+    
+    
      Le schede ferme da
+
+
 
     {{ formato.numero(giorniFermo) }}
     
+    
+    
      giorni o più sono in rosso.
+
+
 
 
     @if(!puoSpostare)
@@ -266,7 +287,7 @@
       nota: 'ultime ' + riepilogo.throughput.length + ' settimane',
     })
       @let(bw = 44)
-      @let(hMax = 110)
+      @let(hMax = 92)
       <svg
         viewBox="0 0 {{ riepilogo.throughput.length * (bw + 12) + 12 }} 150"
         width="100%"
@@ -374,11 +395,23 @@
       display: inline;
       margin: 0;
     }
-    .conferma-wip {
+    dialog.conferma-wip {
+      border: 0;
+      padding: 0;
+      border-radius: 6px;
+      max-width: min(640px, calc(100vw - 32px));
+      background: var(--surface);
+      color: var(--ink);
+    }
+    dialog.conferma-wip::backdrop {
+      background: rgb(0 0 0 / 0.35);
+    }
+    .conferma-wip .messaggio {
       align-items: flex-start;
+      padding: 16px;
     }
     .conferma-wip p {
-      margin: 0 0 8px;
+      margin: 0 0 12px;
     }
     svg .barra-th {
       fill: var(--accent);
