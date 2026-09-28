@@ -68,3 +68,17 @@ export const vedeOrePerPersona = Bouncer.ability(async (utente: Utente, commessa
   if (utente.ruolo === 'admin') return true
   return ePmDellaCommessa(utente, commessa)
 })
+
+/**
+ * Spostare le schede del Kanban (cambio di stato degli elaborati): admin, PM
+ * della commessa, membri con ruolo "pm", "progettista" o "verificatore".
+ * Mai direzione, osservatori e non membri (vedono la board in sola lettura).
+ */
+export const spostaElaborati = Bouncer.ability(async (utente: Utente, commessa: Commessa) => {
+  if (!utente.attivo) return false
+  if (utente.ruolo === 'admin') return true
+  if (utente.ruolo === 'direzione') return false
+  if (commessa.pmId === utente.id) return true
+  const ruolo = await ruoloNellaCommessa(utente.id, commessa.id)
+  return ruolo === 'pm' || ruolo === 'progettista' || ruolo === 'verificatore'
+})

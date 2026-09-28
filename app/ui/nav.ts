@@ -24,6 +24,12 @@ export const vociGlobali: VoceGlobale[] = [
   { id: 'portafoglio', etichetta: 'Portafoglio', percorso: '/portafoglio' },
   { id: 'ore', etichetta: 'Le mie ore', percorso: '/ore' },
   { id: 'admin', etichetta: 'Amministrazione', percorso: '/admin', soloAdmin: true },
+  {
+    id: 'correzione-ore',
+    etichetta: 'Correzione ore',
+    percorso: '/ore/correzione',
+    soloAdmin: true,
+  },
 ]
 
 export const vociCommessa: VoceCommessa[] = [

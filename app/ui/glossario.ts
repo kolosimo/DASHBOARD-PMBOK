@@ -1,8 +1,10 @@
 /**
  * Glossario dei termini mostrati nell'interfaccia.
  * Le sigle restano in inglese (sono standard), la spiegazione è in italiano.
- * Da confermare con l'utente al Gate 0.
+ * Testi coerenti con il glossario per gli utenti (docs/utente/glossario.md).
  */
+
+import type { ClasseServizio } from '#domain/types'
 
 export interface VoceGlossario {
   sigla: string
@@ -101,6 +103,22 @@ export const glossario = {
     nome: 'Elaborati emessi per settimana',
     spiegazione: 'Numero di elaborati arrivati allo stato finale nella settimana.',
   },
+  baseline: {
+    sigla: 'Baseline',
+    nome: 'Piano approvato',
+    spiegazione: 'Piano approvato e congelato: budget, date per stato, pesi e PV settimanale.',
+  },
+  lookahead: {
+    sigla: 'Lookahead',
+    nome: 'Piano delle prossime settimane',
+    spiegazione: 'Attività delle prossime 6 settimane con i loro vincoli.',
+  },
+  vincolo: {
+    sigla: 'Vincolo',
+    nome: 'Vincolo',
+    spiegazione:
+      'Ciò che impedisce di iniziare o finire un’attività; ha chi lo rimuove e una data entro cui serve.',
+  },
   CFD: {
     sigla: 'CFD',
     nome: 'Diagramma di flusso cumulativo',
@@ -109,3 +127,23 @@ export const glossario = {
 } as const satisfies Record<string, VoceGlossario>
 
 export type SiglaGlossario = keyof typeof glossario
+
+/** Classi di servizio degli elaborati (schede del Kanban) */
+export const classiServizio: Record<ClasseServizio, { testo: string; spiegazione: string }> = {
+  standard: {
+    testo: 'standard',
+    spiegazione: 'Si lavora in ordine di arrivo.',
+  },
+  data_fissa: {
+    testo: 'data fissa',
+    spiegazione: 'Va emesso entro una data concordata: si pianifica a ritroso.',
+  },
+  urgente: {
+    testo: 'urgente',
+    spiegazione: 'Passa davanti agli altri e può superare il limite WIP con conferma.',
+  },
+  intangibile: {
+    testo: 'intangibile',
+    spiegazione: 'Lavoro utile senza scadenza a breve (per esempio aggiornare modelli di calcolo).',
+  },
+}
