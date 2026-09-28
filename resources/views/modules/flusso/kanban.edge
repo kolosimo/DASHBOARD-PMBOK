@@ -1,10 +1,69 @@
 @component('layouts/app', { titolo: 'Kanban' })
-  @!component('components/segnaposto', {
-    eyebrow: 'Flusso degli elaborati',
-    titolo: 'Kanban di commessa',
-    descrizione:
-      'Un passo di stato alla volta, limiti WIP, età nello stato, throughput, cycle time e diagramma di flusso cumulativo.',
-    fase: 'Fase 1',
-    agente: 'agente A3',
-  })
+  <div class="head">
+    <div>
+      <div class="eyebrow">Flusso degli elaborati</div>
+      <h2>Kanban di commessa</h2>
+      <p>
+        Ogni scheda è un elaborato. Si avanza di uno stato alla volta; per tornare indietro serve un motivo. La colonna si evidenzia quando supera il limite WIP: superarlo va confermato e resta nel registro di audit.
+      </p>
+    </div>
+  </div>
+  @include('modules/flusso/_flusso')
+  {{--
+    Drag&drop: il rilascio su una colonna chiede al server di avanzare o
+    arretrare di UNO stato; se non è coerente il server risponde con un messaggio.
+    Tornando indietro si chiede il motivo. setData serve a Firefox.
+  --}}
+  <script>
+    (() => {
+      let trascinata = null;
+      document.addEventListener('dragstart', (e) => {
+        const scheda = e.target.closest && e.target.closest('[data-elaborato]');
+        if (!scheda || scheda.getAttribute('draggable') !== 'true') return;
+        trascinata = scheda;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', scheda.dataset.elaborato);
+      });
+      document.addEventListener('dragend', () => {
+        trascinata = null;
+        document
+          .querySelectorAll('[data-colonna].sopra')
+          .forEach((c) => c.classList.remove('sopra'));
+      });
+      document.addEventListener('dragover', (e) => {
+        const colonna = trascinata && e.target.closest && e.target.closest('[data-colonna]');
+        if (!colonna) return;
+        e.preventDefault();
+        colonna.classList.add('sopra');
+      });
+      document.addEventListener('dragleave', (e) => {
+        const colonna = e.target.closest && e.target.closest('[data-colonna]');
+        if (colonna && !colonna.contains(e.relatedTarget)) colonna.classList.remove('sopra');
+      });
+      document.addEventListener('drop', (e) => {
+        const colonna = trascinata && e.target.closest && e.target.closest('[data-colonna]');
+        const scheda = trascinata;
+        trascinata = null;
+        if (!colonna || !scheda) return;
+        e.preventDefault();
+        colonna.classList.remove('sopra');
+        const da = Number(scheda.dataset.colonnaPosizione);
+        const a = Number(colonna.dataset.colonnaPosizione);
+        if (a === da) return;
+        const valori = { version: scheda.dataset.version, colonna: colonna.dataset.colonna };
+        if (a < da) {
+          const motivo = window.prompt(
+            'Motivo del ritorno allo stato precedente (per esempio una rilavorazione):',
+          );
+          if (motivo === null) return;
+          valori.motivo = motivo;
+        }
+        window.htmx.ajax('POST', scheda.dataset.url, {
+          target: '#flusso',
+          swap: 'outerHTML',
+          values: valori,
+        });
+      });
+    })();
+  </script>
 @end

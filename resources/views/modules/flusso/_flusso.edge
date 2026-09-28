@@ -1,0 +1,418 @@
+{{--
+  Frammento del flusso (sostituito da HTMX dopo ogni spostamento e a ogni
+  evento in tempo reale della commessa).
+  Variabili: commessa, riepilogo, giorniFermo, puoSpostare, grafico,
+  massimoThroughput, emessiPeriodo, inLavorazione, fermi, primoStatoId,
+  ultimoStatoId, etichetteClasse; facoltative: errore (422), conflitto (409),
+  confermaWip (sforamento da confermare).
+--}}
+<div
+  id="flusso"
+  class="flusso"
+  data-testid="flusso"
+  hx-get="/commesse/{{ commessa.id }}/flusso/frammento"
+  hx-trigger="evento-commessa from:body, polling-commessa from:body"
+  hx-swap="outerHTML"
+>
+  @if(conflitto)
+    @!component('components/conflitto', { messaggio: conflitto })
+  @end
+  @if(errore)
+    <div class="messaggio errore" role="alert" data-testid="errore-flusso">
+      <p>{{ errore }}</p>
+    </div>
+  @end
+  @if(confermaWip)
+    <div
+      class="messaggio conflitto conferma-wip"
+      role="alertdialog"
+      aria-labelledby="conferma-wip-testo"
+      data-testid="conferma-wip"
+    >
+      @!component('components/pill', { classe: 'w', testo: 'limite WIP' })
+      <div>
+        <p id="conferma-wip-testo">
+          <b>{{ confermaWip.codice }}</b>
+          →
+          {{ confermaWip.aStatoNome }}.
+          {{ confermaWip.messaggio }}
+        </p>
+        <form
+          class="campi"
+          method="POST"
+          action="/commesse/{{ commessa.id }}/flusso/elaborati/{{ confermaWip.elaboratoId }}/stato"
+          hx-post="/commesse/{{ commessa.id }}/flusso/elaborati/{{ confermaWip.elaboratoId }}/stato"
+          hx-target="#flusso"
+          hx-swap="outerHTML"
+        >
+          {{ csrfField() }}
+          <input type="hidden" name="version" value="{{ confermaWip.version }}" />
+          <input type="hidden" name="a_stato_id" value="{{ confermaWip.aStatoId }}" />
+          <input type="hidden" name="conferma_wip" value="1" />
+          <label>
+            
+            Motivo dello sforamento
+
+            <input
+              type="text"
+              name="motivo"
+              required
+              maxlength="1000"
+              value="{{ confermaWip.motivo || '' }}"
+              style="min-width:280px"
+              autofocus
+            />
+          </label>
+          <button class="btn primary" type="submit">Conferma lo spostamento</button>
+          <button
+            class="btn ghost"
+            type="button"
+            hx-get="/commesse/{{ commessa.id }}/flusso/frammento"
+            hx-target="#flusso"
+            hx-swap="outerHTML"
+          >
+            Annulla
+          </button>
+        </form>
+      </div>
+    </div>
+  @end
+
+  <div class="kpis">
+    @!component('components/kpi', {
+      etichetta: 'In lavorazione',
+      valore: formato.numero(inLavorazione),
+      sotto: 'elaborati tra la prima e l’ultima colonna',
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.TH.sigla,
+      valore: formato.numero(emessiPeriodo),
+      sotto:
+        'elaborati emessi nelle ultime ' + riepilogo.throughput.length + ' settimane',
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.CT.sigla + ' medio',
+      valore:
+        riepilogo.cycleTimeMedioGiorni === null
+          ? formato.numero(null)
+          : formato.numero(riepilogo.cycleTimeMedioGiorni, 1) + ' gg',
+      sotto: glossario.CT.spiegazione,
+    })
+    @!component('components/kpi', {
+      etichetta: 'Elaborati fermi',
+      valore: formato.numero(fermi),
+      sotto: 'nello stesso stato da ' + formato.numero(giorniFermo) + ' giorni o più',
+    })
+  </div>
+
+  <div
+    class="kb"
+    style="grid-template-columns:repeat({{ riepilogo.colonne.length }}, minmax(220px, 1fr))"
+  >
+    @each((col, ic) in riepilogo.colonne)
+      <section
+        class="col {{ col.oltreLimite ? 'over' : '' }}"
+        data-colonna="{{ col.colonnaId }}"
+        data-colonna-posizione="{{ ic }}"
+        data-testid="colonna-{{ col.codice }}"
+        aria-label="{{ col.nome }}: {{ col.schede.length }} elaborati{{ col.limiteWip ? ', limite WIP ' + col.limiteWip : '' }}"
+      >
+        <div class="col-h">
+          <h3>{{ col.nome }}</h3>
+          <span
+            class="num {{ col.oltreLimite ? 'age-old' : 'muted' }}"
+            title="{{ glossario.WIP.spiegazione }}"
+          >
+            {{ formato.numero(col.schede.length) }}
+            {{ col.limiteWip ? ' / ' + formato.numero(col.limiteWip) : '' }}
+            @if(col.oltreLimite)
+              · oltre il limite WIP
+            @end
+          </span>
+        </div>
+        @each(s in col.schede)
+          @let(fermo = s.etaGiorni !== null && s.etaGiorni >= giorniFermo)
+          @let(url =
+            '/commesse/' + commessa.id + '/flusso/elaborati/' + s.elaboratoId + '/stato')
+          <article
+            class="card"
+            draggable="{{ puoSpostare ? 'true' : 'false' }}"
+            data-elaborato="{{ s.elaboratoId }}"
+            data-version="{{ s.version }}"
+            data-url="{{ url }}"
+            data-colonna-posizione="{{ ic }}"
+            data-testid="scheda-{{ s.codice }}"
+          >
+            <div class="row">
+              <span class="code">{{ s.codice }}</span>
+              <span
+                class="pill plain {{
+                  s.classeServizio === 'urgente'
+                    ? 'c'
+                    : s.classeServizio === 'data_fissa'
+                      ? 'w'
+                      : 'n'
+                }}"
+                title="Classe di servizio: {{ etichetteClasse[s.classeServizio].spiegazione }}"
+              >
+                {{ etichetteClasse[s.classeServizio].testo }}{{
+                  s.classeServizio === 'data_fissa' && s.dataFissa
+                    ? ' ' + formato.dataBreve(s.dataFissa)
+                    : ''
+                }}
+              </span>
+            </div>
+            <div class="t">{{ s.titolo }}</div>
+            <div class="row">
+              <span class="muted" style="font-size:12px">
+                {{ s.disciplina }}
+                ·
+                {{ s.statoNome }}
+              </span>
+              @if(s.etaGiorni !== null)
+                <span
+                  class="num {{ fermo ? 'age-old' : 'muted' }}"
+                  style="font-size:12px"
+                  title="{{ glossario.WIA.spiegazione }}"
+                >
+                  {{ formato.numero(s.etaGiorni) }}
+                  gg{{ fermo ? ' · fermo' : '' }}
+                </span>
+              @end
+            </div>
+            <div class="row">
+              <span class="muted num" style="font-size:12px" title="Ore registrate su ore a budget">
+                {{ formato.ore(s.acMinuti) }}
+                di
+                {{ formato.ore(s.budgetMinuti) }}
+              </span>
+              @if(puoSpostare)
+                <span class="mv">
+                  @if(s.statoId !== primoStatoId)
+                    <form
+                      method="POST"
+                      action="{{ url }}"
+                      hx-post="{{ url }}"
+                      hx-target="#flusso"
+                      hx-swap="outerHTML"
+                      hx-on::config-request="const m = window.prompt('Motivo del ritorno allo stato precedente (per esempio una rilavorazione):'); if (m === null) { event.preventDefault() } else { event.detail.parameters.motivo = m }"
+                    >
+                      {{ csrfField() }}
+                      <input type="hidden" name="version" value="{{ s.version }}" />
+                      <input type="hidden" name="verso" value="indietro" />
+                      <button
+                        type="submit"
+                        aria-label="Riporta {{ s.codice }} allo stato precedente"
+                        title="Stato precedente (serve un motivo)"
+                      >
+                        ←
+                      </button>
+                    </form>
+                  @end
+                  @if(s.statoId !== ultimoStatoId)
+                    <form
+                      method="POST"
+                      action="{{ url }}"
+                      hx-post="{{ url }}"
+                      hx-target="#flusso"
+                      hx-swap="outerHTML"
+                    >
+                      {{ csrfField() }}
+                      <input type="hidden" name="version" value="{{ s.version }}" />
+                      <input type="hidden" name="verso" value="avanti" />
+                      <button
+                        type="submit"
+                        aria-label="Porta {{ s.codice }} allo stato successivo"
+                        title="Stato successivo"
+                      >
+                        →
+                      </button>
+                    </form>
+                  @end
+                </span>
+              @end
+            </div>
+          </article>
+        @else
+          <p class="muted" style="font-size:12.5px;margin:0">Nessun elaborato.</p>
+        @end
+      </section>
+    @end
+  </div>
+  <p class="muted" style="font-size:12.5px;margin:0">
+    {{ glossario.WIA.nome }}
+     in giorni di calendario =
+    {{ glossario.WIA.spiegazione.toLowerCase() }}
+     Le schede ferme da
+    {{ formato.numero(giorniFermo) }}
+     giorni o più sono in rosso.
+
+    @if(!puoSpostare)
+      Hai la board in sola lettura.
+    @end
+  </p>
+
+  <div class="grid2">
+    @component('components/pannello', {
+      titolo: glossario.TH.nome,
+      nota: 'ultime ' + riepilogo.throughput.length + ' settimane',
+    })
+      @let(bw = 44)
+      @let(hMax = 110)
+      <svg
+        viewBox="0 0 {{ riepilogo.throughput.length * (bw + 12) + 12 }} 150"
+        width="100%"
+        role="img"
+        aria-label="{{ glossario.TH.nome }}: {{
+          riepilogo.throughput
+            .map((t) => formato.settimana(t.settimana) + ' ' + t.conteggio)
+            .join(', ')
+        }}"
+        data-testid="grafico-throughput"
+      >
+        <line
+          class="gl"
+          x1="0"
+          x2="{{ riepilogo.throughput.length * (bw + 12) + 12 }}"
+          y1="120"
+          y2="120"
+        />
+        @each((t, i) in riepilogo.throughput)
+          @let(h = Math.round((t.conteggio / massimoThroughput) * hMax))
+          <rect
+            class="barra-th"
+            x="{{ 12 + i * (bw + 12) }}"
+            y="{{ 120 - h }}"
+            width="{{ bw }}"
+            height="{{ h }}"
+            rx="2"
+          />
+          <text x="{{ 12 + i * (bw + 12) + bw / 2 }}" y="{{ 114 - h }}" text-anchor="middle">
+            {{ formato.numero(t.conteggio) }}
+          </text>
+          <text x="{{ 12 + i * (bw + 12) + bw / 2 }}" y="138" text-anchor="middle">
+            {{ formato.settimana(t.settimana) }}
+          </text>
+        @end
+      </svg>
+      <p class="muted" style="font-size:12.5px;margin:6px 0 0">{{ glossario.TH.spiegazione }}</p>
+    @end
+    @component('components/pannello', {
+      titolo: glossario.CFD.nome,
+      nota: 'giorno per giorno, a fine giornata',
+    })
+      @if(grafico.vuoto)
+        <p class="muted">Nessun elaborato nel periodo.</p>
+      @else
+        <svg
+          viewBox="0 0 {{ grafico.larghezza }} {{ grafico.altezza }}"
+          width="100%"
+          role="img"
+          aria-label="{{ glossario.CFD.nome }}: {{ grafico.aree.map((a) => a.nome + ' ' + a.ultimo).join(', ') }} (ultimo giorno)"
+          data-testid="grafico-cfd"
+        >
+          @each(t in grafico.tacche)
+            <line
+              class="gl"
+              x1="{{ grafico.margine.sinistra }}"
+              x2="{{ grafico.larghezza - grafico.margine.destra }}"
+              y1="{{ t.y }}"
+              y2="{{ t.y }}"
+            />
+            <text x="{{ grafico.margine.sinistra - 6 }}" y="{{ t.y + 4 }}" text-anchor="end">
+              {{ formato.numero(t.valore) }}
+            </text>
+          @end
+          @each(a in grafico.aree)
+            <path class="area-cfd livello-{{ a.livello }}" d="{{ a.tracciato }}">
+              <title>{{ a.nome }}</title>
+            </path>
+          @end
+          @each(e in grafico.etichette)
+            <text x="{{ e.x }}" y="{{ grafico.altezza - 8 }}" text-anchor="middle">
+              {{ formato.dataBreve(e.giorno) }}
+            </text>
+          @end
+        </svg>
+        <div class="legend">
+          @each(a in grafico.aree)
+            <span>
+              <i class="area-cfd livello-{{ a.livello }}" style="height:10px"></i>{{ a.nome }}
+              ·
+              {{ formato.numero(a.ultimo) }}
+            </span>
+          @end
+        </div>
+      @end
+
+      <p class="muted" style="font-size:12.5px;margin:6px 0 0">
+        {{ glossario.CFD.spiegazione }}
+        Bande che si allargano indicano lavoro che si accumula.
+      </p>
+    @end
+  </div>
+
+  <style>
+    .flusso {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .col.sopra {
+      outline: 2px dashed var(--accent);
+      outline-offset: -2px;
+    }
+    .card .mv form {
+      display: inline;
+      margin: 0;
+    }
+    .conferma-wip {
+      align-items: flex-start;
+    }
+    .conferma-wip p {
+      margin: 0 0 8px;
+    }
+    svg .barra-th {
+      fill: var(--accent);
+    }
+    .area-cfd {
+      fill: var(--accent);
+      stroke: var(--surface);
+      stroke-width: 1;
+    }
+    i.area-cfd {
+      background: var(--accent);
+    }
+    .area-cfd.livello-0 {
+      fill-opacity: 0.9;
+      opacity: 1;
+    }
+    .area-cfd.livello-1 {
+      fill-opacity: 0.62;
+    }
+    .area-cfd.livello-2 {
+      fill-opacity: 0.4;
+    }
+    .area-cfd.livello-3 {
+      fill-opacity: 0.2;
+    }
+    .area-cfd.livello-4 {
+      fill-opacity: 0.1;
+    }
+    i.area-cfd.livello-0 {
+      opacity: 0.9;
+    }
+    i.area-cfd.livello-1 {
+      opacity: 0.62;
+    }
+    i.area-cfd.livello-2 {
+      opacity: 0.4;
+    }
+    i.area-cfd.livello-3 {
+      opacity: 0.2;
+    }
+    i.area-cfd.livello-4 {
+      opacity: 0.1;
+    }
+  </style>
+</div>
