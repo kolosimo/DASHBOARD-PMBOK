@@ -1,0 +1,200 @@
+{{--
+  Contenuto aggiornabile della pagina EVM (indicatori, curva S, registri).
+  Si ricarica da solo con gli eventi della commessa (SSE o polling).
+  Variabili: commessa, riepilogo, curvaS, serie, snapshot, attiva, bozza, soglie, puoModificare, oggi
+--}}
+<div
+  id="evm-contenuto"
+  hx-get="/commesse/{{ commessa.id }}/evm/contenuto"
+  hx-trigger="evento-commessa from:body, polling-commessa from:body"
+  hx-swap="outerHTML"
+>
+  @if(!attiva)
+    <div class="messaggio errore" role="status" data-testid="senza-baseline">
+      <p>
+        Nessuna baseline approvata: il valore pianificato (PV) non è disponibile e SPI resta n.d. Il valore guadagnato usa i pesi della configurazione attuale.
+        @if(puoModificare)
+          <a href="/commesse/{{ commessa.id }}/evm/baseline">Prepara la baseline</a>.
+        @end
+      </p>
+    </div>
+  @end
+
+  <div class="kpis" data-testid="kpi-evm">
+    @!component('components/kpi', {
+      etichetta: glossario.BAC.sigla + ' · ' + glossario.BAC.nome,
+      valore: formato.ore(riepilogo.bacMinuti),
+      sotto: attiva ? 'baseline n. ' + attiva.numero : 'budget attuale'
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.PV.sigla + ' · ' + glossario.PV.nome,
+      valore: formato.ore(attiva ? riepilogo.pvMinuti : null),
+      sotto: 'a fine ' + formato.settimana(riepilogo.settimana)
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.EV.sigla + ' · ' + glossario.EV.nome,
+      valore: formato.ore(riepilogo.evMinuti),
+      sotto: 'dallo stato degli elaborati'
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.AC.sigla + ' · ' + glossario.AC.nome,
+      valore: formato.ore(riepilogo.acMinuti),
+      sotto: 'fino al ' + formato.data(riepilogo.dataStato)
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.SPI.sigla + ' · ' + glossario.SPI.nome,
+      valore: formato.indice(riepilogo.spi),
+      semaforo: { classe: formato.classe(riepilogo.spi, soglie.spi), testo: formato.statoSemaforo(riepilogo.spi, soglie.spi) }
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.CPI.sigla + ' · ' + glossario.CPI.nome,
+      valore: formato.indice(riepilogo.cpi),
+      semaforo: { classe: formato.classe(riepilogo.cpi, soglie.cpi), testo: formato.statoSemaforo(riepilogo.cpi, soglie.cpi) }
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.EAC.sigla + ' · ' + glossario.EAC.nome,
+      valore: formato.ore(riepilogo.eacMinuti),
+      sotto: 'BAC / CPI'
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.ETC.sigla + ' · ' + glossario.ETC.nome,
+      valore: formato.ore(riepilogo.etcMinuti),
+      sotto: 'EAC − AC'
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.VAC.sigla + ' · ' + glossario.VAC.nome,
+      valore: formato.ore(riepilogo.vacMinuti),
+      sotto: 'BAC − EAC'
+    })
+  </div>
+
+  @if(riepilogo.fuoriBaseline.length || riepilogo.budgetCambiati.length)
+    @component('components/pannello', { titolo: 'Avvisi della baseline' })
+      <ul class="alerts" data-testid="avvisi-evm">
+        @each(e in riepilogo.fuoriBaseline)
+          <li data-testid="fuori-baseline">
+            @!component('components/pill', { classe: 'w', testo: 'fuori baseline' })
+            <span>
+              <span class="code">{{ e.codice }}</span>
+              {{ e.titolo }}: elaborato fuori baseline, le sue ore entrano in AC ma non ha valore pianificato né guadagnato. Serve una nuova baseline.
+            </span>
+          </li>
+        @end
+        @each(e in riepilogo.budgetCambiati)
+          <li>
+            @!component('components/pill', { classe: 'n', testo: 'budget cambiato' })
+            <span>
+              <span class="code">{{ e.codice }}</span>: budget {{ formato.ore(e.ora) }}, nella baseline {{ formato.ore(e.prima) }}. L'EVM usa il valore della baseline.
+            </span>
+          </li>
+        @end
+      </ul>
+    @end
+  @end
+
+  @component('components/pannello', { titolo: 'Curva S in ore', nota: 'storia dagli snapshot settimanali, settimana corrente calcolata ora' })
+    {{{ curvaS }}}
+    <div class="legend">
+      <span><i style="background:var(--pv)"></i>PV {{ glossario.PV.nome.toLowerCase() }} {{ formato.ore(attiva ? riepilogo.pvMinuti : null) }}</span>
+      <span><i style="background:var(--ev)"></i>EV {{ glossario.EV.nome.toLowerCase() }} {{ formato.ore(riepilogo.evMinuti) }}</span>
+      <span><i style="background:var(--ac)"></i>AC {{ glossario.AC.nome.toLowerCase() }} {{ formato.ore(riepilogo.acMinuti) }}</span>
+      <span class="muted">BAC {{ formato.ore(riepilogo.bacMinuti) }}</span>
+    </div>
+  @end
+
+  @component('components/pannello', { titolo: 'Registro EVM per elaborato', nota: 'EV dallo stato attuale con i pesi congelati nella baseline', tabella: true })
+    <table data-testid="registro-evm">
+      <thead>
+        <tr>
+          <th>Elaborato</th>
+          <th>Titolo</th>
+          <th>Stato attuale (peso)</th>
+          <th>Stato previsto</th>
+          <th class="r">Budget</th>
+          <th class="r">PV</th>
+          <th class="r">EV</th>
+          <th class="r">AC</th>
+          <th class="r">CPI</th>
+        </tr>
+      </thead>
+      <tbody>
+        @each(e in riepilogo.perElaborato)
+          <tr>
+            <td class="code">{{ e.codice }}</td>
+            <td>
+              {{ e.titolo }}
+              @if(e.fuoriBaseline)
+                @!component('components/pill', { classe: 'w', testo: 'fuori baseline' })
+              @end
+            </td>
+            <td>{{ e.statoNome }} ({{ e.pesoStatoPercento }}%)</td>
+            <td>{{ formato.testo(e.statoPianificatoNome) }}</td>
+            <td class="r num">{{ formato.ore(e.budgetMinuti) }}</td>
+            <td class="r num">{{ formato.ore(e.pvMinuti) }}</td>
+            <td class="r num">{{ formato.ore(e.evMinuti) }}</td>
+            <td class="r num">{{ formato.ore(e.acMinuti) }}</td>
+            <td class="r">
+              @!component('components/pill', { classe: formato.classe(e.cpi, soglie.cpi), testo: formato.indice(e.cpi) })
+            </td>
+          </tr>
+        @else
+          <tr>
+            <td colspan="9" class="muted">La commessa non ha elaborati.</td>
+          </tr>
+        @end
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="4">Totale commessa</th>
+          <th class="r num">{{ formato.ore(riepilogo.bacMinuti) }}</th>
+          <th class="r num">{{ formato.ore(attiva ? riepilogo.pvMinuti : null) }}</th>
+          <th class="r num">{{ formato.ore(riepilogo.evMinuti) }}</th>
+          <th class="r num">{{ formato.ore(riepilogo.acMinuti) }}</th>
+          <th class="r">{{ formato.indice(riepilogo.cpi) }}</th>
+        </tr>
+      </tfoot>
+    </table>
+  @end
+
+  @component('components/pannello', { titolo: 'Storico settimanale (snapshot)', nota: 'valori congelati a fine settimana: non si ricalcolano', tabella: true })
+    <table data-testid="storico-evm">
+      <thead>
+        <tr>
+          <th>Settimana</th>
+          <th class="r">PV</th>
+          <th class="r">EV</th>
+          <th class="r">AC</th>
+          <th class="r">SPI</th>
+          <th class="r">CPI</th>
+          <th class="r">{{ glossario.EAC.nome }}</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        @each(s in snapshot)
+          <tr>
+            <td class="mono">{{ formato.settimana(s.settimana) }}</td>
+            <td class="r num">{{ formato.ore(s.pvMinuti) }}</td>
+            <td class="r num">{{ formato.ore(s.evMinuti) }}</td>
+            <td class="r num">{{ formato.ore(s.acMinuti) }}</td>
+            <td class="r">{{ formato.indice(s.spi) }}</td>
+            <td class="r">{{ formato.indice(s.cpi) }}</td>
+            <td class="r num">{{ formato.ore(s.eacMinuti) }}</td>
+            <td>
+              @if(s.rettificato)
+                <span data-testid="rettificato">
+                  @!component('components/pill', { classe: 'w', testo: 'rettificato' })
+                  ore modificate dopo lo snapshot: AC ora {{ formato.ore(s.acRettificatoMinuti) }}
+                </span>
+              @end
+            </td>
+          </tr>
+        @else
+          <tr>
+            <td colspan="8" class="muted">Nessuno snapshot: il primo si scatta alla scadenza per la modifica delle ore.</td>
+          </tr>
+        @end
+      </tbody>
+    </table>
+  @end
+</div>

@@ -1,10 +1,31 @@
 @component('layouts/app', { titolo: 'Avanzamento EVM' })
-  @!component('components/segnaposto', {
-    eyebrow: 'Earned Value in ore',
-    titolo: 'Avanzamento per elaborato',
-    descrizione:
-      'BAC, PV, EV, AC, SPI, CPI, stima a completamento (EAC) e ore ancora necessarie (ETC), curva S dagli snapshot.',
-    fase: 'Fase 1',
-    agente: 'agente A5',
-  })
+  <div class="head">
+    <div>
+      <div class="eyebrow">Earned Value in ore · {{ formato.settimana(riepilogo.settimana) }}</div>
+      <h2>Avanzamento per elaborato</h2>
+      <p>
+        Il valore guadagnato si calcola dallo stato dell'elaborato, non da una percentuale dichiarata, con i pesi congelati nella baseline. Le settimane passate si leggono dagli snapshot e non cambiano; solo la settimana corrente è calcolata al momento.
+      </p>
+    </div>
+    <div>
+      @if(attiva)
+        <div class="muted" data-testid="baseline-attiva">
+          Baseline n. {{ attiva.numero }} approvata il {{ formato.data(attiva.approvataIl) }}
+          @if(attiva.approvataDa)
+            da {{ attiva.approvataDa }}
+          @end
+        </div>
+      @end
+      @if(bozza)
+        <div class="muted">Bozza n. {{ bozza.numero }} in preparazione</div>
+      @end
+      @if(puoModificare)
+        <a class="btn" href="/commesse/{{ commessa.id }}/evm/baseline" data-testid="link-baseline">
+          {{ bozza ? 'Continua la bozza' : (attiva ? 'Nuova baseline' : 'Prepara la baseline') }}
+        </a>
+      @end
+    </div>
+  </div>
+
+  @include('modules/evm/_contenuto')
 @end

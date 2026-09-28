@@ -1,0 +1,118 @@
+@component('layouts/app', { titolo: 'Baseline EVM' })
+  <div class="head">
+    <div>
+      <div class="eyebrow">Earned Value in ore · baseline</div>
+      <h2>Pianificazione degli elaborati</h2>
+      <p>
+        Per ogni elaborato indica la data in cui deve raggiungere ogni stato. Con "Distribuisci" le date intermedie si ripartiscono in modo uniforme tra la prima e l'ultima; puoi poi correggerle una per una. All'approvazione si congelano pesi degli stati, budget, BAC e valore pianificato (PV) di ogni settimana.
+      </p>
+    </div>
+    <div>
+      <a class="btn ghost" href="/commesse/{{ commessa.id }}/evm">← Avanzamento EVM</a>
+    </div>
+  </div>
+
+  @if(errore)
+    <div class="messaggio errore" role="alert" data-testid="errore-baseline">
+      <p>{{ errore }}</p>
+    </div>
+  @end
+
+  @if(bozza)
+    @component('components/pannello', { titolo: 'Bozza n. ' + bozza.numero })
+      @slot('azioni')
+        <span class="note">versione {{ bozza.version }}</span>
+      @end
+      @if(bozza.note)
+        <p data-testid="motivo-bozza"><b>Motivo:</b> {{ bozza.note }}</p>
+      @end
+      @if(mancanti > 0)
+        <div class="messaggio errore" role="status">
+          <p>{{ mancanti }} elaborati non hanno ancora date in questa bozza.</p>
+          <form method="POST" action="/commesse/{{ commessa.id }}/evm/baseline/{{ bozza.id }}/mancanti">
+            {{ csrfField() }}
+            <button class="btn" type="submit">Aggiungi con date automatiche</button>
+          </form>
+        </div>
+      @end
+      <div class="impostazioni">
+        @each(riga in righe)
+          @include('modules/evm/_riga_baseline')
+        @end
+      </div>
+      <div class="campi" style="margin-top:12px">
+        <form method="POST" action="/commesse/{{ commessa.id }}/evm/baseline/{{ bozza.id }}/approva" onsubmit="return confirm('Approvare la baseline? Pesi, budget e PV settimanale verranno congelati.')">
+          {{ csrfField() }}
+          <input type="hidden" name="version" value="{{ bozza.version }}" />
+          <button class="btn primary" type="submit" data-testid="approva-baseline">Approva e congela</button>
+        </form>
+        <form method="POST" action="/commesse/{{ commessa.id }}/evm/baseline/{{ bozza.id }}/scarta" onsubmit="return confirm('Scartare la bozza?')">
+          {{ csrfField() }}
+          <input type="hidden" name="version" value="{{ bozza.version }}" />
+          <button class="btn ghost" type="submit">Scarta la bozza</button>
+        </form>
+      </div>
+    @end
+  @else
+    @component('components/pannello', { titolo: attiva ? 'Nuova baseline (re-baseline)' : 'Prima baseline' })
+      <form class="campi" method="POST" action="/commesse/{{ commessa.id }}/evm/baseline">
+        {{ csrfField() }}
+        @if(attiva)
+          <label style="flex:1 1 320px">
+            Motivo della re-baseline (obbligatorio)
+            <input type="text" name="motivo" value="{{ motivo || '' }}" maxlength="1000" required />
+          </label>
+        @end
+        <button class="btn primary" type="submit" data-testid="crea-bozza">
+          {{ attiva ? 'Crea la bozza dalla baseline attiva' : 'Crea la bozza con date automatiche' }}
+        </button>
+      </form>
+      <p class="muted">
+        @if(attiva)
+          La bozza parte dalle date della baseline n. {{ attiva.numero }}; la baseline attiva resta valida finché non approvi la nuova.
+        @else
+          Le date iniziali si distribuiscono tra l'inizio e la fine prevista della commessa.
+        @end
+      </p>
+    @end
+  @end
+
+  @component('components/pannello', { titolo: 'Baseline della commessa', tabella: true })
+    <table data-testid="elenco-baseline">
+      <thead>
+        <tr>
+          <th>N.</th>
+          <th>Stato</th>
+          <th>Approvata</th>
+          <th class="r">BAC</th>
+          <th>Pesi congelati</th>
+          <th>Motivo / note</th>
+        </tr>
+      </thead>
+      <tbody>
+        @each(b in elenco)
+          <tr>
+            <td class="num">{{ b.numero }}</td>
+            <td>
+              @!component('components/pill', { classe: b.stato === 'approvata' ? 'g' : 'n', testo: b.stato === 'approvata' ? 'attiva' : b.stato, semplice: true })
+            </td>
+            <td>{{ formato.data(b.approvataIl) }}{{ b.approvataDa ? ' · ' + b.approvataDa : '' }}</td>
+            <td class="r num">{{ b.stato === 'bozza' ? formato.testo(null) : formato.ore(b.bacMinuti) }}</td>
+            <td class="mono">
+              @if(b.stato !== 'bozza')
+                @each((s, i) in stati)
+                  {{ s.nome }} {{ b.pesiStati[s.codice] !== undefined ? b.pesiStati[s.codice] + '%' : formato.testo(null) }}{{ i === stati.length - 1 ? '' : ' · ' }}
+                @end
+              @end
+            </td>
+            <td>{{ formato.testo(b.note) }}</td>
+          </tr>
+        @else
+          <tr>
+            <td colspan="6" class="muted">Nessuna baseline.</td>
+          </tr>
+        @end
+      </tbody>
+    </table>
+  @end
+@end
