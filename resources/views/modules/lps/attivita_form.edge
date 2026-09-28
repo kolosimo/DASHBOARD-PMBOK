@@ -1,0 +1,189 @@
+@component('layouts/app', { titolo: attivita ? 'Modifica attività' : 'Nuova attività' })
+  <div class="head">
+    <div>
+      <div class="eyebrow">Last Planner · lookahead</div>
+      <h2>
+        {{
+          attivita
+            ? 'Modifica attività ' + attivita.codice
+            : 'Nuova attività del lookahead'
+        }}
+      </h2>
+      <p>
+        Un’attività ha un last planner (chi la porta avanti), una disciplina, un elaborato se serve e le settimane in cui si svolge. Se è pronta o vincolata lo dice il registro vincoli: non si imposta a mano.
+      </p>
+    </div>
+  </div>
+  @include('modules/lps/_messaggio')
+  @component('components/pannello', { titolo: 'Dati dell’attività' })
+    <form
+      method="POST"
+      action="{{ attivita ? base + '/attivita/' + attivita.id : base + '/attivita' }}"
+      class="campi"
+      data-testid="form-attivita"
+    >
+      {{ csrfField() }}
+      @if(attivita)
+        <input type="hidden" name="version" value="{{ valori.version }}" />
+      @end
+
+      <label>
+        
+        Codice
+
+        <input
+          type="text"
+          name="codice"
+          required
+          maxlength="20"
+          value="{{ valori.codice || '' }}"
+          style="width:90px"
+        />
+      </label>
+      <label style="flex:1 1 320px">
+        
+        Titolo
+
+        <input
+          type="text"
+          name="titolo"
+          required
+          maxlength="300"
+          value="{{ valori.titolo || '' }}"
+        />
+      </label>
+      <label>
+        Tipo
+        <select name="tipo">
+          <option value="attivita" {{ valori.tipo === 'attivita' ? 'selected' : '' }}>
+            Attività
+          </option>
+          <option value="milestone" {{ valori.tipo === 'milestone' ? 'selected' : '' }}>
+            Milestone
+          </option>
+        </select>
+      </label>
+      <label>
+        Last planner
+        <select name="responsabile_id">
+          <option value="">— nessuno —</option>
+          @each(p in team)
+            <option
+              value="{{ p.id }}"
+              {{ String(valori.responsabile_id) === String(p.id) ? 'selected' : '' }}
+            >
+              {{ p.nome }}
+            </option>
+          @end
+        </select>
+      </label>
+      <label>
+        Disciplina
+        <select name="disciplina_id">
+          <option value="">— quella dell’elaborato —</option>
+          @each(d in discipline)
+            <option
+              value="{{ d.id }}"
+              {{ String(valori.disciplina_id) === String(d.id) ? 'selected' : '' }}
+            >
+              {{ d.codice }}
+              ·
+              {{ d.nome }}
+            </option>
+          @end
+        </select>
+      </label>
+      <label>
+        Elaborato (facoltativo)
+        <select name="elaborato_id">
+          <option value="">— nessuno —</option>
+          @each(e in elaborati)
+            <option
+              value="{{ e.id }}"
+              {{ String(valori.elaborato_id) === String(e.id) ? 'selected' : '' }}
+            >
+              {{ e.codice }}
+              ·
+              {{ e.titolo }}
+            </option>
+          @end
+        </select>
+      </label>
+      <label>
+        Dalla settimana
+        <select name="settimana_inizio">
+          @each(w in settimaneScelta)
+            <option value="{{ w }}" {{ valori.settimana_inizio === w ? 'selected' : '' }}>
+              {{ formato.settimana(w) }}
+              ·
+              {{ formato.data(w) }}
+            </option>
+          @end
+        </select>
+      </label>
+      <label>
+        Alla settimana
+        <select name="settimana_fine">
+          @each(w in settimaneScelta)
+            <option value="{{ w }}" {{ valori.settimana_fine === w ? 'selected' : '' }}>
+              {{ formato.settimana(w) }}
+              ·
+              {{ formato.data(w) }}
+            </option>
+          @end
+        </select>
+      </label>
+      <span class="campi" style="flex-basis:100%">
+        <button class="btn primary" type="submit">
+          {{ attivita ? 'Salva le modifiche' : 'Aggiungi al lookahead' }}
+        </button>
+        <a class="btn ghost" href="{{ base }}/lookahead">Annulla</a>
+      </span>
+    </form>
+  @end
+  @if(attivita)
+    @component('components/pannello', { titolo: 'Vincoli collegati' })
+      @if(attivita.vincoli.length)
+        <p>
+          @each(v in attivita.vincoli)
+            <span class="code">{{ v.codice }}</span>
+            @!component('components/pill', {
+              classe:
+                v.stato === 'aperto'
+                  ? 'c'
+                  : v.stato === 'da_analizzare'
+                    ? 'w'
+                    : v.stato === 'rimosso'
+                      ? 'g'
+                      : 'n',
+              testo: v.stato.replace('_', ' '),
+            })
+          @end
+        </p>
+      @else
+        <p class="muted">Nessun vincolo collegato: l’attività è pronta.</p>
+      @end
+
+      <p>
+        <a class="btn" href="{{ base }}/vincoli/nuovo?attivita={{ attivita.id }}">
+          Registra un vincolo per questa attività
+        </a>
+      </p>
+    @end
+    @component('components/pannello', { titolo: 'Elimina' })
+      <form
+        method="POST"
+        action="{{ base }}/attivita/{{ attivita.id }}/elimina"
+        class="campi"
+        onsubmit="return confirm('Eliminare l’attività {{ attivita.codice }} dal lookahead?')"
+      >
+        {{ csrfField() }}
+        <input type="hidden" name="version" value="{{ attivita.version }}" />
+        <button class="btn" type="submit">Elimina l’attività</button>
+        <span class="muted" style="font-size:12.5px">
+          I vincoli restano nel registro; gli impegni già presi perdono il collegamento.
+        </span>
+      </form>
+    @end
+  @end
+@end

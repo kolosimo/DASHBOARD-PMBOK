@@ -1,0 +1,156 @@
+@component('layouts/app', { titolo: vincolo ? 'Modifica vincolo' : 'Nuovo vincolo' })
+  <div class="head">
+    <div>
+      <div class="eyebrow">Last Planner · registro vincoli</div>
+      <h2>{{ vincolo ? 'Modifica vincolo ' + vincolo.codice : 'Nuovo vincolo' }}</h2>
+      <p>
+        Un vincolo è ciò che manca perché un’attività possa partire (un input, un’approvazione, una persona…). Può bloccare più attività. Chi lo rimuove è una persona del team oppure un esterno (per esempio l’architetto).
+      </p>
+    </div>
+  </div>
+  @include('modules/lps/_messaggio')
+  @component('components/pannello', {
+    titolo: vincolo ? 'Dati del vincolo' : 'Il codice (V-n) si assegna in automatico',
+  })
+    <form
+      method="POST"
+      action="{{ vincolo ? base + '/vincoli/' + vincolo.id : base + '/vincoli' }}"
+      class="campi"
+      data-testid="form-vincolo"
+    >
+      {{ csrfField() }}
+      @if(vincolo)
+        <input type="hidden" name="version" value="{{ valori.version }}" />
+      @end
+
+      <label style="flex:1 1 360px">
+        
+        Vincolo
+
+        <input
+          type="text"
+          name="descrizione"
+          required
+          maxlength="500"
+          value="{{ valori.descrizione || '' }}"
+        />
+      </label>
+      <label>
+        Categoria
+        <select name="categoria">
+          @each(c in categorie)
+            <option value="{{ c }}" {{ valori.categoria === c ? 'selected' : '' }}>
+              {{ etichetteCategoria[c] }}
+            </option>
+          @end
+        </select>
+      </label>
+      @if(!vincolo || vincolo.aperto)
+        <label>
+          Stato
+          <select name="stato">
+            <option value="da_analizzare" {{ valori.stato === 'da_analizzare' ? 'selected' : '' }}>
+              Da analizzare
+            </option>
+            <option value="aperto" {{ valori.stato === 'aperto' ? 'selected' : '' }}>Aperto</option>
+          </select>
+        </label>
+      @else
+        <input type="hidden" name="stato" value="aperto" />
+        <p class="muted" style="margin:0">
+          Stato:
+          {{ vincolo.stato }}
+          (si cambia con “Riapri” nel registro).
+        </p>
+      @end
+
+      <label>
+        Chi lo rimuove (team)
+        <select name="responsabile_id">
+          <option value="">— esterno —</option>
+          @each(p in team)
+            <option
+              value="{{ p.id }}"
+              {{ String(valori.responsabile_id) === String(p.id) ? 'selected' : '' }}
+            >
+              {{ p.nome }}
+            </option>
+          @end
+        </select>
+      </label>
+      <label>
+        
+        oppure esterno
+
+        <input
+          type="text"
+          name="responsabile_esterno"
+          maxlength="200"
+          value="{{ valori.responsabile_esterno || '' }}"
+          placeholder="es. Architetto"
+        />
+      </label>
+      <label>
+        
+        Serve entro
+
+        <input
+          type="date"
+          name="data_necessaria"
+          value="{{ valori.data_necessaria || '' }}"
+          style="font:inherit;font-size:13px;padding:3px 6px"
+        />
+      </label>
+      <label>
+        
+        Identificato il
+
+        <input
+          type="date"
+          name="identificato_il"
+          value="{{ valori.identificato_il || oggi }}"
+          style="font:inherit;font-size:13px;padding:3px 6px"
+        />
+      </label>
+      <fieldset
+        style="flex-basis:100%;border:1px solid var(--line);border-radius:4px;padding:8px 12px"
+      >
+        <legend class="muted" style="font-size:13px">Attività bloccate dal vincolo</legend>
+        <div class="campi">
+          @each(a in attivita)
+            <label style="flex-direction:row;align-items:center;gap:6px">
+              <input
+                type="checkbox"
+                name="attivita[]"
+                value="{{ a.id }}"
+                {{
+                  (valori.attivita || [])
+                    .map((x) => String(x))
+                    .includes(String(a.id))
+                    ? 'checked'
+                    : ''
+                }}
+              />
+              <span class="code">{{ a.codice }}</span>
+              {{ a.titolo }}
+            </label>
+          @else
+            <span class="muted">Nessuna attività nel lookahead.</span>
+          @end
+        </div>
+      </fieldset>
+      <label style="flex-basis:100%">
+        
+        Note
+
+        <textarea name="note" rows="2" maxlength="2000">{{ valori.note || '' }}</textarea>
+      </label>
+      <span class="campi" style="flex-basis:100%">
+        <button class="btn primary" type="submit">
+          {{ vincolo ? 'Salva le modifiche' : 'Registra il vincolo' }}
+        </button>
+        <a class="btn ghost" href="{{ base }}/lookahead">Annulla</a>
+      </span>
+    </form>
+  @end
+@end

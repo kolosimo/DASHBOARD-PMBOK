@@ -1,10 +1,26 @@
 @component('layouts/app', { titolo: 'Piano settimanale' })
-  @!component('components/segnaposto', {
-    eyebrow: 'Last Planner · piano settimanale',
-    titolo: 'Piano settimanale',
-    descrizione:
-      'Impegni promessi, fatti sì o no, causa per ogni no, PPC e Pareto delle cause.',
-    fase: 'Fase 1',
-    agente: 'agente A2',
-  })
+  <div class="head">
+    <div>
+      <div class="eyebrow">Last Planner · piano settimanale</div>
+      <h2>Piano settimanale – settimana {{ formato.settimana(settimana) }}</h2>
+      <p>
+        Si promettono solo attività pronte, cioè senza vincoli aperti. A fine settimana ogni last planner segna sì o no sui propri impegni; per ogni "no" si sceglie la causa. Il PPC misura l’affidabilità del piano del team, non la bravura dei singoli.
+      </p>
+    </div>
+    <nav class="campi" aria-label="Cambia settimana">
+      <a class="btn" href="{{ base }}/settimana?settimana={{ precedente }}">
+        ←
+        {{ formato.settimana(precedente) }}
+      </a>
+      @if(settimana !== corrente)
+        <a class="btn" href="{{ base }}/settimana?settimana={{ corrente }}">Settimana corrente</a>
+      @end
+
+      <a class="btn" href="{{ base }}/settimana?settimana={{ successiva }}">
+        {{ formato.settimana(successiva) }}
+        →
+      </a>
+    </nav>
+  </div>
+  @include('modules/lps/_piano')
 @end
