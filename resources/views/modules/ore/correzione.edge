@@ -15,17 +15,20 @@
       <select name="utente" data-testid="scelta-persona">
         <option value="">— scegli —</option>
         @each(u in utenti)
-          <option value="{{ u.id }}" {{ persona && persona.id === u.id ? 'selected' : '' }}>{{ u.nome }}</option>
+          <option value="{{ u.id }}" {{ persona && persona.id === u.id ? 'selected' : '' }}>
+            {{ u.nome }}
+          </option>
         @end
       </select>
     </label>
     <input type="hidden" name="settimana" value="{{ settimana }}" />
     <button class="btn" type="submit">Apri</button>
   </form>
-
   @if(persona && ts)
     <label style="display:flex;flex-direction:column;gap:3px;max-width:560px">
+      
       Motivo della correzione (obbligatorio, finisce nell’audit)
+
       <input type="text" id="motivo" name="motivo" maxlength="300" required data-testid="motivo" />
     </label>
     @include('modules/ore/_griglia')

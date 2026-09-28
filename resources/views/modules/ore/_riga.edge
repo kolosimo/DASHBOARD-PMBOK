@@ -25,10 +25,13 @@
       })
     </td>
   @end
+
   <td class="r num" id="tr-{{ riga.elaboratoId }}" data-testid="totale-riga-{{ riga.codice }}">
     <b>{{ riga.minutiSettimana ? formato.oreEsatte(riga.minutiSettimana) : '' }}</b>
   </td>
   <td class="r num" id="te-{{ riga.elaboratoId }}">
-    {{ formato.ore(riga.minutiElaboratoTotali) }} / {{ formato.ore(riga.budgetMinuti) }}
+    {{ formato.ore(riga.minutiElaboratoTotali) }}
+    /
+    {{ formato.ore(riga.budgetMinuti) }}
   </td>
 </tr>

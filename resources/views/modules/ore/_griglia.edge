@@ -9,26 +9,35 @@
 >
   <nav class="campi" aria-label="Settimana" style="align-items:center">
     <a class="btn" href="{{ urlSettimana(ts.precedente) }}" data-testid="settimana-precedente">
-      ← {{ formato.settimana(ts.precedente) }}
+      ←
+      {{ formato.settimana(ts.precedente) }}
     </a>
     <b data-testid="settimana-corrente">
-      {{ formato.settimana(ts.settimana) }} · dal {{ formato.data(ts.giorni[0].data) }} al {{ formato.data(ts.giorni[6].data) }}
+      {{ formato.settimana(ts.settimana) }}
+      · dal
+      {{ formato.data(ts.giorni[0].data) }}
+      al
+      {{ formato.data(ts.giorni[6].data) }}
     </b>
     @if(ts.successiva)
       <a class="btn" href="{{ urlSettimana(ts.successiva) }}" data-testid="settimana-successiva">
-        {{ formato.settimana(ts.successiva) }} →
+        {{ formato.settimana(ts.successiva) }}
+        →
       </a>
     @end
+
     <button type="button" class="btn ghost" @click="weekend = !weekend" :aria-pressed="weekend">
-      <span x-text="weekend ? 'Nascondi sabato e domenica' : 'Mostra sabato e domenica'">Sabato e domenica</span>
+      <span x-text="weekend ? 'Nascondi sabato e domenica' : 'Mostra sabato e domenica'">
+        Sabato e domenica
+      </span>
     </button>
   </nav>
-
   @if(ts.chiusa && !correzione)
     <div class="messaggio conflitto" role="status" data-testid="settimana-chiusa">
       @!component('components/pill', { classe: 'n', testo: 'chiusa' })
       <p>
-        Questa settimana non si può più modificare: le ore si potevano cambiare fino al {{ formato.data(ts.modificabileFinoAl) }}. Per una correzione rivolgiti all’amministratore.
+        Questa settimana non si può più modificare: le ore si potevano cambiare fino al
+        {{ formato.data(ts.modificabileFinoAl) }}. Per una correzione rivolgiti all’amministratore.
       </p>
     </div>
   @elseif(ts.chiusa && correzione)
@@ -39,12 +48,12 @@
     </div>
   @else
     <p class="muted" style="font-size:12.5px;margin:0">
-      Scrivi le ore in decimali (1,5 = un’ora e mezza) o come 1:30: ogni cella si salva da sola quando esci dal campo. Per cancellare lascia la cella vuota. Si può modificare fino al {{ formato.data(ts.modificabileFinoAl) }}.
+      Scrivi le ore in decimali (1,5 = un’ora e mezza) o come 1:30: ogni cella si salva da sola quando esci dal campo. Per cancellare lascia la cella vuota. Si può modificare fino al
+      {{ formato.data(ts.modificabileFinoAl) }}.
     </p>
   @end
 
   <div id="ore-messaggio" aria-live="polite"></div>
-
   @component('components/pannello', { tabella: true })
     <table data-testid="timesheet">
       <thead>
@@ -59,6 +68,7 @@
               {{ g.etichetta }}
             </th>
           @end
+
           <th class="r">Totale</th>
           <th class="r">Ore a oggi / budget</th>
         </tr>
@@ -77,8 +87,15 @@
         @if(ts.righeAltre.length)
           <tr>
             <td colspan="10">
-              <button type="button" class="btn ghost" @click="altre = !altre" :aria-expanded="altre">
-                <span x-text="altre ? 'Nascondi gli altri elaborati delle tue commesse' : 'Mostra gli altri elaborati delle tue commesse ({{ ts.righeAltre.length }})'">
+              <button
+                type="button"
+                class="btn ghost"
+                @click="altre = !altre"
+                :aria-expanded="altre"
+              >
+                <span
+                  x-text="altre ? 'Nascondi gli altri elaborati delle tue commesse' : 'Mostra gli altri elaborati delle tue commesse ({{ ts.righeAltre.length }})'"
+                >
                   Altri elaborati delle tue commesse ({{ ts.righeAltre.length }})
                 </span>
               </button>
@@ -102,6 +119,7 @@
           </tr>
         </tbody>
       @end
+
       <tfoot>
         <tr>
           <td class="muted">Totale giorno</td>
@@ -114,6 +132,7 @@
               mostraWeekend: ts.mostraWeekend,
             })
           @end
+
           <td class="r num" id="ts-settimana" data-testid="totale-settimana">
             <b>{{ formato.oreEsatte(ts.totaleSettimana) }}</b>
           </td>

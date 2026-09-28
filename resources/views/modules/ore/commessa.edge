@@ -4,19 +4,33 @@
       <div class="eyebrow">Ore · settimana {{ formato.settimana(settimana) }}</div>
       <h2>Ore della commessa</h2>
       <p>
-        Ore registrate per elaborato nella settimana dal {{ formato.data(settimana) }} al {{ formato.data(domenica) }} e cumulate fino a quella data. Sono il costo effettivo (AC) dell’EVM.
+        Ore registrate per elaborato nella settimana dal
+        {{ formato.data(settimana) }}
+        al
+        {{ formato.data(domenica) }}
+        e cumulate fino a quella data. Sono il costo effettivo (AC) dell’EVM.
       </p>
     </div>
   </div>
 
   <nav class="campi" aria-label="Settimana" style="align-items:center">
-    <a class="btn" href="/commesse/{{ commessa.id }}/ore?settimana={{ precedente }}" data-testid="settimana-precedente">
-      ← {{ formato.settimana(precedente) }}
+    <a
+      class="btn"
+      href="/commesse/{{ commessa.id }}/ore?settimana={{ precedente }}"
+      data-testid="settimana-precedente"
+    >
+      ←
+      {{ formato.settimana(precedente) }}
     </a>
     <b>{{ formato.settimana(settimana) }}</b>
     @if(successiva)
-      <a class="btn" href="/commesse/{{ commessa.id }}/ore?settimana={{ successiva }}" data-testid="settimana-successiva">
-        {{ formato.settimana(successiva) }} →
+      <a
+        class="btn"
+        href="/commesse/{{ commessa.id }}/ore?settimana={{ successiva }}"
+        data-testid="settimana-successiva"
+      >
+        {{ formato.settimana(successiva) }}
+        →
       </a>
     @end
   </nav>
@@ -45,7 +59,6 @@
         sotto: 'somma dei budget degli elaborati',
       })
     </div>
-
     @component('components/pannello', { titolo: 'Ore per elaborato', tabella: true })
       <table data-testid="ore-per-elaborato">
         <thead>
@@ -80,15 +93,20 @@
         <tfoot>
           <tr>
             <td><b>Totale commessa</b></td>
-            <td class="r num" data-testid="totale-settimana"><b>{{ formato.oreEsatte(ore.totaleSettimanaMinuti) }}</b></td>
-            <td class="r num" data-testid="totale-commessa"><b>{{ formato.oreEsatte(ore.totaleCommessaMinuti) }}</b></td>
+            <td class="r num" data-testid="totale-settimana">
+              <b>{{ formato.oreEsatte(ore.totaleSettimanaMinuti) }}</b>
+            </td>
+            <td class="r num" data-testid="totale-commessa">
+              <b>{{ formato.oreEsatte(ore.totaleCommessaMinuti) }}</b>
+            </td>
             <td class="r num"><b>{{ formato.ore(budgetTotale) }}</b></td>
-            <td class="r num"><b>{{ formato.oreEsatte(budgetTotale - ore.totaleCommessaMinuti) }}</b></td>
+            <td class="r num">
+              <b>{{ formato.oreEsatte(budgetTotale - ore.totaleCommessaMinuti) }}</b>
+            </td>
           </tr>
         </tfoot>
       </table>
     @end
-
     @if(persone)
       @component('components/pannello', {
         titolo: 'Ore per persona',

@@ -15,6 +15,11 @@ import { conTransazione } from '#tests/helpers/db'
 
 const W39 = D.LUNEDI_CORRENTE
 
+/** HTML senza gli a capo e gli spazi di formattazione tra i tag */
+function compatto(html: string) {
+  return html.replace(/\s+/g, ' ').replace(/>\s+/g, '>').replace(/\s+</g, '<')
+}
+
 async function utente(slug: string) {
   return Utente.findByOrFail('email', `${slug}@${D.DOMINIO_EMAIL}`)
 }
@@ -145,7 +150,7 @@ test.group('Ore · timesheet personale', (group) => {
     const html = await (await b.vai(`/ore?settimana=${W39}`)).text()
     assert.include(html, `/ore?settimana=${aggiungiSettimane(W39, -1)}`)
     // Una data qualsiasi porta al lunedì della sua settimana
-    const html2 = await (await b.vai('/ore?settimana=2026-09-24')).text()
+    const html2 = compatto(await (await b.vai('/ore?settimana=2026-09-24')).text())
     assert.include(html2, 'W39 · dal 21/09/2026 al 27/09/2026')
   })
 
@@ -436,7 +441,7 @@ test.group('Ore · vista della commessa', (group) => {
     const b = new Browser()
     await b.loginSviluppo(slug)
     const r = await b.vai(`/commesse/${c.id}/ore?settimana=${W39}`)
-    return { status: r.status, html: await r.text() }
+    return { status: r.status, html: compatto(await r.text()) }
   }
 
   test('PM: totali per elaborato e ore per persona (attive di default)', async ({ assert }) => {
