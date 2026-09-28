@@ -9,12 +9,25 @@
  */
 import type { ElaboratoEvm, Indice, IndicatoriEvm, Minuti, ValoriEvm } from '#domain/types'
 
+/** Σ budget × peso / 100 arrotondato al minuto sulla somma (non per riga) */
+function sommaPesata(
+  elaborati: readonly ElaboratoEvm[],
+  peso: (e: ElaboratoEvm) => number
+): Minuti {
+  // Si somma budget × peso (interi) e si divide per 100 una volta sola:
+  // niente errori di virgola mobile e arrotondamento unico sulla somma.
+  let centesimi = 0
+  for (const e of elaborati) centesimi += e.budgetMinuti * peso(e)
+  return Math.round(centesimi / 100)
+}
+
 /**
  * BAC = Σ budget degli elaborati (in minuti).
  */
 export function calcolaBac(elaborati: readonly ElaboratoEvm[]): Minuti {
-  void elaborati
-  throw new Error('non implementato')
+  let totale = 0
+  for (const e of elaborati) totale += e.budgetMinuti
+  return totale
 }
 
 /**
@@ -24,8 +37,7 @@ export function calcolaBac(elaborati: readonly ElaboratoEvm[]): Minuti {
  * Arrotondamento: al minuto intero più vicino sulla somma, non per riga.
  */
 export function calcolaEv(elaborati: readonly ElaboratoEvm[]): Minuti {
-  void elaborati
-  throw new Error('non implementato')
+  return sommaPesata(elaborati, (e) => e.pesoStatoPercento)
 }
 
 /**
@@ -34,25 +46,24 @@ export function calcolaEv(elaborati: readonly ElaboratoEvm[]): Minuti {
  * Stesso arrotondamento di EV.
  */
 export function calcolaPv(elaborati: readonly ElaboratoEvm[]): Minuti {
-  void elaborati
-  throw new Error('non implementato')
+  return sommaPesata(elaborati, (e) => e.pesoPianificatoPercento)
 }
 
 /**
  * AC = Σ minuti registrati fino alla data di stato.
  */
 export function calcolaAc(elaborati: readonly ElaboratoEvm[]): Minuti {
-  void elaborati
-  throw new Error('non implementato')
+  let totale = 0
+  for (const e of elaborati) totale += e.acMinuti
+  return totale
 }
 
 /**
  * SPI = EV / PV. **null se PV = 0** (l'interfaccia mostra "n.d.").
  */
 export function calcolaSpi(evMinuti: Minuti, pvMinuti: Minuti): Indice {
-  void evMinuti
-  void pvMinuti
-  throw new Error('non implementato')
+  if (pvMinuti === 0) return null
+  return evMinuti / pvMinuti
 }
 
 /**
@@ -60,9 +71,8 @@ export function calcolaSpi(evMinuti: Minuti, pvMinuti: Minuti): Indice {
  * Con EV = 0 e AC > 0 il CPI vale 0 (e quindi EAC è null).
  */
 export function calcolaCpi(evMinuti: Minuti, acMinuti: Minuti): Indice {
-  void evMinuti
-  void acMinuti
-  throw new Error('non implementato')
+  if (acMinuti === 0) return null
+  return evMinuti / acMinuti
 }
 
 /**
@@ -75,8 +85,15 @@ export function calcolaCpi(evMinuti: Minuti, acMinuti: Minuti): Indice {
  * - VAC "scarto a completamento" = BAC − EAC (null se EAC è null).
  */
 export function calcolaIndicatori(valori: ValoriEvm): IndicatoriEvm {
-  void valori
-  throw new Error('non implementato')
+  const { bacMinuti, pvMinuti, evMinuti, acMinuti } = valori
+  const spi = calcolaSpi(evMinuti, pvMinuti)
+  const cpi = calcolaCpi(evMinuti, acMinuti)
+  // BAC / CPI = BAC × AC / EV: stessa grandezza, senza passare dal quoziente arrotondato
+  const eacMinuti =
+    cpi === null || cpi === 0 ? null : Math.round((bacMinuti * acMinuti) / evMinuti)
+  const etcMinuti = eacMinuti === null ? null : eacMinuti - acMinuti
+  const vacMinuti = eacMinuti === null ? null : bacMinuti - eacMinuti
+  return { bacMinuti, pvMinuti, evMinuti, acMinuti, spi, cpi, eacMinuti, etcMinuti, vacMinuti }
 }
 
 /**
@@ -84,6 +101,10 @@ export function calcolaIndicatori(valori: ValoriEvm): IndicatoriEvm {
  * Equivale a calcolaIndicatori({ bac, pv, ev, ac }).
  */
 export function evmDaElaborati(elaborati: readonly ElaboratoEvm[]): IndicatoriEvm {
-  void elaborati
-  throw new Error('non implementato')
+  return calcolaIndicatori({
+    bacMinuti: calcolaBac(elaborati),
+    pvMinuti: calcolaPv(elaborati),
+    evMinuti: calcolaEv(elaborati),
+    acMinuti: calcolaAc(elaborati),
+  })
 }
