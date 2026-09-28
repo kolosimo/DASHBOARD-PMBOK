@@ -1,10 +1,30 @@
 @component('layouts/app', { titolo: 'Lookahead e vincoli' })
-  @!component('components/segnaposto', {
-    eyebrow: 'Last Planner · make-ready',
-    titolo: 'Lookahead a 6 settimane e registro vincoli',
-    descrizione:
-      'Attività delle prossime sei settimane, vincoli collegati (molti a molti) e PCR.',
-    fase: 'Fase 1',
-    agente: 'agente A2',
-  })
+  <div class="head">
+    <div>
+      <div class="eyebrow">Last Planner · make-ready</div>
+      <h2>Lookahead a {{ settimane.length }} settimane e registro vincoli</h2>
+      <p>
+        Le attività delle prossime settimane con lo stato dei loro vincoli. Un’attività è pronta quando nessun vincolo collegato è aperto o da analizzare: solo allora entra nel piano settimanale.
+      </p>
+    </div>
+    <nav class="campi" aria-label="Cambia settimane">
+      <a class="btn" href="{{ base }}/lookahead?da={{ precedente }}&filtro={{ filtro }}">
+        ←
+        {{ formato.settimana(precedente) }}
+      </a>
+      @if(da !== corrente)
+        <a class="btn" href="{{ base }}/lookahead?filtro={{ filtro }}">Da oggi</a>
+      @end
+
+      <a class="btn" href="{{ base }}/lookahead?da={{ successiva }}&filtro={{ filtro }}">
+        {{ formato.settimana(successiva) }}
+        →
+      </a>
+      @if(puoGestire)
+        <a class="btn primary" href="{{ base }}/attivita/nuova">Nuova attività</a>
+        <a class="btn primary" href="{{ base }}/vincoli/nuovo">Nuovo vincolo</a>
+      @end
+    </nav>
+  </div>
+  @include('modules/lps/_lookahead')
 @end

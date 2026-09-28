@@ -1,0 +1,279 @@
+{{--
+  Frammento del lookahead e del registro vincoli (sostituito da HTMX dopo
+  rimuovi / riapri / annulla e quando arriva un evento della commessa).
+  Variabili: vedi LookaheadController.dati(); messaggio?, conflitto?
+--}}
+<div
+  id="lookahead-lps"
+  data-testid="lookahead-lps"
+  hx-get="{{ base }}/lookahead/frammento?{{ query }}"
+  hx-trigger="evento-commessa from:body, polling-commessa from:body"
+  hx-swap="outerHTML"
+  style="display:flex;flex-direction:column;gap:20px"
+>
+  @include('modules/lps/_messaggio')
+
+  <div class="kpis">
+    @!component('components/kpi', {
+      etichetta: 'PCR ' + formato.settimana(da) + ' · ' + glossario.PCR.nome,
+      valore: formato.percento(pcr.pcr),
+      sotto:
+        pcr.daRimuovere > 0
+          ? pcr.rimossi +
+            ' di ' +
+            pcr.daRimuovere +
+            ' vincoli in scadenza nella settimana rimossi'
+          : 'nessun vincolo in scadenza nella settimana',
+      semaforo: {
+        classe: formato.classe(pcr.pcr, sogliaPcr),
+        testo: formato.statoSemaforo(pcr.pcr, sogliaPcr),
+      },
+    })
+    @!component('components/kpi', {
+      etichetta: 'Vincoli aperti',
+      valore: formato.numero(vincoliAperti),
+      sotto: 'da analizzare o aperti',
+    })
+    @!component('components/kpi', {
+      etichetta: 'Attività vincolate',
+      valore: formato.numero(attivitaVincolate),
+      sotto:
+        'su ' +
+        attivita.filter((a) => a.tipo === 'attivita').length +
+        ' attività nel lookahead',
+    })
+  </div>
+  @component('components/pannello', {
+    titolo: 'Lookahead',
+    nota: 'barra verde = pronta · tratteggiata rossa = vincolata',
+    tabella: true,
+  })
+    <table class="la" data-testid="lookahead">
+      <thead>
+        <tr>
+          <th>Attività</th>
+          <th>Disciplina</th>
+          <th>Last planner</th>
+          @each(w in settimane)
+            <th class="wk {{ w === corrente ? 'now' : '' }}" title="lunedì {{ formato.data(w) }}">
+              {{ formato.settimana(w) }}
+            </th>
+          @end
+
+          <th>Stato</th>
+          @if(puoGestire)
+            <th></th>
+          @end
+        </tr>
+      </thead>
+      <tbody>
+        @each(a in attivita)
+          <tr data-testid="attivita-{{ a.codice }}">
+            <td>
+              <span class="code">{{ a.codice }}</span>
+              {{ a.titolo }}
+              @if(a.elaboratoCodice && !a.titolo.includes(a.elaboratoCodice))
+                <span class="code">{{ a.elaboratoCodice }}</span>
+              @end
+            </td>
+            <td>{{ formato.testo(a.disciplinaCodice) }}</td>
+            <td>{{ formato.testo(a.responsabileNome) }}</td>
+            @each(w in settimane)
+              <td class="wk">
+                @if(w >= a.settimanaInizio && w <= a.settimanaFine)
+                  @if(a.tipo === 'milestone')
+                    <div class="bar mile" title="milestone"></div>
+                  @else
+                    <div
+                      class="bar {{ a.pronta ? 'ready' : 'blocked' }}"
+                      title="{{ a.pronta ? 'pronta' : 'vincolata' }}"
+                    ></div>
+                  @end
+                @end
+              </td>
+            @end
+
+            <td>
+              @if(a.tipo === 'milestone')
+                @!component('components/pill', { classe: 'n', testo: 'milestone' })
+              @elseif(a.pronta)
+                @!component('components/pill', { classe: 'g', testo: 'pronta' })
+              @else
+                @!component('components/pill', { classe: 'c', testo: 'vincolata' })
+                <div class="muted" style="font-size:12px">
+                  {{
+                    a.vincoli
+                      .filter((v) => v.stato === 'aperto' || v.stato === 'da_analizzare')
+                      .map((v) => v.codice)
+                      .join(', ')
+                  }}
+                </div>
+              @end
+            </td>
+            @if(puoGestire)
+              <td>
+                <a
+                  class="btn ghost"
+                  href="{{ base }}/attivita/{{ a.id }}/modifica"
+                  aria-label="Modifica {{ a.codice }}"
+                >
+                  Modifica
+                </a>
+              </td>
+            @end
+          </tr>
+        @else
+          <tr>
+            <td colspan="{{ settimane.length + 5 }}" class="muted">
+              Nessuna attività in queste settimane.
+            </td>
+          </tr>
+        @end
+      </tbody>
+    </table>
+  @end
+  @component('components/pannello', { titolo: 'Registro vincoli', tabella: true })
+    @slot('azioni')
+      <span class="campi">
+        <a
+          class="btn {{ filtro === 'tutti' ? 'primary' : '' }}"
+          href="{{ base }}/lookahead?da={{ da }}&filtro=tutti"
+        >
+          Tutti
+        </a>
+        <a
+          class="btn {{ filtro === 'aperti' ? 'primary' : '' }}"
+          href="{{ base }}/lookahead?da={{ da }}&filtro=aperti"
+        >
+          Solo aperti
+        </a>
+      </span>
+    @end
+
+    <table data-testid="vincoli">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Vincolo</th>
+          <th>Categoria</th>
+          <th>Attività</th>
+          <th>Chi lo rimuove</th>
+          <th>Serve entro</th>
+          <th>Identificato</th>
+          <th>Stato</th>
+          @if(puoGestire)
+            <th></th>
+          @end
+        </tr>
+      </thead>
+      <tbody>
+        @each(v in vincoli)
+          <tr data-testid="vincolo-{{ v.codice }}">
+            <td class="code">{{ v.codice }}</td>
+            <td>
+              {{ v.descrizione }}
+              @if(v.note)
+                <div class="muted" style="font-size:12px">{{ v.note }}</div>
+              @end
+            </td>
+            <td>{{ etichetteCategoria[v.categoria] }}</td>
+            <td class="muted">
+              {{
+                v.attivita.length
+                  ? v.attivita.map((x) => x.codice).join(', ')
+                  : 'n.d.'
+              }}
+            </td>
+            <td>
+              @if(v.responsabileNome)
+                {{ v.responsabileNome }}
+              @elseif(v.responsabileEsterno)
+                {{ v.responsabileEsterno }}
+                <span class="muted">(esterno)</span>
+              @else
+                <span class="muted">n.d.</span>
+              @end
+            </td>
+            <td class="num">{{ formato.data(v.dataNecessaria) }}</td>
+            <td class="num">{{ formato.data(v.identificatoIl) }}</td>
+            <td>
+              @if(v.stato === 'aperto')
+                @!component('components/pill', {
+                  classe: 'c',
+                  testo: etichetteStato[v.stato],
+                })
+              @elseif(v.stato === 'da_analizzare')
+                @!component('components/pill', {
+                  classe: 'w',
+                  testo: etichetteStato[v.stato],
+                })
+              @elseif(v.stato === 'rimosso')
+                @!component('components/pill', {
+                  classe: 'g',
+                  testo: etichetteStato[v.stato],
+                })
+                <div class="muted num" style="font-size:12px">{{ formato.data(v.rimossoIl) }}</div>
+              @else
+                @!component('components/pill', {
+                  classe: 'n',
+                  testo: etichetteStato[v.stato],
+                })
+                <div class="muted num" style="font-size:12px">
+                  {{ formato.data(v.annullatoIl) }}
+                </div>
+              @end
+            </td>
+            @if(puoGestire)
+              <td>
+                <span class="campi" style="flex-wrap:nowrap;white-space:nowrap">
+                  @if(v.aperto)
+                    <button
+                      class="btn"
+                      hx-post="{{ base }}/vincoli/{{ v.id }}/rimuovi"
+                      hx-vals='{"version": "{{ v.version }}", "da": "{{ da }}", "filtro": "{{ filtro }}"}'
+                      hx-target="#lookahead-lps"
+                      hx-swap="outerHTML"
+                      data-testid="rimuovi-{{ v.codice }}"
+                    >
+                      Segna rimosso
+                    </button>
+                    <button
+                      class="btn ghost"
+                      hx-post="{{ base }}/vincoli/{{ v.id }}/annulla"
+                      hx-vals='{"version": "{{ v.version }}", "da": "{{ da }}", "filtro": "{{ filtro }}"}'
+                      hx-target="#lookahead-lps"
+                      hx-swap="outerHTML"
+                      hx-confirm="Annullare il vincolo {{ v.codice }}? Esce dal PCR."
+                    >
+                      Annulla
+                    </button>
+                  @else
+                    <button
+                      class="btn"
+                      hx-post="{{ base }}/vincoli/{{ v.id }}/riapri"
+                      hx-vals='{"version": "{{ v.version }}", "da": "{{ da }}", "filtro": "{{ filtro }}"}'
+                      hx-target="#lookahead-lps"
+                      hx-swap="outerHTML"
+                      data-testid="riapri-{{ v.codice }}"
+                    >
+                      Riapri
+                    </button>
+                  @end
+
+                  <a class="btn ghost" href="{{ base }}/vincoli/{{ v.id }}/modifica">Modifica</a>
+                </span>
+              </td>
+            @end
+          </tr>
+        @else
+          <tr>
+            <td colspan="9" class="muted">
+              Nessun vincolo
+              {{ filtro === 'aperti' ? 'aperto' : 'registrato' }}.
+            </td>
+          </tr>
+        @end
+      </tbody>
+    </table>
+  @end
+</div>

@@ -1,0 +1,19 @@
+{{--
+  Messaggi del modulo LPS. Variabili: messaggio? { tipo: ok|errore|avviso, testo }, conflitto? (409)
+--}}
+@if(conflitto)
+  @!component('components/conflitto', { messaggio: conflitto })
+@end
+@if(messaggio)
+  <div
+    class="messaggio {{ messaggio.tipo === 'ok' ? 'ok' : messaggio.tipo === 'errore' ? 'errore' : 'conflitto' }}"
+    role="{{ messaggio.tipo === 'ok' ? 'status' : 'alert' }}"
+    data-testid="messaggio-{{ messaggio.tipo }}"
+  >
+    @if(messaggio.tipo === 'avviso')
+      @!component('components/pill', { classe: 'w', testo: 'attenzione' })
+    @end
+
+    <p>{{ messaggio.testo }}</p>
+  </div>
+@end

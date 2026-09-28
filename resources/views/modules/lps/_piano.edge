@@ -1,0 +1,446 @@
+{{--
+  Frammento del piano settimanale (sostituito da HTMX dopo ogni azione e
+  quando arriva un evento della commessa, se non si sta scrivendo).
+  Variabili: vedi PianoController.dati(); messaggio?, conflitto?
+--}}
+<div
+  id="piano-lps"
+  data-testid="piano-lps"
+  hx-get="{{ base }}/settimana/frammento?settimana={{ settimana }}"
+  hx-trigger="evento-commessa[!document.activeElement.matches('input,textarea,select')] from:body, polling-commessa from:body"
+  hx-swap="outerHTML"
+  style="display:flex;flex-direction:column;gap:20px"
+>
+  @include('modules/lps/_messaggio')
+
+  <div class="kpis" data-testid="kpi-lps">
+    @!component('components/kpi', {
+      etichetta: 'PPC · ' + glossario.PPC.nome,
+      valore: formato.percento(riepilogo.ppc),
+      sotto:
+        riepilogo.promessi > 0
+          ? riepilogo.fatti + ' di ' + riepilogo.promessi + ' impegni mantenuti'
+          : 'nessun impegno promesso',
+      semaforo: {
+        classe: formato.classe(riepilogo.ppc, sogliaPpc),
+        testo: formato.statoSemaforo(riepilogo.ppc, sogliaPpc),
+      },
+    })
+    @!component('components/kpi', {
+      etichetta: 'PCR · ' + glossario.PCR.nome,
+      valore: formato.percento(riepilogo.pcr),
+      sotto: 'vincoli in scadenza nella settimana',
+      semaforo: {
+        classe: formato.classe(riepilogo.pcr, sogliaPcr),
+        testo: formato.statoSemaforo(riepilogo.pcr, sogliaPcr),
+      },
+    })
+    @!component('components/kpi', {
+      etichetta: 'TMR · ' + glossario.TMR.nome,
+      valore: formato.percento(riepilogo.tmr),
+      sotto: 'dal lookahead di due settimane prima',
+    })
+    @!component('components/kpi', {
+      etichetta: 'TA · ' + glossario.TA.nome,
+      valore: formato.percento(riepilogo.ta),
+      sotto: 'impegni già previsti due settimane prima',
+    })
+    @!component('components/kpi', {
+      etichetta: 'Vincoli aperti',
+      valore: formato.numero(riepilogo.vincoliAperti),
+      sotto: 'da analizzare o aperti, oggi',
+    })
+  </div>
+  @component('components/pannello', { titolo: 'Impegni della settimana', tabella: true })
+    @slot('azioni')
+      <span class="note">
+        @if(!piano)
+          nessun piano per questa settimana
+        @elseif(piano.stato === 'bozza')
+          @!component('components/pill', { classe: 'n', testo: 'bozza' })
+        @elseif(piano.stato === 'promesso')
+          @!component('components/pill', { classe: 'w', testo: 'promesso' })
+          il
+          {{ formato.dataOra(piano.promessoIl) }}
+        @else
+          @!component('components/pill', { classe: 'g', testo: 'chiuso' })
+          il
+          {{ formato.dataOra(piano.chiusoIl) }}
+        @end
+      </span>
+    @end
+    @if(!piano)
+      <p class="muted" data-testid="nessun-piano">
+        Il piano della settimana
+        {{ formato.settimana(settimana) }}
+        non è ancora stato preparato.
+      </p>
+      @if(puoGestire)
+        <form method="POST" action="{{ base }}/settimana/crea?settimana={{ settimana }}">
+          {{ csrfField() }}
+          <input type="hidden" name="settimana" value="{{ settimana }}" />
+          <button class="btn primary" type="submit" data-testid="crea-piano">
+            Prepara il piano (bozza)
+          </button>
+        </form>
+      @end
+    @else
+      <table data-testid="impegni">
+        <thead>
+          <tr>
+            <th>Impegno</th>
+            <th>Attività / elaborato</th>
+            <th>Last planner</th>
+            <th>Fatto?</th>
+            <th>Causa se non fatto</th>
+            @if(piano.stato === 'bozza' && puoGestire)
+              <th></th>
+            @end
+          </tr>
+        </thead>
+        <tbody>
+          @each(imp in piano.impegni)
+            @let(modificabile =
+              piano.stato === 'promesso' && (puoGestire || imp.lastPlannerId === utenteId))
+            <tr data-testid="impegno-{{ imp.id }}">
+              <td>
+                {{ imp.descrizione }}
+                @if(imp.aggiuntoDopoPromessa)
+                  <div>
+                    @!component('components/pill', {
+                      classe: 'n',
+                      testo: 'aggiunto dopo la promessa · fuori dal PPC',
+                    })
+                  </div>
+                @end
+                @if(imp.vincolata && piano.stato !== 'chiuso')
+                  <div title="L’attività ha vincoli aperti: {{ imp.vincoliAperti.join(', ') }}">
+                    @!component('components/pill', {
+                      classe: 'c',
+                      testo: 'vincolata · ' + imp.vincoliAperti.join(', '),
+                    })
+                  </div>
+                @end
+              </td>
+              <td>
+                @if(imp.attivitaCodice)
+                  <span class="code">{{ imp.attivitaCodice }}</span>
+                @end
+                @if(imp.elaboratoCodice)
+                  <span class="code">{{ imp.elaboratoCodice }}</span>
+                @end
+                @if(!imp.attivitaCodice && !imp.elaboratoCodice)
+                  <span class="muted">—</span>
+                @end
+              </td>
+              <td>{{ formato.testo(imp.lastPlannerNome) }}</td>
+              @if(modificabile)
+                <td colspan="2">
+                  <form
+                    id="esito-{{ imp.id }}"
+                    method="POST"
+                    action="{{ base }}/impegni/{{ imp.id }}/esito"
+                    hx-post="{{ base }}/impegni/{{ imp.id }}/esito"
+                    hx-target="#piano-lps"
+                    hx-swap="outerHTML"
+                    class="campi"
+                  >
+                    {{ csrfField() }}
+                    <input type="hidden" name="version" value="{{ imp.version }}" />
+                    <input
+                      type="hidden"
+                      name="fatto_attuale"
+                      value="{{ imp.fatto === true ? 'si' : imp.fatto === false ? 'no' : '' }}"
+                    />
+                    <span class="toggle" role="group" aria-label="Fatto?">
+                      <button
+                        class="yes"
+                        type="submit"
+                        name="fatto"
+                        value="si"
+                        aria-pressed="{{ imp.fatto === true }}"
+                      >
+                        Sì
+                      </button>
+                      <button
+                        class="no"
+                        type="submit"
+                        name="fatto"
+                        value="no"
+                        aria-pressed="{{ imp.fatto === false }}"
+                      >
+                        No
+                      </button>
+                    </span>
+                    @if(imp.fatto === false)
+                      <select
+                        name="causa_id"
+                        aria-label="Causa di non completamento"
+                        onchange="this.form.requestSubmit()"
+                      >
+                        <option value="">Scegli la causa…</option>
+                        @each(c in cause)
+                          <option value="{{ c.id }}" {{ c.id === imp.causaId ? 'selected' : '' }}>
+                            {{ c.nome }}
+                          </option>
+                        @end
+                      </select>
+                      @if(!imp.causaId)
+                        @!component('components/pill', {
+                          classe: 'c',
+                          testo: 'causa mancante',
+                        })
+                      @end
+
+                      <details style="flex-basis:100%">
+                        <summary class="muted">
+                          Analisi dei 5 perché (facoltativa){{
+                            imp.cinquePerche.length
+                              ? ' · ' + imp.cinquePerche.length + ' risposte'
+                              : ''
+                          }}
+                        </summary>
+                        <div
+                          class="campi"
+                          style="flex-direction:column;align-items:stretch;margin-top:6px"
+                        >
+                          @each(n in [0, 1, 2, 3, 4])
+                            <label>
+                              
+                              
+                                Perché
+
+                              {{ n + 1 }}
+                              <input
+                                type="text"
+                                name="perche[]"
+                                maxlength="300"
+                                value="{{ imp.cinquePerche[n] || '' }}"
+                              />
+                            </label>
+                          @end
+
+                          <button class="btn" type="submit" style="align-self:flex-start">
+                            Salva l’analisi
+                          </button>
+                        </div>
+                      </details>
+                    @end
+                  </form>
+                </td>
+              @else
+                <td>
+                  @if(imp.fatto === true)
+                    @!component('components/pill', { classe: 'g', testo: 'sì' })
+                  @elseif(imp.fatto === false)
+                    @!component('components/pill', { classe: 'c', testo: 'no' })
+                  @else
+                    <span class="muted">{{ piano.stato === 'bozza' ? '—' : 'non segnato' }}</span>
+                  @end
+                </td>
+                <td>
+                  @if(imp.fatto === false)
+                    {{ formato.testo(imp.causaNome) }}
+                    @if(imp.cinquePerche.length)
+                      <details>
+                        <summary class="muted">5 perché</summary>
+                        <ol style="margin:4px 0 0;padding-left:18px">
+                          @each(p in imp.cinquePerche)
+                            <li>{{ p }}</li>
+                          @end
+                        </ol>
+                      </details>
+                    @end
+                  @else
+                    <span class="muted">—</span>
+                  @end
+                </td>
+              @end
+              @if(piano.stato === 'bozza' && puoGestire)
+                <td>
+                  <form
+                    method="POST"
+                    action="{{ base }}/impegni/{{ imp.id }}/elimina"
+                    hx-post="{{ base }}/impegni/{{ imp.id }}/elimina"
+                    hx-target="#piano-lps"
+                    hx-swap="outerHTML"
+                  >
+                    {{ csrfField() }}
+                    <input type="hidden" name="version" value="{{ imp.version }}" />
+                    <button class="btn ghost" type="submit" aria-label="Elimina l’impegno">
+                      Elimina
+                    </button>
+                  </form>
+                </td>
+              @end
+            </tr>
+          @else
+            <tr>
+              <td colspan="6" class="muted">Nessun impegno: aggiungine qui sotto.</td>
+            </tr>
+          @end
+        </tbody>
+      </table>
+      @if(puoGestire && piano.stato !== 'chiuso')
+        <form
+          method="POST"
+          action="{{ base }}/piani/{{ piano.id }}/impegni"
+          hx-post="{{ base }}/piani/{{ piano.id }}/impegni"
+          hx-target="#piano-lps"
+          hx-swap="outerHTML"
+          class="campi"
+          style="margin-top:14px;border-top:1px solid var(--line);padding-top:12px"
+          data-testid="form-impegno"
+        >
+          {{ csrfField() }}
+          <label>
+            Attività del lookahead
+            <select name="attivita_id">
+              <option value="">— nessuna —</option>
+              @each(a in attivita)
+                @if(a.tipo === 'attivita')
+                  <option value="{{ a.id }}">
+                    {{ a.codice }}
+                    ·
+                    {{ a.titolo }}{{
+                      a.pronta
+                        ? ''
+                        : ' (vincolata: ' +
+                          a.vincoli
+                            .filter((v) => v.stato === 'aperto' || v.stato === 'da_analizzare')
+                            .map((v) => v.codice)
+                            .join(', ') +
+                          ')'
+                    }}
+                  </option>
+                @end
+              @end
+            </select>
+          </label>
+          <label>
+            
+            
+              Impegno
+
+
+            <input
+              type="text"
+              name="descrizione"
+              maxlength="500"
+              placeholder="vuoto = titolo dell’attività"
+              style="min-width:260px"
+            />
+          </label>
+          <label>
+            Elaborato
+            <select name="elaborato_id">
+              <option value="">— dall’attività —</option>
+              @each(e in elaborati)
+                <option value="{{ e.id }}">{{ e.codice }}</option>
+              @end
+            </select>
+          </label>
+          <label>
+            Last planner
+            <select name="last_planner_id">
+              <option value="">— dall’attività —</option>
+              @each(p in team)
+                <option value="{{ p.id }}">{{ p.nome }}</option>
+              @end
+            </select>
+          </label>
+          <button class="btn" type="submit">Aggiungi impegno</button>
+          @if(piano.stato === 'promesso')
+            <span class="note muted" style="flex-basis:100%;font-size:12.5px">
+              Il piano è già promesso: i nuovi impegni sono marcati e non entrano nel PPC.
+            </span>
+          @end
+        </form>
+      @end
+      @if(puoGestire && piano.stato === 'bozza')
+        <form
+          method="POST"
+          action="{{ base }}/piani/{{ piano.id }}/promessa"
+          hx-post="{{ base }}/piani/{{ piano.id }}/promessa"
+          hx-target="#piano-lps"
+          hx-swap="outerHTML"
+          class="campi"
+          style="margin-top:12px"
+        >
+          {{ csrfField() }}
+          <input type="hidden" name="version" value="{{ piano.version }}" />
+          <button class="btn primary" type="submit" data-testid="prometti">
+            Prometti il piano
+          </button>
+          <span class="muted" style="font-size:12.5px">
+            Dopo la promessa gli impegni non si eliminano più.
+          </span>
+        </form>
+      @elseif(puoGestire && piano.stato === 'promesso')
+        <form
+          method="POST"
+          action="{{ base }}/piani/{{ piano.id }}/chiusura"
+          hx-post="{{ base }}/piani/{{ piano.id }}/chiusura"
+          hx-target="#piano-lps"
+          hx-swap="outerHTML"
+          class="campi"
+          style="margin-top:12px"
+        >
+          {{ csrfField() }}
+          <input type="hidden" name="version" value="{{ piano.version }}" />
+          <button class="btn primary" type="submit" data-testid="chiudi">Chiudi il piano</button>
+          <span class="muted" style="font-size:12.5px">
+            Serve un sì o un no su ogni impegno e la causa per ogni no.
+          </span>
+        </form>
+      @end
+    @end
+  @end
+
+  <div class="grid2">
+    @component('components/pannello', {
+      titolo: 'PPC nelle ultime settimane',
+      nota:
+        'settimane chiuse dagli snapshot · ' +
+        formato.settimana(settimana) +
+        (riepilogo.storicoPpc[riepilogo.storicoPpc.length - 1].daSnapshot
+          ? ''
+          : ' dal piano'),
+    })
+      <div data-testid="grafico-ppc">{{{ graficoPpc }}}</div>
+      <details>
+        <summary class="muted" style="font-size:12.5px">Vedi i dati</summary>
+        <table style="min-width:0">
+          <thead>
+            <tr>
+              <th>Settimana</th>
+              <th class="r">PPC</th>
+              <th>Origine</th>
+            </tr>
+          </thead>
+          <tbody>
+            @each(p in riepilogo.storicoPpc)
+              <tr>
+                <td>{{ formato.settimana(p.settimana) }}</td>
+                <td class="r num">{{ formato.percento(p.ppc) }}</td>
+                <td class="muted">{{ p.daSnapshot ? 'settimana chiusa' : 'in corso' }}</td>
+              </tr>
+            @end
+          </tbody>
+        </table>
+      </details>
+    @end
+    @component('components/pannello', {
+      titolo: 'Cause di mancato completamento',
+      nota:
+        'Pareto ' + formato.settimana(daPareto) + '–' + formato.settimana(settimana),
+    })
+      <div data-testid="grafico-pareto">{{{ graficoPareto }}}</div>
+      @if(pareto.length)
+        <p class="muted" style="margin:12px 0 0;font-size:12.5px">
+          La prima causa ("{{ pareto[0].nome }}") è il primo punto da affrontare nella riunione: di solito si anticipa nel lookahead la richiesta che manca.
+        </p>
+      @end
+    @end
+  </div>
+</div>
