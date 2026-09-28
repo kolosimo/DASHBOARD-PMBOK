@@ -174,7 +174,16 @@ export class Campi {
 
   /** Identificativo numerico (select); null se vuoto */
   id(campo: string, etichetta: string, opz: { obbligatorio?: boolean } = {}): number | null {
-    return this.intero(campo, etichetta, { ...opz, min: 1 })
+    if (this.grezzo(campo).trim() === '') {
+      if (opz.obbligatorio) this.errore(campo, `${etichetta}: scegli un valore.`)
+      return null
+    }
+    const n = numeroItaliano(this.grezzo(campo))
+    if (n === null || !Number.isInteger(n) || n < 1) {
+      this.errore(campo, `${etichetta}: valore non previsto.`)
+      return null
+    }
+    return n
   }
 
   /** Checkbox: presente e "on"/"true"/"1" */
