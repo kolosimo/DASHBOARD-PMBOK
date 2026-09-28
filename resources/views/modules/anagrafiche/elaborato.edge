@@ -2,7 +2,9 @@
   Pagina di creazione o modifica di un elaborato.
   Variabili: vedi _elaborato_form.
 --}}
-@component('layouts/app', { titolo: elaborato ? 'Elaborato ' + elaborato.codice : 'Nuovo elaborato' })
+@component('layouts/app', {
+  titolo: elaborato ? 'Elaborato ' + elaborato.codice : 'Nuovo elaborato',
+})
   <div class="head">
     <div>
       <div class="eyebrow">Anagrafica · elaborati</div>
@@ -13,7 +15,6 @@
     </div>
   </div>
   @include('modules/anagrafiche/_elaborato_form')
-
   @if(elaborato)
     <form
       class="panel campi"
@@ -27,7 +28,9 @@
       </p>
       <label style="flex-direction:row;align-items:center;gap:6px">
         <input type="checkbox" name="conferma" value="on" required />
+        
         confermo l'eliminazione
+
       </label>
       <button class="btn" type="submit">Elimina elaborato</button>
     </form>

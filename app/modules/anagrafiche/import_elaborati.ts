@@ -43,7 +43,12 @@ const MAX_TITOLO = 300
 
 function dividi(riga: string): string[] {
   const separatore = riga.includes('\t') ? '\t' : ';'
-  return riga.split(separatore).map((c) => c.trim().replace(/^"(.*)"$/s, '$1').trim())
+  return riga.split(separatore).map((c) =>
+    c
+      .trim()
+      .replace(/^"(.*)"$/s, '$1')
+      .trim()
+  )
 }
 
 function eIntestazione(celle: string[]) {

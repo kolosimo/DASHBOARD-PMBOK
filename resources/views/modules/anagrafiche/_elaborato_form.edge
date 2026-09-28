@@ -12,11 +12,26 @@
     </div>
     <table>
       <tbody>
-        <tr><th>Codice</th><td class="code">{{ elaborato.codice }}</td></tr>
-        <tr><th>Titolo</th><td>{{ elaborato.titolo }}</td></tr>
-        <tr><th>Budget</th><td class="num">{{ formato.oreEsatte(elaborato.budgetMinuti) }}</td></tr>
-        <tr><th>Classe di servizio</th><td>{{ elaborato.classeServizio }}</td></tr>
-        <tr><th>Data fissa</th><td class="num">{{ formato.data(elaborato.dataFissa) }}</td></tr>
+        <tr>
+          <th>Codice</th>
+          <td class="code">{{ elaborato.codice }}</td>
+        </tr>
+        <tr>
+          <th>Titolo</th>
+          <td>{{ elaborato.titolo }}</td>
+        </tr>
+        <tr>
+          <th>Budget</th>
+          <td class="num">{{ formato.oreEsatte(elaborato.budgetMinuti) }}</td>
+        </tr>
+        <tr>
+          <th>Classe di servizio</th>
+          <td>{{ elaborato.classeServizio }}</td>
+        </tr>
+        <tr>
+          <th>Data fissa</th>
+          <td class="num">{{ formato.data(elaborato.dataFissa) }}</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -32,6 +47,7 @@
       <p>Controlla i campi segnalati.</p>
     </div>
   @end
+
   <form
     class="panel campi"
     method="POST"
@@ -42,24 +58,53 @@
     @if(elaborato)
       <input type="hidden" name="version" value="{{ elaborato.version }}" />
     @end
+
     <label>
+      
       Codice
-      <input type="text" name="codice" value="{{ val('codice', el.codice || '') }}" maxlength="40" required style="width:140px" />
+
+      <input
+        type="text"
+        name="codice"
+        value="{{ val('codice', el.codice || '') }}"
+        maxlength="40"
+        required
+        style="width:140px"
+      />
       @!component('modules/anagrafiche/_errore', { testo: errori.codice })
     </label>
     <label style="flex:1 1 320px">
+      
       Titolo
-      <input type="text" name="titolo" value="{{ val('titolo', el.titolo || '') }}" maxlength="300" required />
+
+      <input
+        type="text"
+        name="titolo"
+        value="{{ val('titolo', el.titolo || '') }}"
+        maxlength="300"
+        required
+      />
       @!component('modules/anagrafiche/_errore', { testo: errori.titolo })
     </label>
     <label>
+      
       Disciplina
+
       <select name="disciplina_id" required>
         <option value="">scegli…</option>
         @each(d in discipline)
           @if(d.attiva || d.id === el.disciplinaId)
-            <option value="{{ d.id }}" {{ String(val('disciplina_id', el.disciplinaId)) === String(d.id) ? 'selected' : '' }}>
-              {{ d.codice }} · {{ d.nome }}
+            <option
+              value="{{ d.id }}"
+              {{
+                String(val('disciplina_id', el.disciplinaId)) === String(d.id)
+                  ? 'selected'
+                  : ''
+              }}
+            >
+              {{ d.codice }}
+              ·
+              {{ d.nome }}
             </option>
           @end
         @end
@@ -67,21 +112,42 @@
       @!component('modules/anagrafiche/_errore', { testo: errori.disciplina_id })
     </label>
     <label>
+      
       Budget (ore)
+
       <input
         type="text"
         inputmode="decimal"
         name="budget_ore"
-        value="{{ val('budget_ore', elaborato ? formato.numero(el.budgetMinuti / 60, Number.isInteger(el.budgetMinuti / 60) ? 0 : 2) : '') }}"
+        value="{{
+          val(
+            'budget_ore',
+            elaborato
+              ? formato.numero(
+                  el.budgetMinuti / 60,
+                  Number.isInteger(el.budgetMinuti / 60) ? 0 : 2,
+                )
+              : '',
+          )
+        }}"
         style="width:100px"
       />
       @!component('modules/anagrafiche/_errore', { testo: errori.budget_ore })
     </label>
     <label>
+      
       Classe di servizio
+
       <select name="classe_servizio">
         @each(c in classi)
-          <option value="{{ c.valore }}" {{ val('classe_servizio', el.classeServizio || 'standard') === c.valore ? 'selected' : '' }}>
+          <option
+            value="{{ c.valore }}"
+            {{
+              val('classe_servizio', el.classeServizio || 'standard') === c.valore
+                ? 'selected'
+                : ''
+            }}
+          >
             {{ c.etichetta }}
           </option>
         @end
@@ -89,16 +155,27 @@
       @!component('modules/anagrafiche/_errore', { testo: errori.classe_servizio })
     </label>
     <label>
+      
       Data fissa
+
       <input type="date" name="data_fissa" value="{{ val('data_fissa', el.dataFissa || '') }}" />
       @!component('modules/anagrafiche/_errore', { testo: errori.data_fissa })
     </label>
     <label>
+      
       Responsabile
+
       <select name="responsabile_id">
         <option value="">nessuno</option>
         @each(u in persone)
-          <option value="{{ u.id }}" {{ String(val('responsabile_id', el.responsabileId)) === String(u.id) ? 'selected' : '' }}>
+          <option
+            value="{{ u.id }}"
+            {{
+              String(val('responsabile_id', el.responsabileId)) === String(u.id)
+                ? 'selected'
+                : ''
+            }}
+          >
             {{ u.nome }}{{ u.nota ? ' (' + u.nota + ')' : '' }}
           </option>
         @end
@@ -106,18 +183,27 @@
       @!component('modules/anagrafiche/_errore', { testo: errori.responsabile_id })
     </label>
     <label>
+      
       Milestone
+
       <select name="milestone_id">
         <option value="">nessuna</option>
         @each(m in milestone)
-          <option value="{{ m.id }}" {{ String(val('milestone_id', el.milestoneId)) === String(m.id) ? 'selected' : '' }}>
-            {{ m.titolo }} · {{ formato.dataBreve(m.dataPrevista) }}
+          <option
+            value="{{ m.id }}"
+            {{ String(val('milestone_id', el.milestoneId)) === String(m.id) ? 'selected' : '' }}
+          >
+            {{ m.titolo }}
+            ·
+            {{ formato.dataBreve(m.dataPrevista) }}
           </option>
         @end
       </select>
       @!component('modules/anagrafiche/_errore', { testo: errori.milestone_id })
     </label>
     <button class="btn primary" type="submit">{{ elaborato ? 'Salva' : 'Crea elaborato' }}</button>
-    <a class="btn ghost" href="/commesse/{{ commessa.id }}/anagrafica#pannello-elaborati">Annulla</a>
+    <a class="btn ghost" href="/commesse/{{ commessa.id }}/anagrafica#pannello-elaborati">
+      Annulla
+    </a>
   </form>
 @end

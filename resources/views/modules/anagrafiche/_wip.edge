@@ -23,7 +23,9 @@
       @each(l in p.limiti)
         <tr data-testid="wip-{{ l.codice }}">
           <td>{{ l.nome }}</td>
-          <td class="r num">{{ l.limiteDefault === null ? 'nessuno' : formato.numero(l.limiteDefault) }}</td>
+          <td class="r num">
+            {{ l.limiteDefault === null ? 'nessuno' : formato.numero(l.limiteDefault) }}
+          </td>
           <td class="r">
             @if(puoModificare)
               <input
@@ -31,7 +33,13 @@
                 name="limite"
                 min="1"
                 form="wip-{{ l.colonnaId }}"
-                value="{{ p.rigaId === l.colonnaId && p.valori.limite !== undefined ? p.valori.limite : (l.limiteCommessa === null ? '' : l.limiteCommessa) }}"
+                value="{{
+                  p.rigaId === l.colonnaId && p.valori.limite !== undefined
+                    ? p.valori.limite
+                    : l.limiteCommessa === null
+                      ? ''
+                      : l.limiteCommessa
+                }}"
                 aria-label="Limite WIP {{ l.nome }}"
                 style="width:80px"
               />
@@ -39,7 +47,9 @@
                 @!component('modules/anagrafiche/_errore', { testo: p.errori.limite })
               @end
             @else
-              <span class="num">{{ l.limiteCommessa === null ? 'default' : formato.numero(l.limiteCommessa) }}</span>
+              <span class="num">
+                {{ l.limiteCommessa === null ? 'default' : formato.numero(l.limiteCommessa) }}
+              </span>
             @end
           </td>
           @if(puoModificare)
@@ -53,7 +63,11 @@
                 hx-swap="outerHTML"
               >
                 {{ csrfField() }}
-                <input type="hidden" name="version" value="{{ l.version === null ? '' : l.version }}" />
+                <input
+                  type="hidden"
+                  name="version"
+                  value="{{ l.version === null ? '' : l.version }}"
+                />
                 <button class="btn" type="submit">Salva</button>
               </form>
             </td>

@@ -13,24 +13,41 @@
     </div>
   </div>
 
-  <form class="panel campi" method="POST" action="/commesse/{{ commessa.id }}/elaborati/import/anteprima">
+  <form
+    class="panel campi"
+    method="POST"
+    action="/commesse/{{ commessa.id }}/elaborati/import/anteprima"
+  >
     {{ csrfField() }}
     <label style="flex:1 1 100%">
+      
       Righe da importare
-      <textarea name="testo" rows="10" spellcheck="false" style="font-family:var(--mono)" placeholder="E-MEC-10;Centrale termica – schema;MEC;24&#10;E-ELE-11;Quadri di piano;ELE;16,5">{{ testo }}</textarea>
+
+      <textarea
+        name="testo"
+        rows="10"
+        spellcheck="false"
+        style="font-family:var(--mono)"
+        placeholder="E-MEC-10;Centrale termica – schema;MEC;24&#10;E-ELE-11;Quadri di piano;ELE;16,5"
+      >{{ testo }}</textarea>
     </label>
     <p class="muted" style="margin:0;flex:1 1 300px">
+      
       Discipline:
+
       @each((d, i) in discipline)
         @if(d.attiva)
-          <span class="code">{{ d.codice }}</span> {{ d.nome }}{{ i < discipline.length - 1 ? ' ·' : '' }}
+          <span class="code">{{ d.codice }}</span>
+          {{ d.nome }}
+          {{ i < discipline.length - 1 ? ' ·' : '' }}
         @end
       @end
     </p>
     <button class="btn primary" type="submit">Anteprima</button>
-    <a class="btn ghost" href="/commesse/{{ commessa.id }}/anagrafica#pannello-elaborati">Annulla</a>
+    <a class="btn ghost" href="/commesse/{{ commessa.id }}/anagrafica#pannello-elaborati">
+      Annulla
+    </a>
   </form>
-
   @if(esito)
     @if(esito.righe.length === 0)
       <div class="messaggio errore" role="alert" data-testid="import-vuoto">
@@ -39,18 +56,27 @@
     @elseif(esito.errate.length)
       <div class="messaggio errore" role="alert" data-testid="import-errori">
         <p>
-          {{ esito.errate.length === 1 ? '1 riga ha' : esito.errate.length + ' righe hanno' }} errori: correggile nel testo e rifai l'anteprima. Nessun elaborato è stato importato.
+          {{ esito.errate.length === 1 ? '1 riga ha' : esito.errate.length + ' righe hanno' }}
+          errori: correggile nel testo e rifai l'anteprima. Nessun elaborato è stato importato.
         </p>
       </div>
     @else
       <div class="messaggio ok" role="status" data-testid="import-pronto">
         <p>
-          {{ esito.valide.length === 1 ? '1 riga pronta' : esito.valide.length + ' righe pronte' }} da importare, per un totale di
-          {{ formato.oreEsatte(esito.valide.reduce((t, r) => t + r.budgetMinuti, 0)) }}.
+          {{
+            esito.valide.length === 1
+              ? '1 riga pronta'
+              : esito.valide.length + ' righe pronte'
+          }}
+          da importare, per un totale di
+          {{
+            formato.oreEsatte(
+              esito.valide.reduce((t, r) => t + r.budgetMinuti, 0),
+            )
+          }}.
         </p>
       </div>
     @end
-
     @if(esito.righe.length)
       @component('components/pannello', { titolo: 'Anteprima', tabella: true })
         <table data-testid="anteprima-import">
@@ -86,7 +112,6 @@
         </table>
       @end
     @end
-
     @if(esito.righe.length && !esito.errate.length)
       <form class="panel campi" method="POST" action="/commesse/{{ commessa.id }}/elaborati/import">
         {{ csrfField() }}
@@ -94,7 +119,11 @@
         <p style="margin:0;flex:1 1 300px">
           Gli elaborati importati partono dal primo stato, classe di servizio standard. Responsabile e milestone si impostano dopo.
         </p>
-        <button class="btn primary" type="submit" data-testid="conferma-import">Importa {{ esito.valide.length }} elaborati</button>
+        <button class="btn primary" type="submit" data-testid="conferma-import">
+          Importa
+          {{ esito.valide.length }}
+          elaborati
+        </button>
       </form>
     @end
   @end

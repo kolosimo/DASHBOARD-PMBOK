@@ -1,10 +1,11 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import vine from '@vinejs/vine'
 import Impostazione from '#models/impostazione'
-import { admin } from '#abilities/main'
 import { elencoImpostazioni } from './queries.js'
 import { aggiornaImpostazione, IMPOSTAZIONI_DEFAULT, valoreValido } from '#shared/impostazioni'
 import type { ChiaveImpostazione } from '#shared/impostazioni'
+import { numeroItaliano } from '#modules/anagrafiche/validazione'
+import { datiPagina, pubblicaConfigurazione, soloAdmin } from './comune.js'
 
 const validatoreModifica = vine.create(
   vine.object({
@@ -16,28 +17,24 @@ const validatoreModifica = vine.create(
   })
 )
 
-/** "0,95" → 0.95; null se non è un numero */
-function numeroItaliano(valore: string | undefined): number | null {
-  if (valore === undefined || valore === '') return null
-  const n = Number(valore.replace(/\./g, '').replace(',', '.'))
-  return Number.isFinite(n) ? n : null
-}
-
 /**
- * Pannello di amministrazione. In Fase 0 solo le impostazioni (con
- * optimistic locking); il resto del pannello è dell'agente A1.
+ * Pannello di amministrazione: pagina iniziale con impostazioni e soglie
+ * (optimistic locking, audit). Le altre sezioni hanno i propri controller.
  */
 export default class AdminController {
-  async index({ view, bouncer }: HttpContext) {
-    await bouncer.authorize(admin)
+  async index(ctx: HttpContext) {
+    await soloAdmin(ctx)
     const impostazioni = await elencoImpostazioni()
-    return view.render('modules/admin/index', { impostazioni, voceAttiva: 'admin' })
+    return ctx.view.render('modules/admin/index', {
+      impostazioni,
+      ...datiPagina('impostazioni'),
+      messaggio: ctx.session.flashMessages.get('messaggio') ?? null,
+    })
   }
 
   async aggiornaImpostazione(ctx: HttpContext) {
-    const { request, response, view, bouncer, auth, params } = ctx
-    await bouncer.authorize(admin)
-    const utente = auth.getUserOrFail()
+    const { request, response, view, params } = ctx
+    const utente = await soloAdmin(ctx)
     const riga = await Impostazione.findOrFail(params.id)
     const dati = await request.validateUsing(validatoreModifica)
 
@@ -48,10 +45,24 @@ export default class AdminController {
     } else if (typeof esempio === 'number') {
       valore = numeroItaliano(dati.valore)
     } else {
-      valore = {
-        verde: numeroItaliano(dati.verde),
-        giallo: numeroItaliano(dati.giallo),
-        verso: (riga.valore as { verso?: string } | null)?.verso ?? 'alto',
+      const verde = numeroItaliano(dati.verde)
+      const giallo = numeroItaliano(dati.giallo)
+      const verso = (riga.valore as { verso?: string } | null)?.verso ?? 'alto'
+      valore = { verde, giallo, verso }
+      // Soglie coerenti: con "più alto è meglio" il verde parte sopra il giallo
+      if (
+        verde !== null &&
+        giallo !== null &&
+        ((verso === 'alto' && verde < giallo) || (verso === 'basso' && verde > giallo))
+      ) {
+        response.status(422)
+        return view.render('modules/admin/_impostazione', {
+          imp: riga,
+          errore:
+            verso === 'alto'
+              ? 'La soglia del verde deve essere uguale o maggiore di quella del giallo.'
+              : 'La soglia del verde deve essere uguale o minore di quella del giallo.',
+        })
       }
     }
 
@@ -71,6 +82,7 @@ export default class AdminController {
       (attuale, messaggio) =>
         view.render('modules/admin/_impostazione', { imp: attuale, conflitto: messaggio })
     )
+    await pubblicaConfigurazione('impostazioni')
 
     response.header('HX-Trigger', JSON.stringify({ toast: 'Impostazione salvata' }))
     return view.render('modules/admin/_impostazione', { imp: aggiornata, salvata: true })

@@ -1,0 +1,22 @@
+@component('layouts/app', { titolo: 'Stati e pesi', voceAttiva })
+  @let(intestazione = 'Stati dell’elaborato e pesi EV')
+  @let(descrizione =
+    'Il valore guadagnato (EV) di un elaborato è il suo budget per il peso dello stato in cui si trova. I pesi sono cumulativi: salendo di stato non possono diminuire. Cambiare un peso vale per le baseline future: le baseline già approvate conservano i pesi con cui sono state congelate.')
+  @include('modules/admin/_testata')
+  <div class="messaggio conflitto" role="note">
+    @!component('components/pill', { classe: 'w', testo: 'attenzione' })
+    <p>
+      I pesi confermati al Gate 0 sono 0, 20, 50, 70, 85, 100%. Cambiarli sposta l’EV mostrato dalle commesse senza baseline approvata: accordati prima con i PM.
+    </p>
+  </div>
+  <div class="impostazioni">
+    @each(stato in stati)
+      @!component('modules/admin/_stato', {
+        stato,
+        colonne,
+        errori: riga && riga.id === stato.id ? riga.errori : {},
+        valori: {},
+      })
+    @end
+  </div>
+@end

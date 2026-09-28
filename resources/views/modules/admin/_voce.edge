@@ -1,0 +1,56 @@
+{{--
+  Riga di una disciplina o di una causa di non completamento (HTMX).
+  Variabili: voce, tipo ('discipline' | 'cause'), errori, salvata?, conflitto?
+--}}
+<div class="impostazione" id="voce-{{ voce.id }}" data-testid="voce-{{ voce.codice }}">
+  @if(conflitto)
+    @!component('components/conflitto', { messaggio: conflitto })
+  @end
+  @each((testo, campo) in errori)
+    <div class="messaggio errore" role="alert">
+      <p>{{ testo }}</p>
+    </div>
+  @end
+
+  <div class="panel-h" style="margin:0">
+    <div>
+      <b>{{ voce.nome }}</b>
+      <div class="chiave">{{ voce.codice }} · versione {{ voce.version }}</div>
+    </div>
+    @if(salvata)
+      @!component('components/pill', { classe: 'g', testo: 'salvata' })
+    @elseif(!voce.attiva)
+      @!component('components/pill', { classe: 'n', testo: 'disattivata' })
+    @end
+  </div>
+  <form
+    class="campi"
+    method="POST"
+    action="/admin/{{ tipo }}/{{ voce.id }}"
+    hx-post="/admin/{{ tipo }}/{{ voce.id }}"
+    hx-target="#voce-{{ voce.id }}"
+    hx-swap="outerHTML"
+  >
+    {{ csrfField() }}
+    <input type="hidden" name="version" value="{{ voce.version }}" />
+    <label style="flex:1 1 240px">
+      
+      Nome
+
+      <input type="text" name="nome" value="{{ voce.nome }}" maxlength="200" />
+    </label>
+    <label>
+      
+      Ordine
+
+      <input type="number" name="ordine" value="{{ voce.ordine }}" min="0" style="width:80px" />
+    </label>
+    <label style="flex-direction:row;align-items:center;gap:6px">
+      <input type="checkbox" name="attiva" value="on" {{ voce.attiva ? 'checked' : '' }} />
+      
+      attiva
+
+    </label>
+    <button class="btn primary" type="submit">Salva</button>
+  </form>
+</div>

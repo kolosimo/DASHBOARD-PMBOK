@@ -134,7 +134,7 @@ test.group('Anagrafiche · team', (group) => {
       }
     }
     assert.include(html, 'data-testid="avviso-team"')
-    assert.include(html, 'Il team ha 11 persone')
+    assert.include(html.replace(/\s+/g, ' '), 'Il team ha 11 persone')
   })
 
   test('un membro vede il team ma non i comandi', async ({ assert }) => {
@@ -155,7 +155,12 @@ test.group('Anagrafiche · milestone', (group) => {
     const { b, csrf } = await entra('pm2', c.id)
     const r1 = await b.post(
       `/commesse/${c.id}/milestone`,
-      { titolo: 'Consegna preliminare', data_prevista: '15/10/2026', contrattuale: 'on', ordine: '3' },
+      {
+        titolo: 'Consegna preliminare',
+        data_prevista: '15/10/2026',
+        contrattuale: 'on',
+        ordine: '3',
+      },
       HTMX(csrf)
     )
     assert.equal(r1.status, 200)
@@ -252,7 +257,11 @@ test.group('Anagrafiche · limiti WIP della commessa', (group) => {
         .first()
     await db.from('limiti_wip_commessa').where('commessa_id', c.id).delete()
 
-    let r = await b.post(`/commesse/${c.id}/limiti-wip/${col.id}`, { version: '', limite: '6' }, HTMX(csrf))
+    let r = await b.post(
+      `/commesse/${c.id}/limiti-wip/${col.id}`,
+      { version: '', limite: '6' },
+      HTMX(csrf)
+    )
     assert.equal(r.status, 200)
     const riga = await trova()
     assert.equal(riga.limite, 6)

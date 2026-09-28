@@ -210,8 +210,13 @@ test.group('Anagrafiche · permessi', (group) => {
     )
     assert.equal(r.status, 403)
     assert.equal(
-      (await b.post(`/commesse/${uffici.id}/team`, { utente_id: '1', ruolo_commessa: 'pm' }, HTMX(csrf)))
-        .status,
+      (
+        await b.post(
+          `/commesse/${uffici.id}/team`,
+          { utente_id: '1', ruolo_commessa: 'pm' },
+          HTMX(csrf)
+        )
+      ).status,
       403
     )
     assert.equal((await b.get(`/commesse/${uffici.id}/elaborati/nuovo`)).status, 403)

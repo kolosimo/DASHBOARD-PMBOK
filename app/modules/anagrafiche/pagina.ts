@@ -74,7 +74,8 @@ async function datiPannello(nome: NomePannello, commessa: Commessa) {
     case 'team': {
       const membri = await elencoMembri(commessa.id)
       const presenti = new Set(membri.map((m) => m.utenteId))
-      const utenti = (await utentiAttivi()).filter((u) => !presenti.has(u.id))
+      const attivi = await utentiAttivi()
+      const utenti = attivi.filter((u) => !presenti.has(u.id))
       return {
         membri,
         utentiDisponibili: utenti,

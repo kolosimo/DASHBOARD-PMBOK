@@ -18,7 +18,13 @@ function leggiCampi(dati: Record<string, unknown>) {
   const contrattuale = campi.booleano('contrattuale')
   return {
     campi,
-    valori: { titolo: titolo!, dataPrevista: dataPrevista!, dataEffettiva, ordine: ordine ?? 0, contrattuale },
+    valori: {
+      titolo: titolo!,
+      dataPrevista: dataPrevista!,
+      dataEffettiva,
+      ordine: ordine ?? 0,
+      contrattuale,
+    },
   }
 }
 

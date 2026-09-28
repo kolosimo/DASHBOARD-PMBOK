@@ -46,7 +46,11 @@ export default class AnagraficheController {
       if (!pm) campi.errore('pm_id', 'PM: utente inesistente o disattivato.')
     }
     if (codice && codice !== commessa.codice) {
-      const dup = await db.from('commesse').where('codice', codice).whereNot('id', commessa.id).first()
+      const dup = await db
+        .from('commesse')
+        .where('codice', codice)
+        .whereNot('id', commessa.id)
+        .first()
       if (dup) campi.errore('codice', `Codice: esiste già una commessa ${codice}.`)
     }
     if (!campi.valido) {

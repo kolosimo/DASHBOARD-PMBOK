@@ -1,0 +1,16 @@
+@component('layouts/app', { titolo: 'Utenti e ruoli', voceAttiva })
+  @let(intestazione = 'Utenti e ruoli')
+  @let(descrizione =
+    'Gli utenti si creano da soli al primo accesso con l’account Microsoft 365 aziendale. Qui si sceglie il ruolo globale (admin, direzione, pm, progettista) e si disattiva chi non deve più entrare. Il ruolo dentro una commessa si decide nel team della commessa.')
+  @include('modules/admin/_testata')
+  <div class="impostazioni">
+    @each(u in utenti)
+      @!component('modules/admin/_utente', {
+        u,
+        ruoli,
+        io,
+        errori: riga && riga.id === u.id ? riga.errori : {},
+      })
+    @end
+  </div>
+@end

@@ -19,11 +19,7 @@ async function disciplina(codice: string) {
 }
 
 async function elaborato(commessaId: number, codice: string) {
-  return db
-    .from('elaborati')
-    .where('commessa_id', commessaId)
-    .where('codice', codice)
-    .first()
+  return db.from('elaborati').where('commessa_id', commessaId).where('codice', codice).first()
 }
 
 test.group('Anagrafiche · conversioni e analisi dell’import (senza DB)', () => {
@@ -294,13 +290,14 @@ test.group('Anagrafiche · import elaborati', (group) => {
   }) => {
     const c = await Commessa.findByOrFail('codice', 'CL-2026-018')
     const { b, csrf } = await entra('pm2', c.id)
-    const testo = 'Codice\tTitolo\tDisciplina\tBudget ore\nI-10\tSchema UTA\tMEC\t20\nI-11\tQuadro BMS\tImpianti elettrici\t7,5'
+    const testo =
+      'Codice\tTitolo\tDisciplina\tBudget ore\nI-10\tSchema UTA\tMEC\t20\nI-11\tQuadro BMS\tImpianti elettrici\t7,5'
     const r = await b.post(`/commesse/${c.id}/elaborati/import/anteprima`, { _csrf: csrf, testo })
     assert.equal(r.status, 200)
     const html = await r.text()
     assert.include(html, 'data-testid="import-pronto"')
     assert.include(html, '27,5 h')
-    assert.include(html, 'Importa 2 elaborati')
+    assert.include(html.replace(/\s+/g, ' '), 'Importa 2 elaborati')
 
     const r2 = await b.post(`/commesse/${c.id}/elaborati/import`, { _csrf: csrf, testo })
     assert.equal(r2.status, 302)

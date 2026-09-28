@@ -6,15 +6,20 @@
 <div class="panel tbl" id="pannello-team" data-testid="pannello-team">
   <div class="panel-h">
     <h3>Team</h3>
-    <span class="note">{{ p.membri.length }} {{ p.membri.length === 1 ? 'persona' : 'persone' }}</span>
+    <span class="note">
+      {{ p.membri.length }}
+      {{ p.membri.length === 1 ? 'persona' : 'persone' }}
+    </span>
   </div>
   @include('modules/anagrafiche/_testa_pannello')
   @if(p.troppi)
     <div class="messaggio conflitto" role="status" data-testid="avviso-team">
       @!component('components/pill', { classe: 'w', testo: 'attenzione' })
       <p>
-        Il team ha {{ p.membri.length }} persone: per la riunione settimanale del Last Planner
-        si consiglia di restare entro {{ p.consigliati }}. Valuta sottogruppi per disciplina.
+        Il team ha
+        {{ p.membri.length }}
+        persone: per la riunione settimanale del Last Planner si consiglia di restare entro
+        {{ p.consigliati }}. Valuta sottogruppi per disciplina.
       </p>
     </div>
   @end
@@ -37,13 +42,21 @@
           <td class="muted">{{ m.email }}</td>
           <td>
             @if(puoModificare)
-              <select name="ruolo_commessa" form="membro-{{ m.id }}" aria-label="Ruolo di {{ m.nome }}">
+              <select
+                name="ruolo_commessa"
+                form="membro-{{ m.id }}"
+                aria-label="Ruolo di {{ m.nome }}"
+              >
                 @each(r in p.ruoli)
-                  <option value="{{ r }}" {{ r === m.ruoloCommessa ? 'selected' : '' }}>{{ r }}</option>
+                  <option value="{{ r }}" {{ r === m.ruoloCommessa ? 'selected' : '' }}>
+                    {{ r }}
+                  </option>
                 @end
               </select>
               @if(p.rigaId === m.id)
-                @!component('modules/anagrafiche/_errore', { testo: p.errori.ruolo_commessa })
+                @!component('modules/anagrafiche/_errore', {
+                  testo: p.errori.ruolo_commessa,
+                })
               @end
             @else
               {{ m.ruoloCommessa }}
@@ -87,7 +100,6 @@
       @end
     </tbody>
   </table>
-
   @if(puoModificare)
     <form
       class="campi"
@@ -100,11 +112,18 @@
     >
       {{ csrfField() }}
       <label>
+        
         Aggiungi persona
+
         <select name="utente_id">
           <option value="">scegli…</option>
           @each(u in p.utentiDisponibili)
-            <option value="{{ u.id }}" {{ String(p.valori.utente_id) === String(u.id) ? 'selected' : '' }}>{{ u.nome }}</option>
+            <option
+              value="{{ u.id }}"
+              {{ String(p.valori.utente_id) === String(u.id) ? 'selected' : '' }}
+            >
+              {{ u.nome }}
+            </option>
           @end
         </select>
         @if(p.rigaId === null)
@@ -112,10 +131,17 @@
         @end
       </label>
       <label>
+        
         Ruolo
+
         <select name="ruolo_commessa">
           @each(r in p.ruoli)
-            <option value="{{ r }}" {{ (p.valori.ruolo_commessa || 'progettista') === r ? 'selected' : '' }}>{{ r }}</option>
+            <option
+              value="{{ r }}"
+              {{ (p.valori.ruolo_commessa || 'progettista') === r ? 'selected' : '' }}
+            >
+              {{ r }}
+            </option>
           @end
         </select>
         @if(p.rigaId === null)

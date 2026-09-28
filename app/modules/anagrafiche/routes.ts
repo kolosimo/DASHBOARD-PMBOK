@@ -11,9 +11,7 @@ const numero = router.matchers.number()
 router
   .group(() => {
     router.get('/anagrafica', [AnagraficheController, 'show']).as('anagrafiche.show')
-    router
-      .post('/anagrafica/dati', [AnagraficheController, 'aggiornaDati'])
-      .as('anagrafiche.dati')
+    router.post('/anagrafica/dati', [AnagraficheController, 'aggiornaDati']).as('anagrafiche.dati')
     router
       .post('/limiti-wip/:colonnaId', [AnagraficheController, 'aggiornaLimiteWip'])
       .where('colonnaId', numero)
@@ -39,9 +37,7 @@ router
       .where('milestoneId', numero)
       .as('anagrafiche.milestone.elimina')
 
-    router
-      .get('/elaborati/nuovo', [ElaboratiController, 'nuovo'])
-      .as('anagrafiche.elaborati.nuovo')
+    router.get('/elaborati/nuovo', [ElaboratiController, 'nuovo']).as('anagrafiche.elaborati.nuovo')
     router.post('/elaborati', [ElaboratiController, 'crea']).as('anagrafiche.elaborati.crea')
     router
       .get('/elaborati/import', [ElaboratiController, 'formImport'])

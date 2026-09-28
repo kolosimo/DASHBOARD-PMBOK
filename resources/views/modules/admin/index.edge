@@ -1,13 +1,8 @@
 @component('layouts/app', { titolo: 'Amministrazione', voceAttiva })
-  <div class="head">
-    <div>
-      <div class="eyebrow">Amministrazione</div>
-      <h2>Impostazioni</h2>
-      <p>
-        I valori iniziali sono di esempio e vanno tarati con i PM. Ogni modifica finisce nel registro di audit. Se due persone modificano insieme, la seconda riceve un avviso di conflitto e vede il valore aggiornato.
-      </p>
-    </div>
-  </div>
+  @let(intestazione = 'Impostazioni e soglie')
+  @let(descrizione =
+    'I valori iniziali sono di esempio e vanno tarati con i PM. Ogni modifica finisce nel registro di audit. Se due persone modificano insieme, la seconda riceve un avviso di conflitto e vede il valore aggiornato.')
+  @include('modules/admin/_testata')
   <div class="impostazioni">
     @each(imp in impostazioni)
       @include('modules/admin/_impostazione')

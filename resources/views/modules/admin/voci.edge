@@ -1,0 +1,59 @@
+{{--
+  Discipline o cause di non completamento.
+  Variabili: tipo, titolo, descrizione, voci, errori, valori, riga, messaggio, sezioni, sezione
+--}}
+@component('layouts/app', { titolo, voceAttiva })
+  @let(intestazione = titolo)
+  @include('modules/admin/_testata')
+
+  <form class="panel campi" method="POST" action="/admin/{{ tipo }}" data-testid="nuova-voce">
+    {{ csrfField() }}
+    <label>
+      
+      Codice
+
+      <input
+        type="text"
+        name="codice"
+        value="{{ valori.codice || '' }}"
+        maxlength="{{ tipo === 'discipline' ? 10 : 40 }}"
+        style="width:140px"
+      />
+      @!component('modules/anagrafiche/_errore', { testo: errori.codice })
+    </label>
+    <label style="flex:1 1 240px">
+      
+      Nome
+
+      <input type="text" name="nome" value="{{ valori.nome || '' }}" maxlength="200" />
+      @!component('modules/anagrafiche/_errore', { testo: errori.nome })
+    </label>
+    <label>
+      
+      Ordine
+
+      <input
+        type="number"
+        name="ordine"
+        value="{{ valori.ordine || '' }}"
+        min="0"
+        style="width:80px"
+      />
+      @!component('modules/anagrafiche/_errore', { testo: errori.ordine })
+    </label>
+    <button class="btn primary" type="submit">
+      Aggiungi
+      {{ tipo === 'discipline' ? 'disciplina' : 'causa' }}
+    </button>
+  </form>
+
+  <div class="impostazioni">
+    @each(voce in voci)
+      @!component('modules/admin/_voce', {
+        voce,
+        tipo,
+        errori: riga && riga.id === voce.id ? riga.errori : {},
+      })
+    @end
+  </div>
+@end

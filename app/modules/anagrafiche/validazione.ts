@@ -21,7 +21,7 @@ export const ORE_MASSIME_BUDGET = 100_000
 export function numeroItaliano(valore: unknown): number | null {
   if (typeof valore === 'number') return Number.isFinite(valore) ? valore : null
   if (typeof valore !== 'string') return null
-  let s = valore.trim().replace(/\s| /g, '')
+  let s = valore.trim().replace(/\s/g, '')
   if (s === '') return null
   if (s.includes(',')) {
     s = s.replace(/\./g, '').replace(',', '.')
@@ -148,7 +148,10 @@ export class Campi {
       return null
     }
     if (ore > ORE_MASSIME_BUDGET) {
-      this.errore(campo, `${etichetta}: al massimo ${ORE_MASSIME_BUDGET.toLocaleString('it-IT')} ore.`)
+      this.errore(
+        campo,
+        `${etichetta}: al massimo ${ORE_MASSIME_BUDGET.toLocaleString('it-IT')} ore.`
+      )
       return null
     }
     return Math.round(ore * 60)
@@ -202,17 +205,13 @@ export class Campi {
 /** true se l'errore del DB è una violazione di unicità (codice PostgreSQL 23505) */
 export function eViolazioneUnicita(errore: unknown): boolean {
   return (
-    typeof errore === 'object' &&
-    errore !== null &&
-    (errore as { code?: string }).code === '23505'
+    typeof errore === 'object' && errore !== null && (errore as { code?: string }).code === '23505'
   )
 }
 
 /** true se l'errore del DB è una violazione di chiave esterna (23503) */
 export function eViolazioneChiaveEsterna(errore: unknown): boolean {
   return (
-    typeof errore === 'object' &&
-    errore !== null &&
-    (errore as { code?: string }).code === '23503'
+    typeof errore === 'object' && errore !== null && (errore as { code?: string }).code === '23503'
   )
 }

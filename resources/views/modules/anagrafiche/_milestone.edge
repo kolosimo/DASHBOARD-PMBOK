@@ -29,22 +29,57 @@
           @let(v = p.rigaId === m.id ? p.valori : {})
           <tr data-testid="milestone-{{ m.id }}">
             <td>
-              <input type="text" name="titolo" form="ms-{{ m.id }}" value="{{ v.titolo !== undefined ? v.titolo : m.titolo }}" maxlength="300" aria-label="Titolo" style="width:100%" />
+              <input
+                type="text"
+                name="titolo"
+                form="ms-{{ m.id }}"
+                value="{{ v.titolo !== undefined ? v.titolo : m.titolo }}"
+                maxlength="300"
+                aria-label="Titolo"
+                style="width:100%"
+              />
               @!component('modules/anagrafiche/_errore', { testo: err.titolo })
             </td>
             <td>
-              <input type="date" name="data_prevista" form="ms-{{ m.id }}" value="{{ v.data_prevista !== undefined ? v.data_prevista : m.dataPrevista }}" aria-label="Data target" />
+              <input
+                type="date"
+                name="data_prevista"
+                form="ms-{{ m.id }}"
+                value="{{ v.data_prevista !== undefined ? v.data_prevista : m.dataPrevista }}"
+                aria-label="Data target"
+              />
               @!component('modules/anagrafiche/_errore', { testo: err.data_prevista })
             </td>
             <td>
-              <input type="date" name="data_effettiva" form="ms-{{ m.id }}" value="{{ v.data_effettiva !== undefined ? v.data_effettiva : (m.dataEffettiva || '') }}" aria-label="Data effettiva" />
+              <input
+                type="date"
+                name="data_effettiva"
+                form="ms-{{ m.id }}"
+                value="{{ v.data_effettiva !== undefined ? v.data_effettiva : m.dataEffettiva || '' }}"
+                aria-label="Data effettiva"
+              />
               @!component('modules/anagrafiche/_errore', { testo: err.data_effettiva })
             </td>
             <td>
-              <input type="checkbox" name="contrattuale" value="on" form="ms-{{ m.id }}" aria-label="Contrattuale" {{ m.contrattuale ? 'checked' : '' }} />
+              <input
+                type="checkbox"
+                name="contrattuale"
+                value="on"
+                form="ms-{{ m.id }}"
+                aria-label="Contrattuale"
+                {{ m.contrattuale ? 'checked' : '' }}
+              />
             </td>
             <td class="r">
-              <input type="number" name="ordine" form="ms-{{ m.id }}" value="{{ v.ordine !== undefined ? v.ordine : m.ordine }}" min="0" aria-label="Ordine" style="width:70px" />
+              <input
+                type="number"
+                name="ordine"
+                form="ms-{{ m.id }}"
+                value="{{ v.ordine !== undefined ? v.ordine : m.ordine }}"
+                min="0"
+                aria-label="Ordine"
+                style="width:70px"
+              />
               @!component('modules/anagrafiche/_errore', { testo: err.ordine })
             </td>
             <td class="r" style="white-space:nowrap">
@@ -92,7 +127,6 @@
       @end
     </tbody>
   </table>
-
   @if(puoModificare)
     @let(err = p.rigaId === null ? p.errori : {})
     @let(v = p.rigaId === null ? p.valori : {})
@@ -107,27 +141,49 @@
     >
       {{ csrfField() }}
       <label style="flex:1 1 240px">
+        
         Nuova milestone
-        <input type="text" name="titolo" value="{{ v.titolo || '' }}" maxlength="300" placeholder="Titolo" />
+
+        <input
+          type="text"
+          name="titolo"
+          value="{{ v.titolo || '' }}"
+          maxlength="300"
+          placeholder="Titolo"
+        />
         @!component('modules/anagrafiche/_errore', { testo: err.titolo })
       </label>
       <label>
+        
         Data target
+
         <input type="date" name="data_prevista" value="{{ v.data_prevista || '' }}" />
         @!component('modules/anagrafiche/_errore', { testo: err.data_prevista })
       </label>
       <label>
+        
         Data effettiva
+
         <input type="date" name="data_effettiva" value="{{ v.data_effettiva || '' }}" />
         @!component('modules/anagrafiche/_errore', { testo: err.data_effettiva })
       </label>
       <label style="flex-direction:row;align-items:center;gap:6px">
         <input type="checkbox" name="contrattuale" value="on" checked />
+        
         contrattuale
+
       </label>
       <label>
+        
         Ordine
-        <input type="number" name="ordine" value="{{ v.ordine || '0' }}" min="0" style="width:70px" />
+
+        <input
+          type="number"
+          name="ordine"
+          value="{{ v.ordine || '0' }}"
+          min="0"
+          style="width:70px"
+        />
         @!component('modules/anagrafiche/_errore', { testo: err.ordine })
       </label>
       <button class="btn primary" type="submit">Aggiungi</button>

@@ -348,4 +348,3 @@ export async function limitiWipCommessa(commessaId: number): Promise<LimiteWipRi
     version: r.version,
   }))
 }
-

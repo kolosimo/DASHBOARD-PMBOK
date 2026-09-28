@@ -1,0 +1,23 @@
+{{--
+  Testata delle pagine di amministrazione: titolo, descrizione, sottomenu, messaggio.
+  Variabili: sezioni, sezione, intestazione, descrizione, messaggio
+--}}
+<div class="head">
+  <div>
+    <div class="eyebrow">Amministrazione</div>
+    <h2>{{ intestazione }}</h2>
+    <p>{{ descrizione }}</p>
+  </div>
+</div>
+<nav class="tabs" aria-label="Sezioni dell'amministrazione" data-testid="menu-admin">
+  @each(s in sezioni)
+    <a href="{{ s.percorso }}" aria-current="{{ s.id === sezione ? 'page' : 'false' }}">
+      {{ s.etichetta }}
+    </a>
+  @end
+</nav>
+@if(messaggio)
+  <div class="messaggio ok" role="status" data-testid="messaggio">
+    <p>{{ messaggio }}</p>
+  </div>
+@end

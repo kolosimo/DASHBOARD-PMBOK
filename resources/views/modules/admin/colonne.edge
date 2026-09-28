@@ -1,0 +1,15 @@
+@component('layouts/app', { titolo: 'Colonne Kanban e WIP', voceAttiva })
+  @let(intestazione = 'Colonne Kanban e limiti WIP')
+  @let(descrizione =
+    'Le colonne del Kanban raggruppano gli stati dell’elaborato. Il limite WIP di default vale per tutte le commesse; il PM di una commessa può fissarne uno diverso nella scheda Anagrafica.')
+  @include('modules/admin/_testata')
+  <div class="impostazioni">
+    @each(colonna in colonne)
+      @!component('modules/admin/_colonna', {
+        colonna,
+        errori: riga && riga.id === colonna.id ? riga.errori : {},
+        valori: {},
+      })
+    @end
+  </div>
+@end

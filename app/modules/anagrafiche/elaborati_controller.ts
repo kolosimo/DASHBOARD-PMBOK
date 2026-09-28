@@ -187,9 +187,15 @@ export default class ElaboratiController {
 
     try {
       await db.transaction(async (trx) => {
-        const riga = await aggiornaConVersione(ElaboratoAnagrafica, el.id, versione, {}, {
-          client: trx,
-        })
+        const riga = await aggiornaConVersione(
+          ElaboratoAnagrafica,
+          el.id,
+          versione,
+          {},
+          {
+            client: trx,
+          }
+        )
         await riga.useTransaction(trx).delete()
         await registraAudit(
           {
@@ -371,7 +377,8 @@ export default class ElaboratiController {
         .whereRaw('upper(codice) = upper(?)', [codice])
         .whereNot('id', el?.id ?? 0)
         .first()
-      if (dup) campi.errore('codice', `Codice: esiste già un elaborato ${codice} in questa commessa.`)
+      if (dup)
+        campi.errore('codice', `Codice: esiste già un elaborato ${codice} in questa commessa.`)
     }
 
     const valori: ValoriElaborato = {
@@ -408,7 +415,8 @@ export default class ElaboratiController {
     // Prima i membri del team, poi gli altri utenti attivi
     const membri = await elencoMembri(commessa.id)
     const idMembri = new Set(membri.map((m) => m.utenteId))
-    const altri = (await utentiAttivi()).filter((u) => !idMembri.has(u.id))
+    const attivi = await utentiAttivi()
+    const altri = attivi.filter((u) => !idMembri.has(u.id))
     return ctx.view.render('modules/anagrafiche/elaborato', {
       commessa,
       elaborato,

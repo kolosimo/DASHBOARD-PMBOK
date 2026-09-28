@@ -17,18 +17,24 @@
       </p>
     </div>
   </div>
-
   @if(messaggio)
     <div class="messaggio ok" role="status" data-testid="messaggio">
       <p>{{ messaggio }}</p>
     </div>
   @end
-
   @!component('modules/anagrafiche/_dati', { commessa, puoModificare, p: pannelli.dati })
 
   <div class="grid2">
-    @!component('modules/anagrafiche/_team', { commessa, puoModificare, p: pannelli.team })
-    @!component('modules/anagrafiche/_milestone', { commessa, puoModificare, p: pannelli.milestone })
+    @!component('modules/anagrafiche/_team', {
+      commessa,
+      puoModificare,
+      p: pannelli.team,
+    })
+    @!component('modules/anagrafiche/_milestone', {
+      commessa,
+      puoModificare,
+      p: pannelli.milestone,
+    })
   </div>
 
   <div class="panel tbl" id="pannello-elaborati" data-testid="pannello-elaborati">
@@ -37,7 +43,9 @@
       @if(puoModificare)
         <span>
           <a class="btn" href="/commesse/{{ commessa.id }}/elaborati/import">Importa da Excel</a>
-          <a class="btn primary" href="/commesse/{{ commessa.id }}/elaborati/nuovo">Nuovo elaborato</a>
+          <a class="btn primary" href="/commesse/{{ commessa.id }}/elaborati/nuovo">
+            Nuovo elaborato
+          </a>
         </span>
       @else
         <span class="note">{{ elaborati.length }} elaborati</span>
@@ -61,7 +69,9 @@
           <tr data-testid="elaborato-{{ e.codice }}">
             <td>
               @if(puoModificare)
-                <a class="code" href="/commesse/{{ commessa.id }}/elaborati/{{ e.id }}/modifica">{{ e.codice }}</a>
+                <a class="code" href="/commesse/{{ commessa.id }}/elaborati/{{ e.id }}/modifica">
+                  {{ e.codice }}
+                </a>
               @else
                 <span class="code">{{ e.codice }}</span>
               @end
@@ -72,7 +82,8 @@
             <td>
               {{ e.classeServizio.replace('_', ' ') }}
               @if(e.dataFissa)
-                · <span class="num">{{ formato.dataBreve(e.dataFissa) }}</span>
+                ·
+                <span class="num">{{ formato.dataBreve(e.dataFissa) }}</span>
               @end
             </td>
             <td>{{ formato.testo(e.responsabile) }}</td>
@@ -82,7 +93,12 @@
         @else
           <tr>
             <td colspan="8" class="muted">
-              Nessun elaborato. {{ puoModificare ? 'Aggiungilo a mano o incolla l’elenco da Excel.' : '' }}
+              Nessun elaborato.
+              {{
+                puoModificare
+                  ? 'Aggiungilo a mano o incolla l’elenco da Excel.'
+                  : ''
+              }}
             </td>
           </tr>
         @end
@@ -98,6 +114,5 @@
       @end
     </table>
   </div>
-
   @!component('modules/anagrafiche/_wip', { commessa, puoModificare, p: pannelli.wip })
 @end
