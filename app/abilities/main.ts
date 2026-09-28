@@ -57,8 +57,8 @@ export const registraOre = Bouncer.ability((utente: Utente, proprietarioId: numb
 })
 
 /**
- * Vedere le ore per persona di una commessa: disattivato di default
- * (impostazione `ore.per_persona_visibili`, art. 4 Statuto dei lavoratori).
+ * Vedere le ore per persona di una commessa: attivo di default (Gate 0, 28/09/2026),
+ * disattivabile con l'impostazione `ore.per_persona_visibili` (art. 4 Statuto dei lavoratori).
  * Se attivato: solo admin e PM della commessa. La direzione mai.
  */
 export const vedeOrePerPersona = Bouncer.ability(async (utente: Utente, commessa: Commessa) => {

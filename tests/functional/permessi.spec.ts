@@ -58,16 +58,19 @@ test.group('Permessi · abilità Bouncer', (group) => {
     assert.isFalse(await bouncerPer(admin).allows(abilita.registraOre, mec1.id))
   })
 
-  test('vedeOrePerPersona: disattivata di default, poi solo admin e PM', async ({ assert }) => {
+  test('vedeOrePerPersona: attiva di default solo per admin e PM, disattivabile', async ({
+    assert,
+  }) => {
     const scuola = await Commessa.findByOrFail('codice', 'CL-2026-031')
-    assert.isFalse(
-      await bouncerPer(await utente('admin')).allows(abilita.vedeOrePerPersona, scuola)
-    )
+    assert.isTrue(await bouncerPer(await utente('admin')).allows(abilita.vedeOrePerPersona, scuola))
+    assert.isTrue(await bouncerPer(await utente('pm1')).allows(abilita.vedeOrePerPersona, scuola))
+    await Impostazione.query()
+      .where('chiave', 'ore.per_persona_visibili')
+      .update({ valore: 'false' })
     assert.isFalse(await bouncerPer(await utente('pm1')).allows(abilita.vedeOrePerPersona, scuola))
     await Impostazione.query()
       .where('chiave', 'ore.per_persona_visibili')
       .update({ valore: 'true' })
-    assert.isTrue(await bouncerPer(await utente('pm1')).allows(abilita.vedeOrePerPersona, scuola))
     assert.isFalse(
       await bouncerPer(await utente('direzione')).allows(abilita.vedeOrePerPersona, scuola)
     )

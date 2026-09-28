@@ -26,8 +26,9 @@ Ruoli di commessa: `pm`, `progettista`, `verificatore`, `osservatore`.
    commessa (regola da applicare nei moduli Obeya e portafoglio, Fase 2).
 3. Il last planner di un impegno potrà segnare "fatto / non fatto" sulle proprie righe:
    regola aggiuntiva che scrive l'agente A2 nel modulo LPS.
-4. Impostazione `ore.per_persona_visibili`, **disattivata** di default (art. 4 Statuto dei
-   lavoratori, decisione D4). Le ore proprie sono sempre visibili al diretto interessato.
+4. Impostazione `ore.per_persona_visibili`, **attiva** di default per decisione dell'utente al
+   Gate 0 (28/09/2026). Prima del go-live servono informativa ai dipendenti e verifica art. 4
+   Statuto dei lavoratori (D4). Restano vietate classifiche e KPI di performance per persona. Le ore proprie sono sempre visibili al diretto interessato.
 
 ## Rotte (Fase 0)
 

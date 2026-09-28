@@ -2,11 +2,11 @@
 
 Fonte: `docs/sviluppo/piano.md` (sezione "Formule"). Le firme sono in `app/domain/*.ts`;
 i casi di prova completi li scrive T1 in `docs/formule/casi-di-prova.md` e
-`tests/unit/domain/`. Le voci marcate **DA CONFERMARE AL GATE 0** attendono l'OK dell'utente.
+`tests/unit/domain/`. Pesi, colonne/WIP e PCR sono stati **confermati dall'utente al Gate 0 (28/09/2026)**; le soglie dei semafori restano di esempio.
 
 Convenzioni: valori in **minuti interi**; indici come decimali; `null` → "n.d." nell'interfaccia.
 
-## Pesi degli stati (EV) — DA CONFERMARE AL GATE 0
+## Pesi degli stati (EV) — confermati al Gate 0 (28/09/2026)
 
 Pesi **cumulativi** di esempio, congelati nella baseline al momento dell'approvazione:
 
@@ -72,7 +72,7 @@ segnato conta come non fatto; null se non ci sono impegni promessi.
 Esempio W39 (dati di esempio): 5 fatti su 7 promessi → **0,714 (71%)**. Se si aggiunge un
 ottavo impegno dopo la promessa, il PPC resta 5/7.
 
-**PCR(w)** — **DA CONFERMARE AL GATE 0**
+**PCR(w)** — confermata al Gate 0 (28/09/2026): solo vincoli in scadenza nella settimana
 
     PCR(w) = vincoli rimossi entro la fine di w
              / vincoli aperti al lunedì di w con data necessaria entro la domenica di w
@@ -111,7 +111,7 @@ Altro 1 (W39 aggiunge 1 "Input mancante" e 1 "Risorsa non disponibile").
 - **Throughput(w)** = elaborati distinti arrivati allo stato finale nella settimana w.
 - **CFD** = numero di elaborati per colonna a fine giornata, ricostruito da `transizioni_elaborato`.
 
-## Semafori (soglie di esempio, tabella `impostazioni`) — DA CONFERMARE AL GATE 0
+## Semafori (soglie di esempio, tabella `impostazioni`) — da tarare con i PM durante il pilota
 
 | Indice | Verde | Giallo | Rosso |
 |---|---|---|---|

@@ -73,7 +73,7 @@ Windows Server aziendale
 | D2 | Certificato HTTPS per il nome interno del server (CA aziendale?) | IT / sicurezza esterna | PWA e login M365 |
 | D3 | Registrazione dell'app su Entra ID: chi è amministratore del tenant M365? | IT | login |
 | D4 | Informativa ai dipendenti e verifica art. 4 Statuto dei lavoratori per ore e PPC | consulente del lavoro | GDPR, visibilità per ruolo |
-| D5 | Pesi degli stati per l'EV e soglie dei semafori | PM (con il prototipo) | EVM affidabile |
+| D5 | ~~Pesi EV, colonne/WIP, PCR~~ Confermati al Gate 0 (28/09): pesi 20/50/70/85/100, WIP 4 in corso e 3 in verifica, PCR solo vincoli in scadenza. Ore per persona visibili al PM (serve comunque D4). Restano da tarare le soglie dei semafori | PM nel pilota | EVM affidabile |
 | D7 | Login M365 nella web app del Dock di Safari: prova su un Mac vero | utente al Gate 2 | piano B: Chrome/Edge su Mac |
 | D6 | GoodDay resta attivo per le vecchie commesse? Serve una data di passaggio chiara | direzione | evita il doppio inserimento |
 

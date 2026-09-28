@@ -54,9 +54,9 @@ export const IMPOSTAZIONI_DEFAULT: {
     descrizione: 'Giorni dopo la fine della settimana entro cui si possono modificare le ore',
   },
   'ore.per_persona_visibili': {
-    valore: false,
+    valore: true,
     descrizione:
-      'Il PM vede le ore per persona della sua commessa (disattivato: art. 4 Statuto dei lavoratori, D4)',
+      'Il PM vede le ore per persona della sua commessa (attivo per decisione del Gate 0; prima del go-live servono informativa e verifica art. 4 Statuto dei lavoratori, D4)',
   },
   'flusso.giorni_elaborato_fermo': {
     valore: 10,

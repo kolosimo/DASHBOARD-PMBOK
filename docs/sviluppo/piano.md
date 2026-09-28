@@ -137,6 +137,26 @@ Formule, da fissare in `docs/formule/formule.md` con casi calcolati a mano:
    Poi ripubblicare l'artifact (stesso URL). Il prototipo resta comunque un mock.
 3. Commit e push su `claude/clever-darwin-zkmy1f`.
 
+## Stato attuale e Gate 0 (28/09)
+
+**Fase 0 completata.** Ho verificato di persona che `npm run verifica` è verde (25 test unit, 37 funzionali, typecheck, lint, dipendenze native) e che il branch è allineato con origin. Non ci sono residui BIM. Gli screenshot sono stati inviati.
+
+Deviazioni rispetto al piano: Node 24 (richiesto da AdonisJS 7, installato in `/opt/node24`), Playwright 1.56.1, abilità in `app/abilities/main.ts`.
+
+**Decisioni confermate dall'utente al Gate 0:**
+- Pesi EV cumulativi 20/50/70/85/100 come partenza, modificabili dall'admin e congelati in ogni baseline.
+- Colonne Da fare / In corso / In verifica / Emesso, con WIP 4 in corso e 3 in verifica, modificabili per commessa.
+- PCR "solo in scadenza": vincoli rimossi entro la settimana / vincoli aperti al lunedì con scadenza nella stessa settimana.
+- **Il PM vede le ore per persona** della sua commessa. L'impostazione `vedeOrePerPersona` è attiva di default per il ruolo PM.
+  - Restano vincolanti per il go-live l'informativa ai dipendenti e la verifica dell'art. 4 (D4).
+  - Anche con questa impostazione restano esclusi classifiche e KPI di performance per persona.
+
+**Azione dell'orchestratore prima della Fase 1:**
+1. Aggiornare seed/impostazioni (`vedeOrePerPersona` = true per PM), `docs/formule/formule.md` (togliere "da confermare" da pesi, WIP e PCR), `docs/sviluppo/permessi.md` e la decisione D5 in `00`.
+2. Verifica, commit e push.
+
+Restano aperte D1 (server) e D3 (tenant Entra) con l'IT. Non bloccano la Fase 1.
+
 ## Esecuzione multi-agente
 
 **Meccanismo.** Uso lo strumento Workflow, che l'utente ha chiesto esplicitamente ("modalità multiagentica"). Ogni fase è un workflow separato, con un massimo di 8 agenti concorrenti.
