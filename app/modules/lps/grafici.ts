@@ -110,7 +110,7 @@ export function graficoPpc(
     const ys = y(opzioni.soglia.verde)
     parti.push(
       `<line x1="${L}" x2="${W - R}" y1="${n(ys)}" y2="${n(ys)}" stroke="var(--ink-3)" stroke-dasharray="4 3"/>`,
-      `<text x="${W - R}" y="${n(ys - 4)}" text-anchor="end">in linea da ${escapeXml(percento(opzioni.soglia.verde))}</text>`
+      `<text x="${W - R}" y="10" text-anchor="end">- - - in linea da ${escapeXml(percento(opzioni.soglia.verde))}</text>`
     )
   }
 
