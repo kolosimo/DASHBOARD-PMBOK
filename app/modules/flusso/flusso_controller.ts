@@ -47,12 +47,11 @@ export default class FlussoController {
   /** Dati completi della vista (una lettura per blocco, niente N+1) */
   private async dati(ctx: HttpContext, commessa: Commessa, extra: Extra = {}) {
     const oggi = oggiRoma()
-    const [riepilogo, giorniFermo, puoSpostare, conf] = await Promise.all([
-      riepilogoFlusso(commessa.id, oggi),
-      leggiImpostazione('flusso.giorni_elaborato_fermo'),
-      ctx.bouncer.allows(spostaElaborati, commessa),
-      configurazioneFlusso(commessa.id),
-    ])
+    // In sequenza: nei test tutte le query condividono una sola connessione
+    const riepilogo = await riepilogoFlusso(commessa.id, oggi)
+    const giorniFermo = await leggiImpostazione('flusso.giorni_elaborato_fermo')
+    const puoSpostare = await ctx.bouncer.allows(spostaElaborati, commessa)
+    const conf = await configurazioneFlusso(commessa.id)
     const dal = aggiungiSettimane(lunediDellaSettimana(oggi), -(SETTIMANE_STORICO - 1))
     const serie = await serieCfd(commessa.id, dal, oggi)
     const grafico = graficoCfd(serie.colonne, serie.punti)
@@ -106,7 +105,13 @@ export default class FlussoController {
   async sposta(ctx: HttpContext) {
     const { request, response, auth, bouncer, params } = ctx
     const commessa = await commessaCorrente(ctx, 'kanban')
-    await bouncer.authorize(spostaElaborati, commessa)
+    // 403 esplicito: con authorize() una POST da form verrebbe rediretta indietro
+    if (!(await bouncer.allows(spostaElaborati, commessa))) {
+      return response.abort(
+        'Non hai il permesso di spostare gli elaborati di questa commessa.',
+        403
+      )
+    }
     const utente = auth.getUserOrFail()
     const dati = await request.validateUsing(validatoreSpostamento)
     const motivo = dati.motivo ?? null

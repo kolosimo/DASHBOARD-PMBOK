@@ -51,7 +51,9 @@
           <input type="hidden" name="conferma_wip" value="1" />
           <label>
             
+            
             Motivo dello sforamento
+
 
             <input
               type="text"
@@ -241,11 +243,17 @@
   </div>
   <p class="muted" style="font-size:12.5px;margin:0">
     {{ glossario.WIA.nome }}
+    
      in giorni di calendario =
+
     {{ glossario.WIA.spiegazione.toLowerCase() }}
+    
      Le schede ferme da
+
     {{ formato.numero(giorniFermo) }}
+    
      giorni o più sono in rosso.
+
 
     @if(!puoSpostare)
       Hai la board in sola lettura.
