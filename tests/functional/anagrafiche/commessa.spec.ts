@@ -195,6 +195,25 @@ test.group('Anagrafiche · pagina e dati della commessa', (group) => {
   })
 })
 
+test.group('Anagrafiche · senza JavaScript', (group) => {
+  conTransazione(group)
+
+  test('errore in un pannello: pagina intera 422 con il messaggio', async ({ assert }) => {
+    const c = await scuola()
+    const { b, csrf } = await entra('pm1', `/commesse/${c.id}/anagrafica`)
+    const r = await b.post(`/commesse/${c.id}/milestone`, {
+      _csrf: csrf,
+      titolo: '',
+      data_prevista: '2026-12-01',
+    })
+    assert.equal(r.status, 422)
+    const html = await r.text()
+    assert.include(html, '<html lang="it">')
+    assert.include(html, 'data-testid="pannello-team"')
+    assert.include(html, 'Titolo: campo obbligatorio.')
+  })
+})
+
 test.group('Anagrafiche · permessi', (group) => {
   conTransazione(group)
 

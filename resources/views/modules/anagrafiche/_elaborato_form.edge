@@ -61,7 +61,9 @@
 
     <label>
       
+      
       Codice
+
 
       <input
         type="text"
@@ -75,7 +77,9 @@
     </label>
     <label style="flex:1 1 320px">
       
+      
       Titolo
+
 
       <input
         type="text"
@@ -88,7 +92,9 @@
     </label>
     <label>
       
+      
       Disciplina
+
 
       <select name="disciplina_id" required>
         <option value="">scegli…</option>
@@ -113,7 +119,9 @@
     </label>
     <label>
       
+      
       Budget (ore)
+
 
       <input
         type="text"
@@ -136,7 +144,9 @@
     </label>
     <label>
       
+      
       Classe di servizio
+
 
       <select name="classe_servizio">
         @each(c in classi)
@@ -156,14 +166,18 @@
     </label>
     <label>
       
+      
       Data fissa
+
 
       <input type="date" name="data_fissa" value="{{ val('data_fissa', el.dataFissa || '') }}" />
       @!component('modules/anagrafiche/_errore', { testo: errori.data_fissa })
     </label>
     <label>
       
+      
       Responsabile
+
 
       <select name="responsabile_id">
         <option value="">nessuno</option>
@@ -184,7 +198,9 @@
     </label>
     <label>
       
+      
       Milestone
+
 
       <select name="milestone_id">
         <option value="">nessuna</option>

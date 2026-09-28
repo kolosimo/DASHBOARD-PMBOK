@@ -23,19 +23,16 @@
     </div>
   @end
   @!component('modules/anagrafiche/_dati', { commessa, puoModificare, p: pannelli.dati })
-
-  <div class="grid2">
-    @!component('modules/anagrafiche/_team', {
-      commessa,
-      puoModificare,
-      p: pannelli.team,
-    })
-    @!component('modules/anagrafiche/_milestone', {
-      commessa,
-      puoModificare,
-      p: pannelli.milestone,
-    })
-  </div>
+  @!component('modules/anagrafiche/_team', {
+    commessa,
+    puoModificare,
+    p: pannelli.team,
+  })
+  @!component('modules/anagrafiche/_milestone', {
+    commessa,
+    puoModificare,
+    p: pannelli.milestone,
+  })
 
   <div class="panel tbl" id="pannello-elaborati" data-testid="pannello-elaborati">
     <div class="panel-h">

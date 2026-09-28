@@ -36,7 +36,7 @@
                 value="{{ v.titolo !== undefined ? v.titolo : m.titolo }}"
                 maxlength="300"
                 aria-label="Titolo"
-                style="width:100%"
+                style="width:100%;min-width:220px"
               />
               @!component('modules/anagrafiche/_errore', { testo: err.titolo })
             </td>
@@ -142,7 +142,9 @@
       {{ csrfField() }}
       <label style="flex:1 1 240px">
         
+        
         Nuova milestone
+
 
         <input
           type="text"
@@ -155,14 +157,18 @@
       </label>
       <label>
         
+        
         Data target
+
 
         <input type="date" name="data_prevista" value="{{ v.data_prevista || '' }}" />
         @!component('modules/anagrafiche/_errore', { testo: err.data_prevista })
       </label>
       <label>
         
+        
         Data effettiva
+
 
         <input type="date" name="data_effettiva" value="{{ v.data_effettiva || '' }}" />
         @!component('modules/anagrafiche/_errore', { testo: err.data_effettiva })
@@ -170,12 +176,16 @@
       <label style="flex-direction:row;align-items:center;gap:6px">
         <input type="checkbox" name="contrattuale" value="on" checked />
         
+        
         contrattuale
+
 
       </label>
       <label>
         
+        
         Ordine
+
 
         <input
           type="number"

@@ -167,6 +167,13 @@ test.group('Anagrafiche · elaborati', (group) => {
       classe_servizio: 'urgente',
       stato_id: '999',
     }
+    const pagina = await b.vai(`/commesse/${c.id}/elaborati/${el.id}/modifica`)
+    assert.equal(pagina.status, 200)
+    const form = await pagina.text()
+    assert.include(form, `value="${el.codice}"`)
+    assert.include(form, `name="version" value="${el.version}"`)
+    assert.equal((await b.get(`/commesse/${c.id}/elaborati/import`)).status, 200)
+
     const r1 = await b.post(`/commesse/${c.id}/elaborati/${el.id}`, campi)
     assert.equal(r1.status, 302)
     const ora = await db.from('elaborati').where('id', el.id).firstOrFail()
