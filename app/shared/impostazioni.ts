@@ -96,6 +96,9 @@ export async function leggiTutteLeImpostazioni(): Promise<MappaImpostazioni> {
   return valori as unknown as MappaImpostazioni
 }
 
+/** Valore massimo ammesso per una soglia di semaforo (rapporto) */
+export const SOGLIA_MASSIMA = 2
+
 /** Controlla che il valore abbia la stessa forma del valore di esempio */
 export function valoreValido(chiave: string, valore: unknown): boolean {
   if (!(chiave in IMPOSTAZIONI_DEFAULT)) return false
@@ -105,12 +108,12 @@ export function valoreValido(chiave: string, valore: unknown): boolean {
   if (typeof esempio === 'boolean') return typeof valore === 'boolean'
   if (typeof valore !== 'object' || valore === null) return false
   const s = valore as Record<string, unknown>
+  // Le soglie sono rapporti (SPI, CPI, PPC, PCR): 0–2. Evita che "0.950",
+  // letto con il punto delle migliaia, diventi 950.
+  const inIntervallo = (x: unknown) =>
+    typeof x === 'number' && Number.isFinite(x) && x >= 0 && x <= SOGLIA_MASSIMA
   return (
-    typeof s.verde === 'number' &&
-    typeof s.giallo === 'number' &&
-    (s.verso === 'alto' || s.verso === 'basso') &&
-    Number.isFinite(s.verde) &&
-    Number.isFinite(s.giallo)
+    inIntervallo(s.verde) && inIntervallo(s.giallo) && (s.verso === 'alto' || s.verso === 'basso')
   )
 }
 

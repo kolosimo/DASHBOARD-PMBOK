@@ -50,3 +50,15 @@ Scelta rev. 2: **OIDC lato server** (authorization code + PKCE verso Entra ID, s
 3. Un'unica persona che mantiene il sistema: servono repository Git, documentazione e un ambiente di prova.
 4. Login su Safari da provare.
 5. Senza VPN non si lavora.
+
+## Aggiornamento 28/09/2026: server reale Windows Server 2019 Standard 1809
+
+| Componente | Scelta | Motivo e fonte |
+|---|---|---|
+| Node.js 24 LTS | distribuzione **zip** | Node 24 supporta Windows Server 2016+ in Tier 1 ([BUILDING.md](https://github.com/nodejs/node/blob/v24.x/BUILDING.md)); l'MSI v24.17 ha un problema aperto su WS2019 ([nodejs/node#64078](https://github.com/nodejs/node/issues/64078)) |
+| PostgreSQL | **17** | L'installer EDB di PG 17 è testato su Server 2019 e 2022, quello di PG 18 su 2022 e 2025 ([postgresql.org](https://www.postgresql.org/download/windows/), estratto) |
+| Servizio | **WinSW v2.12.0 NET461** | Versione stabile; la v3 è pre-release ([WinSW](https://github.com/winsw/winsw)) |
+| HTTPS | diretto da Node, senza IIS | Node usa OpenSSL (TLS 1.3, HTTP/2); Schannel di WS2019 non ha TLS 1.3 |
+| Certificato | PFX **AES256-SHA256** | Le PFX con cifratura legacy possono non essere lette da OpenSSL 3 (NV) |
+
+Ciclo di vita: supporto mainstream finito il 09/01/2024, esteso fino al 09/01/2029 ([Microsoft](https://learn.microsoft.com/en-us/lifecycle/products/windows-server-2019), estratto). Serve una migrazione a Server 2022/2025 prima di quella data.

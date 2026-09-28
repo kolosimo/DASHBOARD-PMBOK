@@ -157,6 +157,22 @@ test.group('Optimistic locking · HTTP (impostazioni admin)', (group) => {
     })
   })
 
+  test('soglia fuori intervallo ("0.950" letto come 950): 422 senza salvare', async ({
+    assert,
+  }) => {
+    const imp = await Impostazione.findByOrFail('chiave', 'soglie.spi')
+    const b = new Browser()
+    await b.loginSviluppo('admin')
+    const csrf = Browser.csrfDa(await (await b.vai('/admin')).text())
+    const r = await b.post(
+      `/admin/impostazioni/${imp.id}`,
+      { version: String(imp.version), verde: '0.950', giallo: '0,85' },
+      { 'hx-request': 'true', 'x-csrf-token': csrf }
+    )
+    assert.equal(r.status, 422)
+    assert.equal((await Impostazione.findOrFail(imp.id)).version, imp.version)
+  })
+
   test('senza token CSRF la modifica è rifiutata', async ({ assert }) => {
     const imp = await Impostazione.findByOrFail('chiave', 'soglie.ppc')
     const b = new Browser()

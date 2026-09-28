@@ -11,7 +11,7 @@
 | Dati | **app autonoma, si parte da zero sulle nuove commesse**. Nessuna migrazione né lettura da GoodDay | utente, rev. 2 |
 | Ore | registrate **solo nella nuova app** (timesheet interno) | utente, rev. 2 |
 | Client | **installabile su Windows e su Mac** (su Mac 1–5 utenti) | utente, rev. 2 |
-| Server | uno solo, probabilmente Windows Server | utente (da verificare) |
+| Server | uno solo, **Windows Server 2019 Standard 1809** (supporto esteso fino al 09/01/2029) | utente, 28/09 |
 | Identità | Microsoft 365 (Entra ID) | utente |
 | Accesso remoto | VPN | utente |
 | MVP | Kanban + Last Planner System; ore e budget (EVM) | utente |
@@ -69,7 +69,7 @@ Windows Server aziendale
 
 | # | Domanda | Chi | Impatto |
 |---|---|---|---|
-| D1 | Server: versione di Windows Server, RAM, CPU e disco liberi; si possono installare servizi (Node, PostgreSQL)? | IT interno / esterno | installazione |
+| D1 | ~~Versione~~ Windows Server 2019 Standard 1809 (28/09). Scelte: **PostgreSQL 17**, Node 24 in **zip** (non MSI), **WinSW 2.12 NET461**, HTTPS diretto da Node senza IIS. Restano: RAM/CPU/disco liberi, aggiornamenti cumulativi, VC++ 2015-2022, certificato PFX AES256-SHA256; migrazione a Server 2022/2025 prima del 2029 | IT interno / esterno | installazione |
 | D2 | Certificato HTTPS per il nome interno del server (CA aziendale?) | IT / sicurezza esterna | PWA e login M365 |
 | D3 | Registrazione dell'app su Entra ID: chi è amministratore del tenant M365? | IT | login |
 | D4 | Informativa ai dipendenti e verifica art. 4 Statuto dei lavoratori per ore e PPC | consulente del lavoro | GDPR, visibilità per ruolo |
