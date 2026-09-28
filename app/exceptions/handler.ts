@@ -1,6 +1,18 @@
 import app from '@adonisjs/core/services/app'
 import { type HttpContext, ExceptionHandler } from '@adonisjs/core/http'
 import type { StatusPageRange, StatusPageRenderer } from '@adonisjs/core/types/http'
+import { errors as erroriBouncer } from '@adonisjs/bouncer'
+
+const METODI_DI_SCRITTURA = ['POST', 'PUT', 'PATCH', 'DELETE']
+const MESSAGGIO_NEGATO = 'Non hai i permessi per questa operazione.'
+
+/** Header HTTP solo ASCII: i caratteri accentati diventano \uXXXX nel JSON */
+function jsonAscii(valore: unknown): string {
+  return JSON.stringify(valore).replace(
+    /[\u007f-\uffff]/g,
+    (c) => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0')
+  )
+}
 
 export default class HttpExceptionHandler extends ExceptionHandler {
   /**
@@ -43,6 +55,22 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * response to the client
    */
   async handle(error: unknown, ctx: HttpContext) {
+    /*
+     * Bouncer, sulle scritture da form HTML, farebbe redirect('back') (302):
+     * qui si risponde sempre 403. Per HTMX anche un toast con il messaggio.
+     */
+    if (
+      error instanceof erroriBouncer.E_AUTHORIZATION_FAILURE &&
+      METODI_DI_SCRITTURA.includes(ctx.request.method()) &&
+      ctx.request.accepts(['html', 'json']) !== 'json'
+    ) {
+      const dato = error.response.message
+      const messaggio = dato && dato !== 'Access denied' ? dato : MESSAGGIO_NEGATO
+      if (ctx.request.header('hx-request') === 'true') {
+        ctx.response.header('HX-Trigger', jsonAscii({ toast: messaggio }))
+      }
+      return ctx.response.status(403).send(messaggio)
+    }
     return super.handle(error, ctx)
   }
 

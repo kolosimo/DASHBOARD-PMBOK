@@ -119,6 +119,36 @@ test.group('Permessi · rotte', (group) => {
     }
   })
 
+  test('abilità negata da Bouncer su un POST: 403 (anche da form), toast per HTMX', async ({
+    assert,
+  }) => {
+    const scuola = await Commessa.findByOrFail('codice', 'CL-2026-031')
+    const b = new Browser()
+    await b.loginSviluppo('mec1')
+    const html = await (await b.get(`/commesse/${scuola.id}/evm`)).text()
+    const csrf = Browser.csrfDa(html)
+    const form = await b.post(
+      `/commesse/${scuola.id}/evm/baseline`,
+      { motivo: 'x' },
+      {
+        'x-csrf-token': csrf,
+      }
+    )
+    assert.equal(form.status, 403)
+    const htmx = await b.post(
+      `/commesse/${scuola.id}/evm/baseline`,
+      { motivo: 'x' },
+      {
+        'hx-request': 'true',
+        'x-csrf-token': csrf,
+      }
+    )
+    assert.equal(htmx.status, 403)
+    const trigger = htmx.headers.get('hx-trigger') ?? ''
+    assert.match(trigger, /^[\x20-\x7e]+$/)
+    assert.include(JSON.parse(trigger).toast, 'permessi')
+  })
+
   test('amministrazione solo per admin', async ({ assert }) => {
     const b = new Browser()
     await b.loginSviluppo('pm1')
