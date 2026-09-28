@@ -93,11 +93,10 @@ interface Timesheet {
 
 async function costruisciTimesheet(utenteId: number, settimana: Lunedi): Promise<Timesheet> {
   const giorni = giorniSettimana(settimana)
-  const [righe, massimoGiorno, giorniConsentiti] = await Promise.all([
-    righeTimesheet(utenteId, giorni),
-    leggiImpostazione('ore.minuti_massimi_giorno'),
-    leggiImpostazione('ore.giorni_modifica_consentita'),
-  ])
+  // Query in sequenza: nei test girano tutte sulla stessa connessione (transazione globale)
+  const righe = await righeTimesheet(utenteId, giorni)
+  const massimoGiorno = await leggiImpostazione('ore.minuti_massimi_giorno')
+  const giorniConsentiti = await leggiImpostazione('ore.giorni_modifica_consentita')
   const oggi = oggiRoma()
   const stato = statoSettimana(settimana, giorniConsentiti, oggi)
   const totaliGiorno = giorni.map((_, i) => righe.reduce((a, r) => a + r.celle[i].minuti, 0))
@@ -138,6 +137,14 @@ function leggiCampi(request: HttpContext['request']) {
   return { elaboratoId, data, versione, testo }
 }
 
+/**
+ * 403 esplicito per i POST: l'eccezione di Bouncer, per i form HTML,
+ * farebbe un redirect "back" (302), inutile per HTMX.
+ */
+function vietato({ response }: HttpContext, messaggio: string) {
+  return response.status(403).send(messaggio)
+}
+
 /** Ore (sempre e solo per sé) */
 export default class OreController {
   /** Timesheet personale: ognuno vede e registra solo le proprie ore */
@@ -164,7 +171,9 @@ export default class OreController {
       proprietario === undefined || proprietario === null || proprietario === ''
         ? utente.id
         : Number(proprietario)
-    await bouncer.authorize(registraOre, proprietarioId)
+    if (!Number.isInteger(proprietarioId) || (await bouncer.denies(registraOre, proprietarioId))) {
+      return vietato(ctx, 'Puoi registrare solo le tue ore.')
+    }
     return this.eseguiSalvataggio(ctx, proprietarioId, utente.id, undefined)
   }
 
@@ -191,7 +200,9 @@ export default class OreController {
 
   async salvaCorrezione(ctx: HttpContext) {
     const { request, auth, bouncer } = ctx
-    await bouncer.authorize(admin)
+    if (await bouncer.denies(admin)) {
+      return vietato(ctx, 'Solo l’amministratore può correggere le ore di un’altra persona.')
+    }
     const utente = auth.getUserOrFail()
     const proprietarioId = Number(request.input('utente_id'))
     const persona = await Utente.find(proprietarioId)
@@ -312,12 +323,10 @@ export default class OreController {
   private async totali(utenteId: number, elaboratoId: number, data: DataIso) {
     const lunedi = lunediDellaSettimana(data)
     const domenica = domenicaDi(lunedi)
-    const [minutiGiorno, minutiRiga, minutiSettimana, minutiElab] = await Promise.all([
-      minutiGiornoUtente(utenteId, data),
-      minutiPeriodoUtente(utenteId, lunedi, domenica, elaboratoId),
-      minutiPeriodoUtente(utenteId, lunedi, domenica),
-      minutiElaborato(elaboratoId),
-    ])
+    const minutiGiorno = await minutiGiornoUtente(utenteId, data)
+    const minutiRiga = await minutiPeriodoUtente(utenteId, lunedi, domenica, elaboratoId)
+    const minutiSettimana = await minutiPeriodoUtente(utenteId, lunedi, domenica)
+    const minutiElab = await minutiElaborato(elaboratoId)
     const elaborato = await db
       .from('elaborati')
       .where('id', elaboratoId)
@@ -339,11 +348,9 @@ export default class OreController {
     const commessa = await commessaCorrente(ctx, 'ore')
     const settimana = settimanaRichiesta(ctx.request.qs().settimana)
     const perPersonaConsentito = await ctx.bouncer.allows(vedeOrePerPersona, commessa)
-    const [ore, persone, attivaImpostazione] = await Promise.all([
-      oreCommessa(commessa.id, settimana),
-      perPersonaConsentito ? orePerPersona(commessa.id, settimana) : Promise.resolve(null),
-      leggiImpostazione('ore.per_persona_visibili'),
-    ])
+    const ore = await oreCommessa(commessa.id, settimana)
+    const persone = perPersonaConsentito ? await orePerPersona(commessa.id, settimana) : null
+    const attivaImpostazione = await leggiImpostazione('ore.per_persona_visibili')
     const corrente = lunediDellaSettimana(oggiRoma())
     const budgetTotale = ore.perElaborato.reduce((a, r) => a + r.budgetMinuti, 0)
     return ctx.view.render('modules/ore/commessa', {
