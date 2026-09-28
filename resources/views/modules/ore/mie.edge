@@ -1,10 +1,13 @@
 @component('layouts/app', { titolo: 'Le mie ore', voceAttiva })
-  @!component('components/segnaposto', {
-    eyebrow: 'Timesheet',
-    titolo: 'Le mie ore',
-    descrizione:
-      'Ognuno registra solo le proprie ore, per elaborato e per giorno. Le ore sono il costo effettivo (AC) dell’EVM.',
-    fase: 'Fase 1',
-    agente: 'agente A4',
-  })
+  <div class="head">
+    <div>
+      <div class="eyebrow">Timesheet · settimana {{ formato.settimana(ts.settimana) }}</div>
+      <h2>Le mie ore</h2>
+      <p>
+        Registri le tue ore per elaborato e per giorno. Queste ore sono il costo effettivo (AC,
+        {{ glossario.AC.nome.toLowerCase() }}) dell’EVM della commessa. Ognuno registra solo le proprie ore: nessuna classifica individuale.
+      </p>
+    </div>
+  </div>
+  @include('modules/ore/_griglia')
 @end

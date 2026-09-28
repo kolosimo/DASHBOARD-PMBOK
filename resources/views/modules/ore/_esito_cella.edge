@@ -1,0 +1,77 @@
+{{--
+  Risposta al salvataggio di una cella (HTMX, hx-swap="none"): solo
+  sostituzioni fuori banda, così il campo che ha il focus non viene toccato.
+  Variabili: cella? { elaboratoId, data, testo, versione }, salvata?, errore?,
+  conflitto?, avviso?, minutiGiorno?, minutiRiga?, minutiSettimana?,
+  minutiElaborato?, massimo?, oreCella, urlCella, correzione
+--}}
+<div id="ore-messaggio" aria-live="polite" hx-swap-oob="true">
+  @if(conflitto)
+    @!component('components/conflitto', { messaggio: conflitto })
+  @elseif(errore)
+    <div class="messaggio errore" role="alert" data-testid="errore-ore">
+      <p>{{ errore }}</p>
+    </div>
+  @elseif(avviso)
+    <div class="messaggio conflitto" role="status" data-testid="avviso-ore">
+      @!component('components/pill', { classe: 'n', testo: 'avviso' })
+      <p>{{ avviso }}</p>
+    </div>
+  @end
+</div>
+@if(cella)
+  @if(salvata)
+    <input
+      type="hidden"
+      id="v-{{ cella.elaboratoId }}-{{ cella.data }}"
+      name="version"
+      value="{{ cella.versione }}"
+      hx-swap-oob="true"
+      data-testid="versione"
+    />
+  @else
+    {{-- Errore o conflitto: il campo torna al valore salvato --}}
+    @!component('modules/ore/_cella', {
+      elaboratoId: cella.elaboratoId,
+      data: cella.data,
+      testo: cella.testo,
+      versione: cella.versione,
+      invalida: !!errore,
+      oob: true,
+      urlCella,
+      correzione,
+    })
+  @end
+@end
+{{-- Le celle di tabella fuori banda vanno dentro <template> (HTMX 2) --}}
+@if(minutiGiorno !== undefined && cella)
+  <template>
+    @!component('modules/ore/_totale_giorno', {
+      data: cella.data,
+      minuti: minutiGiorno,
+      massimo,
+      weekend: giornoWeekend,
+      mostraWeekend: true,
+      oob: true,
+    })
+  </template>
+@end
+@if(minutiRiga !== undefined && cella)
+  <template>
+    <td class="r num" id="tr-{{ cella.elaboratoId }}" data-testid="totale-riga" hx-swap-oob="true">
+      <b>{{ minutiRiga ? formato.oreEsatte(minutiRiga) : '' }}</b>
+    </td>
+  </template>
+  <template>
+    <td class="r num" id="ts-settimana" data-testid="totale-settimana" hx-swap-oob="true">
+      <b>{{ formato.oreEsatte(minutiSettimana) }}</b>
+    </td>
+  </template>
+  <template>
+    <td class="r num" id="te-{{ cella.elaboratoId }}" hx-swap-oob="true">
+      {{ formato.ore(minutiElaborato) }}
+      /
+      {{ formato.ore(budgetMinuti) }}
+    </td>
+  </template>
+@end

@@ -1,0 +1,144 @@
+{{--
+  Griglia settimanale del timesheet. Variabili: ts, oreCella, urlCella,
+  urlSettimana(lunedi), correzione (null per il proprio timesheet)
+--}}
+<div
+  class="flex-col"
+  style="display:flex;flex-direction:column;gap:12px"
+  x-data="{ weekend: {{ ts.mostraWeekend ? 'true' : 'false' }}, altre: {{ ts.mostraAltre ? 'true' : 'false' }} }"
+>
+  <nav class="campi" aria-label="Settimana" style="align-items:center">
+    <a class="btn" href="{{ urlSettimana(ts.precedente) }}" data-testid="settimana-precedente">
+      ←
+      {{ formato.settimana(ts.precedente) }}
+    </a>
+    <b data-testid="settimana-corrente">
+      {{ formato.settimana(ts.settimana) }}
+      · dal
+      {{ formato.data(ts.giorni[0].data) }}
+      al
+      {{ formato.data(ts.giorni[6].data) }}
+    </b>
+    @if(ts.successiva)
+      <a class="btn" href="{{ urlSettimana(ts.successiva) }}" data-testid="settimana-successiva">
+        {{ formato.settimana(ts.successiva) }}
+        →
+      </a>
+    @end
+
+    <button type="button" class="btn ghost" @click="weekend = !weekend" :aria-pressed="weekend">
+      <span x-text="weekend ? 'Nascondi sabato e domenica' : 'Mostra sabato e domenica'">
+        Sabato e domenica
+      </span>
+    </button>
+  </nav>
+  @if(ts.chiusa && !correzione)
+    <div class="messaggio conflitto" role="status" data-testid="settimana-chiusa">
+      @!component('components/pill', { classe: 'n', testo: 'chiusa' })
+      <p>
+        Questa settimana non si può più modificare: le ore si potevano cambiare fino al
+        {{ formato.data(ts.modificabileFinoAl) }}. Per una correzione rivolgiti all’amministratore.
+      </p>
+    </div>
+  @elseif(ts.chiusa && correzione)
+    <div class="messaggio conflitto" role="status">
+      <p>
+        Settimana chiusa per la persona: stai facendo una correzione da amministratore. Ogni modifica finisce nel registro di audit con il motivo.
+      </p>
+    </div>
+  @else
+    <p class="muted" style="font-size:12.5px;margin:0">
+      Scrivi le ore in decimali (1,5 = un’ora e mezza) o come 1:30: ogni cella si salva da sola quando esci dal campo. Per cancellare lascia la cella vuota. Si può modificare fino al
+      {{ formato.data(ts.modificabileFinoAl) }}.
+    </p>
+  @end
+
+  <div id="ore-messaggio" aria-live="polite"></div>
+  @component('components/pannello', { tabella: true })
+    <table data-testid="timesheet">
+      <thead>
+        <tr>
+          <th>Elaborato</th>
+          @each(g in ts.giorni)
+            <th
+              class="r"
+              {{{ g.weekend ? 'x-show="weekend"' : '' }}}
+              {{{ g.weekend && !ts.mostraWeekend ? 'style="display:none"' : '' }}}
+            >
+              {{ g.etichetta }}
+            </th>
+          @end
+
+          <th class="r">Totale</th>
+          <th class="r">Ore a oggi / budget</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if(ts.righeProprie.length)
+          <tr>
+            <td colspan="10" class="muted" style="font-size:12px">
+              Elaborati di cui sei responsabile
+            </td>
+          </tr>
+        @end
+        @each(riga in ts.righeProprie)
+          @include('modules/ore/_riga')
+        @end
+        @if(ts.righeAltre.length)
+          <tr>
+            <td colspan="10">
+              <button
+                type="button"
+                class="btn ghost"
+                @click="altre = !altre"
+                :aria-expanded="altre"
+              >
+                <span
+                  x-text="altre ? 'Nascondi gli altri elaborati delle tue commesse' : 'Mostra gli altri elaborati delle tue commesse ({{ ts.righeAltre.length }})'"
+                >
+                  Altri elaborati delle tue commesse ({{ ts.righeAltre.length }})
+                </span>
+              </button>
+            </td>
+          </tr>
+        @end
+      </tbody>
+      @if(ts.righeAltre.length)
+        <tbody x-show="altre" {{{ ts.mostraAltre ? '' : 'style="display:none"' }}}>
+          @each(riga in ts.righeAltre)
+            @include('modules/ore/_riga')
+          @end
+        </tbody>
+      @end
+      @if(!ts.righeProprie.length && !ts.righeAltre.length)
+        <tbody>
+          <tr>
+            <td colspan="10" class="muted">
+              Nessun elaborato: non fai parte di nessuna commessa attiva.
+            </td>
+          </tr>
+        </tbody>
+      @end
+
+      <tfoot>
+        <tr>
+          <td class="muted">Totale giorno</td>
+          @each((g, i) in ts.giorni)
+            @!component('modules/ore/_totale_giorno', {
+              data: g.data,
+              minuti: ts.totaliGiorno[i],
+              massimo: ts.massimoGiorno,
+              weekend: g.weekend,
+              mostraWeekend: ts.mostraWeekend,
+            })
+          @end
+
+          <td class="r num" id="ts-settimana" data-testid="totale-settimana">
+            <b>{{ formato.oreEsatte(ts.totaleSettimana) }}</b>
+          </td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  @end
+</div>

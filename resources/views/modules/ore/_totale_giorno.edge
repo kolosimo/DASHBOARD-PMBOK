@@ -1,0 +1,19 @@
+{{--
+  Totale di un giorno (tutti gli elaborati). Oltre il massimo giornaliero
+  (impostazione ore.minuti_massimi_giorno) è evidenziato come avviso.
+  Props: data, minuti, massimo, weekend, mostraWeekend, oob
+--}}
+<td
+  id="tg-{{ data }}"
+  class="r num {{ minuti > massimo ? 'age-old' : '' }}"
+  data-testid="totale-giorno-{{ data }}"
+  {{{ minuti > massimo ? 'title="Oltre il massimo giornaliero"' : '' }}}
+  {{{ weekend ? 'x-show="weekend"' : '' }}}
+  {{{ weekend && !mostraWeekend ? 'style="display:none"' : '' }}}
+  {{{ oob ? 'hx-swap-oob="true"' : '' }}}
+>
+  {{ minuti ? formato.oreEsatte(minuti) : '' }}
+  @if(minuti > massimo)
+    <div style="font-size:11px">oltre {{ formato.oreEsatte(massimo) }}</div>
+  @end
+</td>

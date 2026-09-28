@@ -1,0 +1,38 @@
+{{--
+  Campo di una cella del timesheet + versione nascosta.
+  Props: elaboratoId, data, testo, versione, etichetta, disabilitata, invalida,
+  oob (true = sostituzione fuori banda dopo un errore), urlCella, correzione
+  Il salvataggio (HTMX, hx-swap="none") aggiorna solo totali e versione con
+  sostituzioni fuori banda: il campo non viene rimpiazzato e il focus resta.
+--}}
+<span class="cella-ore" id="k-{{ elaboratoId }}-{{ data }}" {{{ oob ? 'hx-swap-oob="true"' : '' }}}>
+  <input
+    type="text"
+    inputmode="decimal"
+    autocomplete="off"
+    id="c-{{ elaboratoId }}-{{ data }}"
+    name="ore"
+    value="{{ testo }}"
+    aria-label="{{ etichetta || 'Ore ' + data }}"
+    {{{ invalida ? 'aria-invalid="true"' : '' }}}
+    {{{ disabilitata ? 'disabled title="Non modificabile"' : '' }}}
+    hx-post="{{ urlCella }}"
+    hx-trigger="change"
+    hx-swap="none"
+    hx-include="#v-{{ elaboratoId }}-{{ data }}{{ correzione ? ', #motivo' : '' }}"
+    hx-vals="{{
+      JSON.stringify(
+        correzione
+          ? { elaborato_id: elaboratoId, data: data, utente_id: correzione.utenteId }
+          : { elaborato_id: elaboratoId, data: data },
+      )
+    }}"
+    data-testid="cella-{{ elaboratoId }}-{{ data }}"
+    style="width:58px;text-align:right;font-family:var(--mono){{ invalida ? ';border-color:var(--crit)' : '' }}{{
+      disabilitata
+        ? ';opacity:.55;background:transparent;border-style:dashed'
+        : ''
+    }}"
+  />
+  <input type="hidden" id="v-{{ elaboratoId }}-{{ data }}" name="version" value="{{ versione }}" />
+</span>

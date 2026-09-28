@@ -1,0 +1,37 @@
+{{--
+  Riga del timesheet (un elaborato). Props: riga, ts, oreCella, urlCella, correzione
+--}}
+<tr data-testid="riga-{{ riga.codice }}">
+  <td>
+    <span class="code">{{ riga.codice }}</span>
+    <span class="muted" style="font-size:12px">· {{ riga.commessaCodice }}</span>
+    <div class="muted" style="font-size:12px">{{ riga.titolo }}</div>
+  </td>
+  @each((cella, i) in riga.celle)
+    <td
+      class="r"
+      {{{ ts.giorni[i].weekend ? 'x-show="weekend"' : '' }}}
+      {{{ ts.giorni[i].weekend && !ts.mostraWeekend ? 'style="display:none"' : '' }}}
+    >
+      @!component('modules/ore/_cella', {
+        elaboratoId: riga.elaboratoId,
+        data: cella.data,
+        testo: oreCella(cella.minuti),
+        versione: cella.version,
+        etichetta: 'Ore ' + riga.codice + ' ' + ts.giorni[i].etichetta,
+        disabilitata: (ts.chiusa && !correzione) || cella.data > ts.oggi,
+        urlCella,
+        correzione,
+      })
+    </td>
+  @end
+
+  <td class="r num" id="tr-{{ riga.elaboratoId }}" data-testid="totale-riga-{{ riga.codice }}">
+    <b>{{ riga.minutiSettimana ? formato.oreEsatte(riga.minutiSettimana) : '' }}</b>
+  </td>
+  <td class="r num" id="te-{{ riga.elaboratoId }}">
+    {{ formato.ore(riga.minutiElaboratoTotali) }}
+    /
+    {{ formato.ore(riga.budgetMinuti) }}
+  </td>
+</tr>
