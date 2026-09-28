@@ -89,8 +89,7 @@ export function calcolaIndicatori(valori: ValoriEvm): IndicatoriEvm {
   const spi = calcolaSpi(evMinuti, pvMinuti)
   const cpi = calcolaCpi(evMinuti, acMinuti)
   // BAC / CPI = BAC × AC / EV: stessa grandezza, senza passare dal quoziente arrotondato
-  const eacMinuti =
-    cpi === null || cpi === 0 ? null : Math.round((bacMinuti * acMinuti) / evMinuti)
+  const eacMinuti = cpi === null || cpi === 0 ? null : Math.round((bacMinuti * acMinuti) / evMinuti)
   const etcMinuti = eacMinuti === null ? null : eacMinuti - acMinuti
   const vacMinuti = eacMinuti === null ? null : bacMinuti - eacMinuti
   return { bacMinuti, pvMinuti, evMinuti, acMinuti, spi, cpi, eacMinuti, etcMinuti, vacMinuti }

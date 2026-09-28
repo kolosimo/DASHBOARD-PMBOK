@@ -1,0 +1,56 @@
+{{--
+  Date previste di un elaborato nella bozza di baseline (frammento HTMX).
+  Variabili: commessa, baselineId, riga, stati, salvata?, conflitto?, errore?
+  "Distribuisci" riempie gli stati intermedi in modo uniforme tra la data del
+  primo e dell'ultimo stato; ogni data resta modificabile.
+--}}
+<div
+  class="impostazione"
+  id="riga-{{ riga.elaboratoId }}"
+  data-testid="riga-baseline-{{ riga.codice }}"
+  x-data="{ distribuisci() { const c = [...$root.querySelectorAll('input[type=date]')]; const a = Date.parse(c[0].value), b = Date.parse(c[c.length - 1].value); if (isNaN(a) || isNaN(b)) return; const g = Math.max(0, Math.round((b - a) / 864e5)); c.forEach((el, i) => { if (i > 0 && i < c.length - 1) el.value = new Date(a + Math.round(i * g / (c.length - 1)) * 864e5).toISOString().slice(0, 10) }) } }"
+>
+  @if(conflitto)
+    @!component('components/conflitto', { messaggio: conflitto })
+  @end
+  @if(errore)
+    <div class="messaggio errore" role="alert">
+      <p>{{ errore }}</p>
+    </div>
+  @end
+
+  <div class="panel-h" style="margin:0">
+    <div>
+      <span class="code">{{ riga.codice }}</span>
+      <b>{{ riga.titolo }}</b>
+      <div class="chiave">budget attuale {{ formato.ore(riga.budgetAttualeMinuti) }}</div>
+    </div>
+    @if(riga.mancante)
+      @!component('components/pill', { classe: 'w', testo: 'senza date' })
+    @elseif(salvata)
+      @!component('components/pill', { classe: 'g', testo: 'salvata' })
+    @end
+  </div>
+
+  @if(!riga.mancante)
+    <form
+      class="campi"
+      method="POST"
+      action="/commesse/{{ commessa.id }}/evm/baseline/{{ baselineId }}/elaborati/{{ riga.elaboratoId }}"
+      hx-post="/commesse/{{ commessa.id }}/evm/baseline/{{ baselineId }}/elaborati/{{ riga.elaboratoId }}"
+      hx-target="#riga-{{ riga.elaboratoId }}"
+      hx-swap="outerHTML"
+    >
+      {{ csrfField() }}
+      @each((cella, i) in riga.date)
+        <label>
+          {{ stati[i] ? stati[i].nome : 'Stato' }}
+          <input type="date" name="data_{{ cella.statoId }}" value="{{ cella.data || '' }}" required />
+          <input type="hidden" name="versione_{{ cella.statoId }}" value="{{ cella.version || '' }}" />
+        </label>
+      @end
+      <button class="btn ghost" type="button" @click="distribuisci()">Distribuisci tra inizio e fine</button>
+      <button class="btn primary" type="submit">Salva</button>
+    </form>
+  @end
+</div>

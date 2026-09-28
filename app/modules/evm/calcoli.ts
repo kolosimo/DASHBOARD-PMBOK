@@ -28,9 +28,8 @@ export function distribuisciDate(inizio: DataIso, fine: DataIso, n: number): Dat
   const a = DateTime.fromISO(inizio, { zone: 'UTC' })
   const b = DateTime.fromISO(fine, { zone: 'UTC' })
   const giorni = Math.max(0, Math.round(b.diff(a, 'days').days))
-  return Array.from(
-    { length: n },
-    (_, i) => a.plus({ days: Math.round((i * giorni) / (n - 1)) }).toISODate()!
+  return Array.from({ length: n }, (_, i) =>
+    a.plus({ days: Math.round((i * giorni) / (n - 1)) }).toISODate()!
   )
 }
 

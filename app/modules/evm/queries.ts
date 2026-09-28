@@ -274,16 +274,13 @@ export async function caricaContesto(
   commessaId: number,
   client: Client = db
 ): Promise<ContestoEvm> {
-  const [baseline, stati] = await Promise.all([
-    baselineAttiva(commessaId, client),
-    statiElaborato(client),
-  ])
-  const [elaboratiBaseline, serieP] = baseline
-    ? await Promise.all([
-        elaboratiDellaBaseline(baseline.id, client),
-        pvCongelato(baseline.id, client),
-      ])
-    : [new Map<number, ElaboratoBaseline>(), []]
+  // In sequenza: con una transazione la connessione è una sola
+  const baseline = await baselineAttiva(commessaId, client)
+  const stati = await statiElaborato(client)
+  const elaboratiBaseline = baseline
+    ? await elaboratiDellaBaseline(baseline.id, client)
+    : new Map<number, ElaboratoBaseline>()
+  const serieP = baseline ? await pvCongelato(baseline.id, client) : []
   return {
     commessaId,
     baseline,
@@ -457,7 +454,9 @@ export async function riepilogoEvm(
     .filter((e) => e.fuoriBaseline)
     .map((e) => ({ elaboratoId: e.elaboratoId, codice: e.codice, titolo: e.titolo }))
   const budgetCambiati = calcolo.perElaborato
-    .filter((e) => !e.fuoriBaseline && contesto.baseline && e.budgetMinuti !== e.budgetAttualeMinuti)
+    .filter(
+      (e) => !e.fuoriBaseline && contesto.baseline && e.budgetMinuti !== e.budgetAttualeMinuti
+    )
     .map((e) => ({
       elaboratoId: e.elaboratoId,
       codice: e.codice,
@@ -593,7 +592,13 @@ export interface RigaEditor {
   titolo: string
   budgetAttualeMinuti: Minuti
   /** Una cella per stato con ordine > 0 */
-  date: { statoId: number; ordine: number; rigaId: number | null; data: DataIso | null; version: number | null }[]
+  date: {
+    statoId: number
+    ordine: number
+    rigaId: number | null
+    data: DataIso | null
+    version: number | null
+  }[]
   /** true se l'elaborato non ha ancora date in questa baseline */
   mancante: boolean
 }

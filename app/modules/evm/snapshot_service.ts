@@ -131,8 +131,7 @@ async function controllaRettifiche(
   const esito: EsitoSnapshot['rettificati'] = []
   for (const r of risultato.rows as Record<string, unknown>[]) {
     const acSnapshot = Number(r.ac_minuti)
-    const acNoto =
-      r.ac_rettificato_minuti === null ? acSnapshot : Number(r.ac_rettificato_minuti)
+    const acNoto = r.ac_rettificato_minuti === null ? acSnapshot : Number(r.ac_rettificato_minuti)
     const acOra = Number(r.ac_ora)
     if (acOra === acNoto) continue
     await trx
@@ -182,9 +181,7 @@ export async function scattaSnapshotEvm(oggi: DataIso = oggiRoma()): Promise<Esi
     const candidati: Lunedi[] = []
     if (c.prima_approvazione) {
       const approvazione = lunediDellaSettimana(
-        c.prima_approvazione instanceof Date
-          ? c.prima_approvazione
-          : String(c.prima_approvazione)
+        c.prima_approvazione instanceof Date ? c.prima_approvazione : String(c.prima_approvazione)
       )
       const inizioPv = c.inizio_pv ? String(c.inizio_pv) : approvazione
       const prima = approvazione > inizioPv ? approvazione : inizioPv

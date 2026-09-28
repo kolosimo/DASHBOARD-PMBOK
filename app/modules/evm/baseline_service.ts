@@ -27,7 +27,12 @@ import {
   type DataPrevista,
   type ElaboratoBaseline,
 } from './calcoli.js'
-import { baselineAttiva, baselineInBozza, elaboratiDellaBaseline, statiElaborato } from './queries.js'
+import {
+  baselineAttiva,
+  baselineInBozza,
+  elaboratiDellaBaseline,
+  statiElaborato,
+} from './queries.js'
 
 /** Errore di validazione della baseline: 422 con messaggio per l'utente */
 export class ErroreBaseline extends Error {
@@ -267,7 +272,8 @@ export async function aggiungiElaboratiMancanti(
       )
       .select('e.id', 'e.budget_minuti')
     if (mancanti.length === 0) return 0
-    const stati = (await statiElaborato(trx)).filter((s) => s.ordine > 0)
+    const tuttiGliStati = await statiElaborato(trx)
+    const stati = tuttiGliStati.filter((s) => s.ordine > 0)
     const rebaseline = (await baselineAttiva(commessa.id, trx)) !== null
     const { inizio, fine } = intervalloDefault(commessa, oggi, rebaseline)
     const righe = mancanti.flatMap((e) => righeAutomatiche(baselineId, e, stati, inizio, fine))
@@ -318,7 +324,10 @@ export async function approvaBaseline(
       (e) => (conDate.get(Number(e.id))?.date.length ?? 0) < statiPianificabili.length
     )
     if (incompleti.length > 0) {
-      const elenco = incompleti.slice(0, 5).map((e) => e.codice).join(', ')
+      const elenco = incompleti
+        .slice(0, 5)
+        .map((e) => e.codice)
+        .join(', ')
       throw new ErroreBaseline(
         `Mancano date previste per ${incompleti.length} elaborati (${elenco}${incompleti.length > 5 ? '…' : ''}). Aggiungili prima di approvare.`
       )
@@ -336,7 +345,9 @@ export async function approvaBaseline(
         WHERE e.id = d.elaborato_id AND d.baseline_id = ?`,
       [baselineId]
     )
-    const budgetPerElaborato = new Map(elaborati.map((e) => [Number(e.id), Number(e.budget_minuti)]))
+    const budgetPerElaborato = new Map(
+      elaborati.map((e) => [Number(e.id), Number(e.budget_minuti)])
+    )
     const congelati: ElaboratoBaseline[] = [...conDate.values()].map((e) => ({
       ...e,
       budgetMinuti: budgetPerElaborato.get(e.elaboratoId) ?? e.budgetMinuti,
@@ -354,7 +365,11 @@ export async function approvaBaseline(
     await trx.from('baseline_pv_settimana').where('baseline_id', baselineId).delete()
     if (serie.length > 0) {
       await trx.table('baseline_pv_settimana').multiInsert(
-        serie.map((p) => ({ baseline_id: baselineId, settimana: p.settimana, pv_minuti: p.pvMinuti }))
+        serie.map((p) => ({
+          baseline_id: baselineId,
+          settimana: p.settimana,
+          pv_minuti: p.pvMinuti,
+        }))
       )
     }
 
