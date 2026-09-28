@@ -1,0 +1,106 @@
+{{--
+  Tutte le commesse e creazione di una nuova commessa.
+  Variabili: commesse, utenti, errori, valori, messaggio, sezioni, sezione
+--}}
+@component('layouts/app', { titolo: 'Commesse', voceAttiva })
+  @let(intestazione = 'Commesse')
+  @let(descrizione =
+    'Qui si apre una commessa nuova. Dati, team, milestone ed elaborati si completano poi nella scheda Anagrafica della commessa, anche dal suo PM.')
+  @include('modules/admin/_testata')
+
+  <form class="panel campi" method="POST" action="/admin/commesse" data-testid="nuova-commessa">
+    {{ csrfField() }}
+    <label>
+      
+      Codice
+
+      <input
+        type="text"
+        name="codice"
+        value="{{ valori.codice || '' }}"
+        maxlength="30"
+        placeholder="CL-2026-040"
+        style="width:140px"
+      />
+      @!component('modules/anagrafiche/_errore', { testo: errori.codice })
+    </label>
+    <label style="flex:1 1 280px">
+      
+      Nome
+
+      <input type="text" name="nome" value="{{ valori.nome || '' }}" maxlength="300" />
+      @!component('modules/anagrafiche/_errore', { testo: errori.nome })
+    </label>
+    <label style="flex:1 1 200px">
+      
+      Cliente
+
+      <input type="text" name="cliente" value="{{ valori.cliente || '' }}" maxlength="300" />
+      @!component('modules/anagrafiche/_errore', { testo: errori.cliente })
+    </label>
+    <label>
+      
+      PM
+
+      <select name="pm_id">
+        <option value="">nessuno</option>
+        @each(u in utenti)
+          <option value="{{ u.id }}" {{ String(valori.pm_id) === String(u.id) ? 'selected' : '' }}>
+            {{ u.nome }}
+          </option>
+        @end
+      </select>
+      @!component('modules/anagrafiche/_errore', { testo: errori.pm_id })
+    </label>
+    <label>
+      
+      Inizio
+
+      <input type="date" name="data_inizio" value="{{ valori.data_inizio || '' }}" />
+      @!component('modules/anagrafiche/_errore', { testo: errori.data_inizio })
+    </label>
+    <label>
+      
+      Fine prevista
+
+      <input type="date" name="data_fine_prevista" value="{{ valori.data_fine_prevista || '' }}" />
+      @!component('modules/anagrafiche/_errore', { testo: errori.data_fine_prevista })
+    </label>
+    <button class="btn primary" type="submit">Crea commessa</button>
+  </form>
+  @component('components/pannello', { titolo: 'Tutte le commesse', tabella: true })
+    <table data-testid="elenco-commesse-admin">
+      <thead>
+        <tr>
+          <th>Commessa</th>
+          <th>Descrizione</th>
+          <th>Cliente</th>
+          <th>PM</th>
+          <th class="r">Elaborati</th>
+          <th>Stato</th>
+        </tr>
+      </thead>
+      <tbody>
+        @each(c in commesse)
+          <tr>
+            <td><a class="code" href="/commesse/{{ c.id }}/anagrafica">{{ c.codice }}</a></td>
+            <td>{{ c.nome }}</td>
+            <td>{{ formato.testo(c.cliente) }}</td>
+            <td>{{ formato.testo(c.pmNome) }}</td>
+            <td class="r num">{{ formato.numero(c.numeroElaborati) }}</td>
+            <td>
+              @!component('components/pill', {
+                classe: c.stato === 'attiva' ? 'g' : 'n',
+                testo: c.stato,
+              })
+            </td>
+          </tr>
+        @else
+          <tr>
+            <td colspan="6" class="muted">Nessuna commessa.</td>
+          </tr>
+        @end
+      </tbody>
+    </table>
+  @end
+@end

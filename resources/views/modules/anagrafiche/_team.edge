@@ -1,0 +1,158 @@
+{{--
+  Pannello "Team" (sostituito da HTMX dopo ogni modifica).
+  Variabili: commessa, puoModificare,
+  p { membri, utentiDisponibili, ruoli, troppi, consigliati, errori, rigaId, valori, conflitto }
+--}}
+<div class="panel tbl" id="pannello-team" data-testid="pannello-team">
+  <div class="panel-h">
+    <h3>Team</h3>
+    <span class="note">
+      {{ p.membri.length }}
+      {{ p.membri.length === 1 ? 'persona' : 'persone' }}
+    </span>
+  </div>
+  @include('modules/anagrafiche/_testa_pannello')
+  @if(p.troppi)
+    <div class="messaggio conflitto" role="status" data-testid="avviso-team">
+      @!component('components/pill', { classe: 'w', testo: 'attenzione' })
+      <p>
+        Il team ha
+        {{ p.membri.length }}
+        persone: per la riunione settimanale del Last Planner si consiglia di restare entro
+        {{ p.consigliati }}. Valuta sottogruppi per disciplina.
+      </p>
+    </div>
+  @end
+
+  <table>
+    <thead>
+      <tr>
+        <th>Persona</th>
+        <th>Email</th>
+        <th>Ruolo nella commessa</th>
+        @if(puoModificare)
+          <th class="r">Azioni</th>
+        @end
+      </tr>
+    </thead>
+    <tbody>
+      @each(m in p.membri)
+        <tr data-testid="membro-{{ m.id }}">
+          <td>{{ m.nome }}</td>
+          <td class="muted">{{ m.email }}</td>
+          <td>
+            @if(puoModificare)
+              <select
+                name="ruolo_commessa"
+                form="membro-{{ m.id }}"
+                aria-label="Ruolo di {{ m.nome }}"
+              >
+                @each(r in p.ruoli)
+                  <option value="{{ r }}" {{ r === m.ruoloCommessa ? 'selected' : '' }}>
+                    {{ r }}
+                  </option>
+                @end
+              </select>
+              @if(p.rigaId === m.id)
+                @!component('modules/anagrafiche/_errore', {
+                  testo: p.errori.ruolo_commessa,
+                })
+              @end
+            @else
+              {{ m.ruoloCommessa }}
+            @end
+          </td>
+          @if(puoModificare)
+            <td class="r">
+              <form
+                id="membro-{{ m.id }}"
+                method="POST"
+                action="/commesse/{{ commessa.id }}/team/{{ m.id }}"
+                hx-post="/commesse/{{ commessa.id }}/team/{{ m.id }}"
+                hx-target="#pannello-team"
+                hx-swap="outerHTML"
+                style="display:inline"
+              >
+                {{ csrfField() }}
+                <input type="hidden" name="version" value="{{ m.version }}" />
+                <button class="btn" type="submit">Salva ruolo</button>
+              </form>
+              <form
+                method="POST"
+                action="/commesse/{{ commessa.id }}/team/{{ m.id }}/rimuovi"
+                hx-post="/commesse/{{ commessa.id }}/team/{{ m.id }}/rimuovi"
+                hx-target="#pannello-team"
+                hx-swap="outerHTML"
+                hx-confirm="Togliere {{ m.nome }} dal team?"
+                style="display:inline"
+              >
+                {{ csrfField() }}
+                <input type="hidden" name="version" value="{{ m.version }}" />
+                <button class="btn ghost" type="submit">Togli</button>
+              </form>
+            </td>
+          @end
+        </tr>
+      @else
+        <tr>
+          <td colspan="4" class="muted">Nessun membro nel team.</td>
+        </tr>
+      @end
+    </tbody>
+  </table>
+  @if(puoModificare)
+    <form
+      class="campi"
+      style="margin-top:12px"
+      method="POST"
+      action="/commesse/{{ commessa.id }}/team"
+      hx-post="/commesse/{{ commessa.id }}/team"
+      hx-target="#pannello-team"
+      hx-swap="outerHTML"
+    >
+      {{ csrfField() }}
+      <label>
+        
+        
+        Aggiungi persona
+
+
+        <select name="utente_id">
+          <option value="">scegli…</option>
+          @each(u in p.utentiDisponibili)
+            <option
+              value="{{ u.id }}"
+              {{ String(p.valori.utente_id) === String(u.id) ? 'selected' : '' }}
+            >
+              {{ u.nome }}
+            </option>
+          @end
+        </select>
+        @if(p.rigaId === null)
+          @!component('modules/anagrafiche/_errore', { testo: p.errori.utente_id })
+        @end
+      </label>
+      <label>
+        
+        
+        Ruolo
+
+
+        <select name="ruolo_commessa">
+          @each(r in p.ruoli)
+            <option
+              value="{{ r }}"
+              {{ (p.valori.ruolo_commessa || 'progettista') === r ? 'selected' : '' }}
+            >
+              {{ r }}
+            </option>
+          @end
+        </select>
+        @if(p.rigaId === null)
+          @!component('modules/anagrafiche/_errore', { testo: p.errori.ruolo_commessa })
+        @end
+      </label>
+      <button class="btn primary" type="submit">Aggiungi</button>
+    </form>
+  @end
+</div>

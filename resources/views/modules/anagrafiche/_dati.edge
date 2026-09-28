@@ -1,0 +1,179 @@
+{{--
+  Pannello "Dati della commessa" (sostituito da HTMX dopo il salvataggio).
+  Variabili: commessa, puoModificare, p { utenti, statiCommessa, errori, valori, conflitto }
+--}}
+@let(val = (k, d) => (p.valori[k] !== undefined ? p.valori[k] : d))
+<div class="panel" id="pannello-dati" data-testid="pannello-dati">
+  <div class="panel-h">
+    <h3>Dati della commessa</h3>
+    <span class="note">versione {{ commessa.version }}</span>
+  </div>
+  @include('modules/anagrafiche/_testa_pannello')
+  @if(puoModificare)
+    <form
+      class="campi"
+      method="POST"
+      action="/commesse/{{ commessa.id }}/anagrafica/dati"
+      hx-post="/commesse/{{ commessa.id }}/anagrafica/dati"
+      hx-target="#pannello-dati"
+      hx-swap="outerHTML"
+    >
+      {{ csrfField() }}
+      <input type="hidden" name="version" value="{{ commessa.version }}" />
+      <label>
+        
+        
+        Codice
+
+
+        <input
+          type="text"
+          name="codice"
+          value="{{ val('codice', commessa.codice) }}"
+          maxlength="30"
+          required
+          style="width:130px"
+        />
+        @!component('modules/anagrafiche/_errore', { testo: p.errori.codice })
+      </label>
+      <label style="flex:1 1 280px">
+        
+        
+        Nome
+
+
+        <input
+          type="text"
+          name="nome"
+          value="{{ val('nome', commessa.nome) }}"
+          maxlength="300"
+          required
+        />
+        @!component('modules/anagrafiche/_errore', { testo: p.errori.nome })
+      </label>
+      <label style="flex:1 1 200px">
+        
+        
+        Cliente
+
+
+        <input
+          type="text"
+          name="cliente"
+          value="{{ val('cliente', commessa.cliente || '') }}"
+          maxlength="300"
+        />
+        @!component('modules/anagrafiche/_errore', { testo: p.errori.cliente })
+      </label>
+      <label>
+        
+        
+        PM
+
+
+        <select name="pm_id">
+          <option value="">nessuno</option>
+          @each(u in p.utenti)
+            <option
+              value="{{ u.id }}"
+              {{ String(val('pm_id', commessa.pmId)) === String(u.id) ? 'selected' : '' }}
+            >
+              {{ u.nome }}
+            </option>
+          @end
+        </select>
+        @!component('modules/anagrafiche/_errore', { testo: p.errori.pm_id })
+      </label>
+      <label>
+        
+        
+        Stato
+
+
+        <select name="stato">
+          @each(s in p.statiCommessa)
+            <option value="{{ s }}" {{ val('stato', commessa.stato) === s ? 'selected' : '' }}>
+              {{ s }}
+            </option>
+          @end
+        </select>
+        @!component('modules/anagrafiche/_errore', { testo: p.errori.stato })
+      </label>
+      <label>
+        
+        
+        Inizio
+
+
+        <input
+          type="date"
+          name="data_inizio"
+          value="{{ val('data_inizio', commessa.dataInizio || '') }}"
+        />
+        @!component('modules/anagrafiche/_errore', { testo: p.errori.data_inizio })
+      </label>
+      <label>
+        
+        
+        Fine prevista
+
+
+        <input
+          type="date"
+          name="data_fine_prevista"
+          value="{{ val('data_fine_prevista', commessa.dataFinePrevista || '') }}"
+        />
+        @!component('modules/anagrafiche/_errore', {
+          testo: p.errori.data_fine_prevista,
+        })
+      </label>
+      <label style="flex:1 1 100%">
+        
+        
+        Note
+
+
+        <textarea
+          name="note"
+          rows="2"
+          maxlength="4000"
+        >{{ val('note', commessa.note || '') }}</textarea>
+        @!component('modules/anagrafiche/_errore', { testo: p.errori.note })
+      </label>
+      <button class="btn primary" type="submit">Salva</button>
+    </form>
+  @else
+    <table>
+      <tbody>
+        <tr>
+          <th>Codice</th>
+          <td class="code">{{ commessa.codice }}</td>
+        </tr>
+        <tr>
+          <th>Nome</th>
+          <td>{{ commessa.nome }}</td>
+        </tr>
+        <tr>
+          <th>Cliente</th>
+          <td>{{ formato.testo(commessa.cliente) }}</td>
+        </tr>
+        <tr>
+          <th>Stato</th>
+          <td>{{ commessa.stato }}</td>
+        </tr>
+        <tr>
+          <th>Inizio</th>
+          <td class="num">{{ formato.data(commessa.dataInizio) }}</td>
+        </tr>
+        <tr>
+          <th>Fine prevista</th>
+          <td class="num">{{ formato.data(commessa.dataFinePrevista) }}</td>
+        </tr>
+        <tr>
+          <th>Note</th>
+          <td>{{ formato.testo(commessa.note) }}</td>
+        </tr>
+      </tbody>
+    </table>
+  @end
+</div>

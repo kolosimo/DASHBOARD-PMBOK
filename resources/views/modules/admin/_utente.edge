@@ -1,0 +1,62 @@
+{{--
+  Riga di un utente (sostituita da HTMX dopo il salvataggio).
+  Variabili: u, ruoli, io (id dell'amministratore), errori, salvata?, conflitto?
+--}}
+<div class="impostazione" id="utente-{{ u.id }}" data-testid="utente-{{ u.id }}">
+  @if(conflitto)
+    @!component('components/conflitto', { messaggio: conflitto })
+  @end
+  @each((testo, campo) in errori)
+    <div class="messaggio errore" role="alert">
+      <p>{{ testo }}</p>
+    </div>
+  @end
+
+  <div class="panel-h" style="margin:0">
+    <div>
+      <b>{{ u.nome }}</b>
+      @if(u.id === io)
+        <span class="muted">(tu)</span>
+      @end
+
+      <div class="chiave">
+        {{ u.email }}
+        · ultimo accesso
+        {{ formato.dataOra(u.ultimoAccesso) }}
+        · versione
+        {{ u.version }}
+      </div>
+    </div>
+    @if(salvata)
+      @!component('components/pill', { classe: 'g', testo: 'salvato' })
+    @elseif(!u.attivo)
+      @!component('components/pill', { classe: 'n', testo: 'disattivato' })
+    @end
+  </div>
+  <form
+    class="campi"
+    method="POST"
+    action="/admin/utenti/{{ u.id }}"
+    hx-post="/admin/utenti/{{ u.id }}"
+    hx-target="#utente-{{ u.id }}"
+    hx-swap="outerHTML"
+  >
+    {{ csrfField() }}
+    <input type="hidden" name="version" value="{{ u.version }}" />
+    <label>
+      Ruolo
+      <select name="ruolo">
+        @each(r in ruoli)
+          <option value="{{ r }}" {{ r === u.ruolo ? 'selected' : '' }}>{{ r }}</option>
+        @end
+      </select>
+    </label>
+    <label style="flex-direction:row;align-items:center;gap:6px">
+      <input type="checkbox" name="attivo" value="on" {{ u.attivo ? 'checked' : '' }} />
+      
+      attivo
+
+    </label>
+    <button class="btn primary" type="submit">Salva</button>
+  </form>
+</div>

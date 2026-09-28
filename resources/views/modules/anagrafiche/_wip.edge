@@ -1,0 +1,79 @@
+{{--
+  Pannello "Limiti WIP della commessa" (sostituito da HTMX dopo ogni modifica).
+  Variabili: commessa, puoModificare, p { limiti, errori, rigaId, valori, conflitto }
+--}}
+<div class="panel tbl" id="pannello-wip" data-testid="pannello-wip">
+  <div class="panel-h">
+    <h3>Limiti WIP del Kanban</h3>
+    <span class="note">campo vuoto = vale il limite di default</span>
+  </div>
+  @include('modules/anagrafiche/_testa_pannello')
+  <table>
+    <thead>
+      <tr>
+        <th>Colonna</th>
+        <th class="r">Default</th>
+        <th class="r">Limite della commessa</th>
+        @if(puoModificare)
+          <th class="r">Azioni</th>
+        @end
+      </tr>
+    </thead>
+    <tbody>
+      @each(l in p.limiti)
+        <tr data-testid="wip-{{ l.codice }}">
+          <td>{{ l.nome }}</td>
+          <td class="r num">
+            {{ l.limiteDefault === null ? 'nessuno' : formato.numero(l.limiteDefault) }}
+          </td>
+          <td class="r">
+            @if(puoModificare)
+              <input
+                type="number"
+                name="limite"
+                min="1"
+                form="wip-{{ l.colonnaId }}"
+                value="{{
+                  p.rigaId === l.colonnaId && p.valori.limite !== undefined
+                    ? p.valori.limite
+                    : l.limiteCommessa === null
+                      ? ''
+                      : l.limiteCommessa
+                }}"
+                aria-label="Limite WIP {{ l.nome }}"
+                style="width:80px"
+              />
+              @if(p.rigaId === l.colonnaId)
+                @!component('modules/anagrafiche/_errore', { testo: p.errori.limite })
+              @end
+            @else
+              <span class="num">
+                {{ l.limiteCommessa === null ? 'default' : formato.numero(l.limiteCommessa) }}
+              </span>
+            @end
+          </td>
+          @if(puoModificare)
+            <td class="r">
+              <form
+                id="wip-{{ l.colonnaId }}"
+                method="POST"
+                action="/commesse/{{ commessa.id }}/limiti-wip/{{ l.colonnaId }}"
+                hx-post="/commesse/{{ commessa.id }}/limiti-wip/{{ l.colonnaId }}"
+                hx-target="#pannello-wip"
+                hx-swap="outerHTML"
+              >
+                {{ csrfField() }}
+                <input
+                  type="hidden"
+                  name="version"
+                  value="{{ l.version === null ? '' : l.version }}"
+                />
+                <button class="btn" type="submit">Salva</button>
+              </form>
+            </td>
+          @end
+        </tr>
+      @end
+    </tbody>
+  </table>
+</div>

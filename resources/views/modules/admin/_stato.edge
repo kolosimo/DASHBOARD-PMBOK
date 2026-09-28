@@ -1,0 +1,81 @@
+{{--
+  Riga di uno stato dell'elaborato con peso EV cumulativo (HTMX).
+  Variabili: stato (con colonnaKanban), colonne, errori, valori, salvata?, conflitto?
+--}}
+<div class="impostazione" id="stato-{{ stato.id }}" data-testid="stato-{{ stato.codice }}">
+  @if(conflitto)
+    @!component('components/conflitto', { messaggio: conflitto })
+  @end
+  @each((testo, campo) in errori)
+    <div class="messaggio errore" role="alert">
+      <p>{{ testo }}</p>
+    </div>
+  @end
+
+  <div class="panel-h" style="margin:0">
+    <div>
+      <b>{{ stato.ordine }}. {{ stato.nome }}</b>
+      <div class="chiave">
+        {{ stato.codice }}
+        · peso
+        {{ formato.numero(stato.pesoEvPercento) }}% · colonna
+        {{ stato.colonnaKanban ? stato.colonnaKanban.nome : 'n.d.' }}{{ stato.finale ? ' · stato finale' : '' }}
+        · versione
+        {{ stato.version }}
+      </div>
+    </div>
+    @if(salvata)
+      @!component('components/pill', { classe: 'g', testo: 'salvato' })
+    @end
+  </div>
+  <form
+    class="campi"
+    method="POST"
+    action="/admin/stati/{{ stato.id }}"
+    hx-post="/admin/stati/{{ stato.id }}"
+    hx-target="#stato-{{ stato.id }}"
+    hx-swap="outerHTML"
+  >
+    {{ csrfField() }}
+    <input type="hidden" name="version" value="{{ stato.version }}" />
+    <label style="flex:1 1 220px">
+      
+      Nome
+
+      <input
+        type="text"
+        name="nome"
+        value="{{ valori.nome !== undefined ? valori.nome : stato.nome }}"
+        maxlength="100"
+      />
+    </label>
+    <label>
+      
+      Peso EV cumulativo (%)
+
+      <input
+        type="number"
+        name="peso_ev_percento"
+        min="0"
+        max="100"
+        value="{{
+          valori.peso_ev_percento !== undefined
+            ? valori.peso_ev_percento
+            : stato.pesoEvPercento
+        }}"
+        style="width:90px"
+      />
+    </label>
+    <label>
+      Colonna Kanban
+      <select name="colonna_kanban_id">
+        @each(c in colonne)
+          <option value="{{ c.id }}" {{ c.id === stato.colonnaKanbanId ? 'selected' : '' }}>
+            {{ c.nome }}
+          </option>
+        @end
+      </select>
+    </label>
+    <button class="btn primary" type="submit">Salva</button>
+  </form>
+</div>

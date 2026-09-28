@@ -36,12 +36,16 @@
     @if(typeof imp.valore === 'boolean')
       <label style="flex-direction:row;align-items:center;gap:6px">
         <input type="checkbox" name="attivo" value="on" {{ imp.valore ? 'checked' : '' }} />
+        
          attivo
+
 
       </label>
     @elseif(typeof imp.valore === 'number')
       <label>
+        
         Valore
+
 
         <input
           type="text"
@@ -53,7 +57,9 @@
       </label>
     @else
       <label>
+        
         Verde da
+
 
         <input
           type="text"
@@ -64,7 +70,9 @@
         />
       </label>
       <label>
+        
         Giallo da
+
 
         <input
           type="text"

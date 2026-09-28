@@ -1,0 +1,134 @@
+{{--
+  Import degli elaborati incollati da Excel o CSV, con anteprima.
+  Variabili: commessa, testo, esito (null prima dell'anteprima), discipline
+--}}
+@component('layouts/app', { titolo: 'Importa elaborati' })
+  <div class="head">
+    <div>
+      <div class="eyebrow">Anagrafica · elaborati</div>
+      <h2>Importa elaborati da Excel</h2>
+      <p>
+        Copia le righe da Excel (quattro colonne: codice, titolo, disciplina, budget in ore) e incollale qui sotto. Va bene anche un CSV con il punto e virgola. Prima vedi l'anteprima: si importa solo quando tutte le righe sono corrette.
+      </p>
+    </div>
+  </div>
+
+  <form
+    class="panel campi"
+    method="POST"
+    action="/commesse/{{ commessa.id }}/elaborati/import/anteprima"
+  >
+    {{ csrfField() }}
+    <label style="flex:1 1 100%">
+      
+      
+      Righe da importare
+
+
+      <textarea
+        name="testo"
+        rows="10"
+        spellcheck="false"
+        style="font-family:var(--mono)"
+        placeholder="E-MEC-10;Centrale termica – schema;MEC;24&#10;E-ELE-11;Quadri di piano;ELE;16,5"
+      >{{ testo }}</textarea>
+    </label>
+    <p class="muted" style="margin:0;flex:1 1 300px">
+      
+      
+      Discipline:
+
+
+      @each((d, i) in discipline)
+        @if(d.attiva)
+          <span class="code">{{ d.codice }}</span>
+          {{ d.nome }}
+          {{ i < discipline.length - 1 ? ' ·' : '' }}
+        @end
+      @end
+    </p>
+    <button class="btn primary" type="submit">Anteprima</button>
+    <a class="btn ghost" href="/commesse/{{ commessa.id }}/anagrafica#pannello-elaborati">
+      Annulla
+    </a>
+  </form>
+  @if(esito)
+    @if(esito.righe.length === 0)
+      <div class="messaggio errore" role="alert" data-testid="import-vuoto">
+        <p>Non c'è nessuna riga da importare.</p>
+      </div>
+    @elseif(esito.errate.length)
+      <div class="messaggio errore" role="alert" data-testid="import-errori">
+        <p>
+          {{ esito.errate.length === 1 ? '1 riga ha' : esito.errate.length + ' righe hanno' }}
+          errori: correggile nel testo e rifai l'anteprima. Nessun elaborato è stato importato.
+        </p>
+      </div>
+    @else
+      <div class="messaggio ok" role="status" data-testid="import-pronto">
+        <p>
+          {{
+            esito.valide.length === 1
+              ? '1 riga pronta'
+              : esito.valide.length + ' righe pronte'
+          }}
+          da importare, per un totale di
+          {{
+            formato.oreEsatte(
+              esito.valide.reduce((t, r) => t + r.budgetMinuti, 0),
+            )
+          }}.
+        </p>
+      </div>
+    @end
+    @if(esito.righe.length)
+      @component('components/pannello', { titolo: 'Anteprima', tabella: true })
+        <table data-testid="anteprima-import">
+          <thead>
+            <tr>
+              <th class="r">Riga</th>
+              <th>Codice</th>
+              <th>Titolo</th>
+              <th>Disciplina</th>
+              <th class="r">Budget</th>
+              <th>Esito</th>
+            </tr>
+          </thead>
+          <tbody>
+            @each(r in esito.righe)
+              <tr data-testid="riga-import-{{ r.numero }}">
+                <td class="r num">{{ r.numero }}</td>
+                <td class="code">{{ r.codice }}</td>
+                <td>{{ r.titolo }}</td>
+                <td>{{ r.disciplina }}</td>
+                <td class="r num">{{ formato.oreEsatte(r.budgetMinuti) }}</td>
+                <td>
+                  @if(r.errori.length)
+                    @!component('components/pill', { classe: 'c', testo: 'errore' })
+                    <span>{{ r.errori.join('; ') }}</span>
+                  @else
+                    @!component('components/pill', { classe: 'g', testo: 'ok' })
+                  @end
+                </td>
+              </tr>
+            @end
+          </tbody>
+        </table>
+      @end
+    @end
+    @if(esito.righe.length && !esito.errate.length)
+      <form class="panel campi" method="POST" action="/commesse/{{ commessa.id }}/elaborati/import">
+        {{ csrfField() }}
+        <input type="hidden" name="testo" value="{{ testo }}" />
+        <p style="margin:0;flex:1 1 300px">
+          Gli elaborati importati partono dal primo stato, classe di servizio standard. Responsabile e milestone si impostano dopo.
+        </p>
+        <button class="btn primary" type="submit" data-testid="conferma-import">
+          Importa
+          {{ esito.valide.length }}
+          elaborati
+        </button>
+      </form>
+    @end
+  @end
+@end

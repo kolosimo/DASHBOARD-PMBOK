@@ -1,10 +1,115 @@
+{{--
+  Anagrafica di commessa: dati, team, milestone, elaborati, limiti WIP.
+  Variabili: commessa, puoModificare, pannelli { dati, team, milestone, wip },
+  elaborati, budgetTotale, messaggio
+--}}
 @component('layouts/app', { titolo: 'Anagrafica' })
-  @!component('components/segnaposto', {
-    eyebrow: 'Anagrafica di commessa',
-    titolo: 'Team, milestone ed elaborati',
-    descrizione:
-      'Dati della commessa, membri del team con ruolo, milestone contrattuali, elaborati con budget ore. Import da Excel.',
-    fase: 'Fase 1',
-    agente: 'agente A1',
+  <div class="head">
+    <div>
+      <div class="eyebrow">Anagrafica di commessa</div>
+      <h2>Team, milestone ed elaborati</h2>
+      <p>
+        @if(puoModificare)
+          Dati della commessa, persone del team con il loro ruolo, milestone ed elenco degli elaborati con il budget in ore. Ogni modifica finisce nel registro di audit.
+        @else
+          Dati della commessa in sola lettura: le modifiche le fa il PM della commessa o l'amministratore.
+        @end
+      </p>
+    </div>
+  </div>
+  @if(messaggio)
+    <div class="messaggio ok" role="status" data-testid="messaggio">
+      <p>{{ messaggio }}</p>
+    </div>
+  @end
+  @!component('modules/anagrafiche/_dati', { commessa, puoModificare, p: pannelli.dati })
+  @!component('modules/anagrafiche/_team', {
+    commessa,
+    puoModificare,
+    p: pannelli.team,
   })
+  @!component('modules/anagrafiche/_milestone', {
+    commessa,
+    puoModificare,
+    p: pannelli.milestone,
+  })
+
+  <div class="panel tbl" id="pannello-elaborati" data-testid="pannello-elaborati">
+    <div class="panel-h">
+      <h3>Elaborati</h3>
+      @if(puoModificare)
+        <span>
+          <a class="btn" href="/commesse/{{ commessa.id }}/elaborati/import">Importa da Excel</a>
+          <a class="btn primary" href="/commesse/{{ commessa.id }}/elaborati/nuovo">
+            Nuovo elaborato
+          </a>
+        </span>
+      @else
+        <span class="note">{{ elaborati.length }} elaborati</span>
+      @end
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Codice</th>
+          <th>Titolo</th>
+          <th>Disciplina</th>
+          <th class="r">Budget</th>
+          <th>Classe</th>
+          <th>Responsabile</th>
+          <th>Milestone</th>
+          <th>Stato</th>
+        </tr>
+      </thead>
+      <tbody>
+        @each(e in elaborati)
+          <tr data-testid="elaborato-{{ e.codice }}">
+            <td>
+              @if(puoModificare)
+                <a class="code" href="/commesse/{{ commessa.id }}/elaborati/{{ e.id }}/modifica">
+                  {{ e.codice }}
+                </a>
+              @else
+                <span class="code">{{ e.codice }}</span>
+              @end
+            </td>
+            <td>{{ e.titolo }}</td>
+            <td>{{ e.disciplina }}</td>
+            <td class="r num">{{ formato.oreEsatte(e.budgetMinuti) }}</td>
+            <td>
+              {{ e.classeServizio.replace('_', ' ') }}
+              @if(e.dataFissa)
+                ·
+                <span class="num">{{ formato.dataBreve(e.dataFissa) }}</span>
+              @end
+            </td>
+            <td>{{ formato.testo(e.responsabile) }}</td>
+            <td>{{ formato.testo(e.milestone) }}</td>
+            <td>{{ e.stato }}</td>
+          </tr>
+        @else
+          <tr>
+            <td colspan="8" class="muted">
+              Nessun elaborato.
+              {{
+                puoModificare
+                  ? 'Aggiungilo a mano o incolla l’elenco da Excel.'
+                  : ''
+              }}
+            </td>
+          </tr>
+        @end
+      </tbody>
+      @if(elaborati.length)
+        <tfoot>
+          <tr>
+            <td colspan="3"><b>Totale budget (BAC)</b></td>
+            <td class="r num"><b>{{ formato.oreEsatte(budgetTotale) }}</b></td>
+            <td colspan="4" class="muted">Lo stato si cambia dal Kanban.</td>
+          </tr>
+        </tfoot>
+      @end
+    </table>
+  </div>
+  @!component('modules/anagrafiche/_wip', { commessa, puoModificare, p: pannelli.wip })
 @end

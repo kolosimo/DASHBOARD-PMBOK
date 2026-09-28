@@ -1,0 +1,75 @@
+{{--
+  Riga di una colonna Kanban con il limite WIP di default (HTMX).
+  Variabili: colonna, errori, valori, salvata?, conflitto?
+--}}
+<div class="impostazione" id="colonna-{{ colonna.id }}" data-testid="colonna-{{ colonna.codice }}">
+  @if(conflitto)
+    @!component('components/conflitto', { messaggio: conflitto })
+  @end
+  @each((testo, campo) in errori)
+    <div class="messaggio errore" role="alert">
+      <p>{{ testo }}</p>
+    </div>
+  @end
+
+  <div class="panel-h" style="margin:0">
+    <div>
+      <b>{{ colonna.ordine }}. {{ colonna.nome }}</b>
+      <div class="chiave">
+        {{ colonna.codice }}
+        · WIP di default
+        {{
+          colonna.limiteWipDefault === null
+            ? 'nessun limite'
+            : formato.numero(colonna.limiteWipDefault)
+        }}
+        · versione
+        {{ colonna.version }}
+      </div>
+    </div>
+    @if(salvata)
+      @!component('components/pill', { classe: 'g', testo: 'salvata' })
+    @end
+  </div>
+  <form
+    class="campi"
+    method="POST"
+    action="/admin/colonne/{{ colonna.id }}"
+    hx-post="/admin/colonne/{{ colonna.id }}"
+    hx-target="#colonna-{{ colonna.id }}"
+    hx-swap="outerHTML"
+  >
+    {{ csrfField() }}
+    <input type="hidden" name="version" value="{{ colonna.version }}" />
+    <label style="flex:1 1 220px">
+      
+      Nome
+
+      <input
+        type="text"
+        name="nome"
+        value="{{ valori.nome !== undefined ? valori.nome : colonna.nome }}"
+        maxlength="100"
+      />
+    </label>
+    <label>
+      
+      Limite WIP di default (vuoto = nessuno)
+
+      <input
+        type="number"
+        name="limite_wip_default"
+        min="1"
+        value="{{
+          valori.limite_wip_default !== undefined
+            ? valori.limite_wip_default
+            : colonna.limiteWipDefault === null
+              ? ''
+              : colonna.limiteWipDefault
+        }}"
+        style="width:90px"
+      />
+    </label>
+    <button class="btn primary" type="submit">Salva</button>
+  </form>
+</div>
