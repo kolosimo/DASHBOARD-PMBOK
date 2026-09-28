@@ -1,0 +1,136 @@
+{{--
+  Pannello "Milestone" (sostituito da HTMX dopo ogni modifica).
+  Variabili: commessa, puoModificare, p { elenco, errori, rigaId, valori, conflitto }
+--}}
+<div class="panel tbl" id="pannello-milestone" data-testid="pannello-milestone">
+  <div class="panel-h">
+    <h3>Milestone</h3>
+    <span class="note">contrattuali e interne, per data target</span>
+  </div>
+  @include('modules/anagrafiche/_testa_pannello')
+
+  <table>
+    <thead>
+      <tr>
+        <th>Titolo</th>
+        <th>Data target</th>
+        <th>Data effettiva</th>
+        <th>Contrattuale</th>
+        <th class="r">Ordine</th>
+        @if(puoModificare)
+          <th class="r">Azioni</th>
+        @end
+      </tr>
+    </thead>
+    <tbody>
+      @each(m in p.elenco)
+        @if(puoModificare)
+          @let(err = p.rigaId === m.id ? p.errori : {})
+          @let(v = p.rigaId === m.id ? p.valori : {})
+          <tr data-testid="milestone-{{ m.id }}">
+            <td>
+              <input type="text" name="titolo" form="ms-{{ m.id }}" value="{{ v.titolo !== undefined ? v.titolo : m.titolo }}" maxlength="300" aria-label="Titolo" style="width:100%" />
+              @!component('modules/anagrafiche/_errore', { testo: err.titolo })
+            </td>
+            <td>
+              <input type="date" name="data_prevista" form="ms-{{ m.id }}" value="{{ v.data_prevista !== undefined ? v.data_prevista : m.dataPrevista }}" aria-label="Data target" />
+              @!component('modules/anagrafiche/_errore', { testo: err.data_prevista })
+            </td>
+            <td>
+              <input type="date" name="data_effettiva" form="ms-{{ m.id }}" value="{{ v.data_effettiva !== undefined ? v.data_effettiva : (m.dataEffettiva || '') }}" aria-label="Data effettiva" />
+              @!component('modules/anagrafiche/_errore', { testo: err.data_effettiva })
+            </td>
+            <td>
+              <input type="checkbox" name="contrattuale" value="on" form="ms-{{ m.id }}" aria-label="Contrattuale" {{ m.contrattuale ? 'checked' : '' }} />
+            </td>
+            <td class="r">
+              <input type="number" name="ordine" form="ms-{{ m.id }}" value="{{ v.ordine !== undefined ? v.ordine : m.ordine }}" min="0" aria-label="Ordine" style="width:70px" />
+              @!component('modules/anagrafiche/_errore', { testo: err.ordine })
+            </td>
+            <td class="r" style="white-space:nowrap">
+              <form
+                id="ms-{{ m.id }}"
+                method="POST"
+                action="/commesse/{{ commessa.id }}/milestone/{{ m.id }}"
+                hx-post="/commesse/{{ commessa.id }}/milestone/{{ m.id }}"
+                hx-target="#pannello-milestone"
+                hx-swap="outerHTML"
+                style="display:inline"
+              >
+                {{ csrfField() }}
+                <input type="hidden" name="version" value="{{ m.version }}" />
+                <button class="btn" type="submit">Salva</button>
+              </form>
+              <form
+                method="POST"
+                action="/commesse/{{ commessa.id }}/milestone/{{ m.id }}/elimina"
+                hx-post="/commesse/{{ commessa.id }}/milestone/{{ m.id }}/elimina"
+                hx-target="#pannello-milestone"
+                hx-swap="outerHTML"
+                hx-confirm="Eliminare la milestone {{ m.titolo }}?"
+                style="display:inline"
+              >
+                {{ csrfField() }}
+                <input type="hidden" name="version" value="{{ m.version }}" />
+                <button class="btn ghost" type="submit">Elimina</button>
+              </form>
+            </td>
+          </tr>
+        @else
+          <tr data-testid="milestone-{{ m.id }}">
+            <td>{{ m.titolo }}</td>
+            <td class="num">{{ formato.data(m.dataPrevista) }}</td>
+            <td class="num">{{ formato.data(m.dataEffettiva) }}</td>
+            <td>{{ m.contrattuale ? 'sì' : 'no' }}</td>
+            <td class="r num">{{ m.ordine }}</td>
+          </tr>
+        @end
+      @else
+        <tr>
+          <td colspan="6" class="muted">Nessuna milestone.</td>
+        </tr>
+      @end
+    </tbody>
+  </table>
+
+  @if(puoModificare)
+    @let(err = p.rigaId === null ? p.errori : {})
+    @let(v = p.rigaId === null ? p.valori : {})
+    <form
+      class="campi"
+      style="margin-top:12px"
+      method="POST"
+      action="/commesse/{{ commessa.id }}/milestone"
+      hx-post="/commesse/{{ commessa.id }}/milestone"
+      hx-target="#pannello-milestone"
+      hx-swap="outerHTML"
+    >
+      {{ csrfField() }}
+      <label style="flex:1 1 240px">
+        Nuova milestone
+        <input type="text" name="titolo" value="{{ v.titolo || '' }}" maxlength="300" placeholder="Titolo" />
+        @!component('modules/anagrafiche/_errore', { testo: err.titolo })
+      </label>
+      <label>
+        Data target
+        <input type="date" name="data_prevista" value="{{ v.data_prevista || '' }}" />
+        @!component('modules/anagrafiche/_errore', { testo: err.data_prevista })
+      </label>
+      <label>
+        Data effettiva
+        <input type="date" name="data_effettiva" value="{{ v.data_effettiva || '' }}" />
+        @!component('modules/anagrafiche/_errore', { testo: err.data_effettiva })
+      </label>
+      <label style="flex-direction:row;align-items:center;gap:6px">
+        <input type="checkbox" name="contrattuale" value="on" checked />
+        contrattuale
+      </label>
+      <label>
+        Ordine
+        <input type="number" name="ordine" value="{{ v.ordine || '0' }}" min="0" style="width:70px" />
+        @!component('modules/anagrafiche/_errore', { testo: err.ordine })
+      </label>
+      <button class="btn primary" type="submit">Aggiungi</button>
+    </form>
+  @end
+</div>

@@ -1,0 +1,35 @@
+{{--
+  Pagina di creazione o modifica di un elaborato.
+  Variabili: vedi _elaborato_form.
+--}}
+@component('layouts/app', { titolo: elaborato ? 'Elaborato ' + elaborato.codice : 'Nuovo elaborato' })
+  <div class="head">
+    <div>
+      <div class="eyebrow">Anagrafica · elaborati</div>
+      <h2>{{ elaborato ? 'Elaborato ' + elaborato.codice : 'Nuovo elaborato' }}</h2>
+      <p>
+        Il budget si scrive in ore (anche con la virgola, per esempio 12,5). Lo stato non si cambia da qui: un elaborato nuovo parte dal primo stato e avanza dal Kanban.
+      </p>
+    </div>
+  </div>
+  @include('modules/anagrafiche/_elaborato_form')
+
+  @if(elaborato)
+    <form
+      class="panel campi"
+      method="POST"
+      action="/commesse/{{ commessa.id }}/elaborati/{{ elaborato.id }}/elimina"
+    >
+      {{ csrfField() }}
+      <input type="hidden" name="version" value="{{ elaborato.version }}" />
+      <p class="muted" style="margin:0;flex:1 1 300px">
+        Si può eliminare solo un elaborato senza ore registrate e fuori dalla baseline approvata.
+      </p>
+      <label style="flex-direction:row;align-items:center;gap:6px">
+        <input type="checkbox" name="conferma" value="on" required />
+        confermo l'eliminazione
+      </label>
+      <button class="btn" type="submit">Elimina elaborato</button>
+    </form>
+  @end
+@end

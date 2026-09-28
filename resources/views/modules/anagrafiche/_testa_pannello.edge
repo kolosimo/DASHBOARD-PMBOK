@@ -1,0 +1,14 @@
+{{-- Messaggi in cima a un pannello: conflitto (409) ed errore generale. Variabile: p --}}
+@if(p.conflitto)
+  @!component('components/conflitto', { messaggio: p.conflitto })
+@end
+@if(p.errori && p.errori.generale)
+  <div class="messaggio errore" role="alert">
+    <p>{{ p.errori.generale }}</p>
+  </div>
+@end
+@if(p.errori && Object.keys(p.errori).length && !p.errori.generale)
+  <div class="messaggio errore" role="alert">
+    <p>Controlla i campi segnalati.</p>
+  </div>
+@end
