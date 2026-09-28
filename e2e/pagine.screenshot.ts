@@ -11,6 +11,11 @@ const PAGINE: { nome: string; percorso: string; soloAdmin?: boolean }[] = [
   { nome: 'commessa', percorso: '/commesse/1' },
   { nome: 'kanban', percorso: '/commesse/1/flusso' },
   { nome: 'portafoglio', percorso: '/portafoglio' },
+  { nome: 'anagrafica', percorso: '/commesse/1/anagrafica' },
+  { nome: 'lookahead', percorso: '/commesse/1/lps/lookahead' },
+  { nome: 'settimana', percorso: '/commesse/1/lps/settimana' },
+  { nome: 'evm', percorso: '/commesse/1/evm' },
+  { nome: 'ore', percorso: '/ore' },
   { nome: 'admin', percorso: '/admin', soloAdmin: true },
 ]
 
