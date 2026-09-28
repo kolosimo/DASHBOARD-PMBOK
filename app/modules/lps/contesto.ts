@@ -28,9 +28,25 @@ export async function puoGestire(ctx: HttpContext, commessa: Commessa) {
   return ctx.bouncer.allows(gestisceLps, commessa)
 }
 
-/** Autorizza la gestione del LPS (403 altrimenti) */
+/**
+ * Autorizza la gestione del LPS: 403 esplicito anche per i form e le richieste
+ * HTMX (Bouncer, sui POST, rimanderebbe indietro con un redirect).
+ */
 export async function richiediGestione(ctx: HttpContext, commessa: Commessa) {
-  await ctx.bouncer.authorize(gestisceLps, commessa)
+  if (!(await ctx.bouncer.allows(gestisceLps, commessa))) {
+    ctx.response.abort('Non hai i permessi per gestire il Last Planner di questa commessa.', 403)
+  }
+}
+
+/**
+ * Valore dell'intestazione HX-Trigger: JSON con i caratteri non ASCII come
+ * sequenze \uXXXX (le intestazioni HTTP accettano solo ASCII).
+ */
+export function intestazioneTrigger(eventi: Record<string, unknown>): string {
+  return JSON.stringify(eventi).replace(
+    /[^\x20-\x7e]/g,
+    (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`
+  )
 }
 
 const NOMI_CAMPI: Record<string, string> = {

@@ -31,6 +31,7 @@ import { graficoPareto, graficoPpc } from './grafici.js'
 import {
   autore,
   eHtmx,
+  intestazioneTrigger,
   flashMessaggio,
   messaggioFlash,
   puoGestire,
@@ -120,7 +121,7 @@ export default class PianoController {
   ) {
     if (eHtmx(ctx)) {
       if (messaggio.tipo === 'errore') ctx.response.status(422)
-      else ctx.response.header('HX-Trigger', JSON.stringify({ toast: messaggio.testo }))
+      else ctx.response.header('HX-Trigger', intestazioneTrigger({ toast: messaggio.testo }))
       return this.rendiFrammento(ctx, commessa, settimana, { messaggio })
     }
     flashMessaggio(ctx, messaggio)
