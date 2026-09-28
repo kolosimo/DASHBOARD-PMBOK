@@ -5,7 +5,19 @@
  * CONTRATTO fissato in Fase 0: firme e formule sono vincolanti, i corpi li
  * scrive l'agente A3 dopo i test del verificatore T1.
  */
+import { DateTime } from 'luxon'
 import type { DataIso, Lunedi, PuntoCfd, TransizioneFlusso } from '#domain/types'
+import { dataRoma, differenzaGiorni, lunediDellaSettimana } from '#shared/calendario'
+
+/** Millisecondi di un istante ISO (per ordinare le transizioni) */
+function ms(istante: string): number {
+  return DateTime.fromISO(istante, { setZone: true }).toMillis()
+}
+
+/** Transizioni in ordine cronologico (copia, l'originale non si tocca) */
+function inOrdine(transizioni: readonly TransizioneFlusso[]): TransizioneFlusso[] {
+  return [...transizioni].sort((a, b) => ms(a.avvenutaIl) - ms(b.avvenutaIl))
+}
 
 /**
  * Work Item Age = giorni di calendario interi tra `statoDal` e `adesso`,
@@ -13,9 +25,7 @@ import type { DataIso, Lunedi, PuntoCfd, TransizioneFlusso } from '#domain/types
  * Si mostra solo per gli elaborati non in stato finale.
  */
 export function workItemAge(statoDal: string, adesso: string): number {
-  void statoDal
-  void adesso
-  throw new Error('non implementato')
+  return differenzaGiorni(dataRoma(statoDal), dataRoma(adesso))
 }
 
 /**
@@ -27,9 +37,17 @@ export function cycleTime(
   transizioni: readonly TransizioneFlusso[],
   ordineFinale: number
 ): number | null {
-  void transizioni
-  void ordineFinale
-  throw new Error('non implementato')
+  const storia = inOrdine(transizioni)
+  // Uscita dallo stato iniziale; se l'elaborato è nato già avviato (nessuna
+  // uscita da 0), vale la sua creazione in uno stato successivo.
+  const uscita =
+    storia.find((t) => t.daStatoOrdine === 0 && t.aStatoOrdine !== 0) ??
+    storia.find((t) => t.daStatoOrdine === null && t.aStatoOrdine > 0)
+  if (!uscita) return null
+  const inizio = ms(uscita.avvenutaIl)
+  const arrivo = storia.find((t) => t.aStatoOrdine === ordineFinale && ms(t.avvenutaIl) >= inizio)
+  if (!arrivo) return null
+  return differenzaGiorni(dataRoma(uscita.avvenutaIl), dataRoma(arrivo.avvenutaIl))
 }
 
 /**
@@ -41,10 +59,12 @@ export function throughput(
   settimana: Lunedi,
   ordineFinale: number
 ): number {
-  void transizioni
-  void settimana
-  void ordineFinale
-  throw new Error('non implementato')
+  const emessi = new Set<number>()
+  for (const t of transizioni) {
+    if (t.aStatoOrdine !== ordineFinale) continue
+    if (lunediDellaSettimana(t.avvenutaIl) === settimana) emessi.add(t.elaboratoId)
+  }
+  return emessi.size
 }
 
 /**
@@ -60,11 +80,28 @@ export function cfd(
   dal: DataIso,
   al: DataIso
 ): PuntoCfd[] {
-  void transizioni
-  void colonnaDiOrdine
-  void dal
-  void al
-  throw new Error('non implementato')
+  const colonne = [...new Set(Object.values(colonnaDiOrdine))]
+  const storia = inOrdine(transizioni).map((t) => ({ ...t, giorno: dataRoma(t.avvenutaIl) }))
+  const statoAttuale = new Map<number, number>()
+  const punti: PuntoCfd[] = []
+  const giorni = differenzaGiorni(dal, al)
+  const inizio = DateTime.fromISO(dal, { zone: 'UTC' })
+  let k = 0
+  for (let g = 0; g <= giorni; g++) {
+    const giorno = inizio.plus({ days: g }).toISODate()!
+    // Le transizioni avvenute entro la fine del giorno (ora di Roma)
+    while (k < storia.length && storia[k].giorno <= giorno) {
+      statoAttuale.set(storia[k].elaboratoId, storia[k].aStatoOrdine)
+      k++
+    }
+    const perColonna: Record<string, number> = Object.fromEntries(colonne.map((c) => [c, 0]))
+    for (const ordine of statoAttuale.values()) {
+      const colonna = colonnaDiOrdine[ordine]
+      if (colonna !== undefined) perColonna[colonna] = (perColonna[colonna] ?? 0) + 1
+    }
+    punti.push({ giorno, perColonna })
+  }
+  return punti
 }
 
 /**
@@ -78,10 +115,14 @@ export function controllaPassaggioStato(
   aOrdine: number,
   motivo: string | null
 ): string | null {
-  void daOrdine
-  void aOrdine
-  void motivo
-  throw new Error('non implementato')
+  if (aOrdine === daOrdine) return "L'elaborato è già in questo stato."
+  if (aOrdine > daOrdine + 1) {
+    return 'Si avanza di uno stato alla volta: completa prima lo stato successivo.'
+  }
+  if (aOrdine < daOrdine && (motivo === null || motivo.trim() === '')) {
+    return 'Per tornare a uno stato precedente serve un motivo (per esempio una rilavorazione).'
+  }
+  return null
 }
 
 /**
@@ -90,7 +131,6 @@ export function controllaPassaggioStato(
  * dall'utente e registrato nell'audit.
  */
 export function sforaWip(elaboratiInColonna: number, limite: number | null): boolean {
-  void elaboratiInColonna
-  void limite
-  throw new Error('non implementato')
+  if (limite === null) return false
+  return elaboratiInColonna + 1 > limite
 }
