@@ -205,6 +205,9 @@ export default class OreController {
     }
     const utente = auth.getUserOrFail()
     const proprietarioId = Number(request.input('utente_id'))
+    if (!Number.isInteger(proprietarioId) || proprietarioId <= 0) {
+      return ctx.response.notFound('Persona non trovata')
+    }
     const persona = await Utente.find(proprietarioId)
     if (!persona) return ctx.response.notFound('Persona non trovata')
     const motivo = String(request.input('motivo') ?? '').trim()
