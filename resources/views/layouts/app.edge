@@ -2,7 +2,7 @@
   Layout principale. Props:
   titolo       titolo della pagina (obbligatorio)
   voceAttiva   id della voce globale attiva (app/ui/nav.ts)
-  Condivisi dal contesto: utente, commessa, schedaAttiva, modalitaAuth.
+  Condivisi dal contesto: utente, commessa, schedaAttiva, modalitaAuth, accessoLocale.
 --}}
 <!DOCTYPE html>
 <html lang="it">
@@ -36,6 +36,11 @@
                 <span data-testid="utente-nome">{{ utente.nome }}</span>
                 <span class="ruolo">· {{ utente.ruolo }}</span>
               </span>
+              @if(accessoLocale && utente.haPassword)
+                <a class="btn ghost" href="/accesso/cambia-password" data-testid="cambia-password">
+                  Cambia password
+                </a>
+              @end
               <form method="POST" action="/auth/logout">
                 {{ csrfField() }}
                 <button class="btn ghost" type="submit">Esci</button>
@@ -83,7 +88,7 @@
         <span>
           Formule: PPC = mantenuti / promessi · SPI = EV / PV · CPI = EV / AC · EAC = BAC / CPI
         </span>
-        <span>Dati di esempio · Fase 1</span>
+        <span>Pilota · Fase 2</span>
       </div>
     </main>
     @!component('components/toast')
