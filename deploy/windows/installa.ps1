@@ -276,7 +276,12 @@ if ($envEsistente) {
     Write-Avviso "$fileEnv esiste già: non viene riscritto. Controllare a mano PORT, APP_URL e HTTPS_PFX_*."
 } else {
     $pwdPfx = ConvertTo-TestoInChiaro (Read-Host -AsSecureString 'Password del file PFX')
-    if ($pwdPfx -match '[\r\n]') { throw 'La password del PFX non può contenere a capo.' }
+    if ($pwdPfx -match "[\r\n']" -or $pwdPfx.Contains('\$')) {
+        throw 'La password del PFX non può contenere apostrofi, a capo o la sequenza \$: chiedere all''IT di riesportarlo.'
+    }
+    # Nel .env: tra apici (così # e spazi restano nel valore) e con \$ al posto di $
+    # (AdonisJS interpreta $NOME come riferimento a un'altra variabile)
+    $pwdPfxEnv = "'" + $pwdPfx.Replace('$', '\$') + "'"
     $modello = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'env.modello'))
     $sostituzioni = @{
         '{{DATA}}'           = (Get-Date -Format 'dd/MM/yyyy HH:mm')
@@ -284,7 +289,7 @@ if ($envEsistente) {
         '{{APP_KEY}}'        = (New-PasswordCasuale 48)
         '{{APP_URL}}'        = $appUrl
         '{{PFX_PATH}}'       = $pfxDestinazione
-        '{{PFX_PASSPHRASE}}' = $pwdPfx
+        '{{PFX_PASSPHRASE}}' = $pwdPfxEnv
         '{{PORTA_REDIRECT}}' = $portaRedirect
         '{{DB_PORTA}}'       = [string]$PortaPostgres
         '{{DB_UTENTE}}'      = $DbUtente
@@ -294,6 +299,7 @@ if ($envEsistente) {
     foreach ($k in $sostituzioni.Keys) { $modello = $modello.Replace($k, $sostituzioni[$k]) }
     Write-Utf8SenzaBom -Percorso $fileEnv -Testo $modello
     $pwdPfx = $null
+    $pwdPfxEnv = $null
     Write-Ok "Creato $fileEnv"
 }
 
@@ -416,6 +422,14 @@ $impostazioni = New-ScheduledTaskSettingsSet -StartWhenAvailable -ExecutionTimeL
 Register-ScheduledTask -TaskName 'Cruscotto commesse - backup' -Action $azione -Trigger $trigger `
     -Principal $principale -Settings $impostazioni -Force | Out-Null
 Write-Ok "Backup pianificato ogni giorno alle $OraBackup in $($config.CartellaBackup) (conservati $GiorniBackup giorni)"
+
+# Controllo settimanale del certificato: avviso nel registro eventi sotto i 30 giorni
+$argCert = '-NoProfile -ExecutionPolicy Bypass -File "{0}" -Azione certificato' -f (Join-Path $config.CartellaScript 'servizio.ps1')
+$azioneCert = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument $argCert
+$triggerCert = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Monday -At '07:45'
+Register-ScheduledTask -TaskName 'Cruscotto commesse - certificato' -Action $azioneCert -Trigger $triggerCert `
+    -Principal $principale -Settings $impostazioni -Force | Out-Null
+Write-Ok 'Controllo del certificato pianificato ogni lunedì (avviso nel registro eventi Application)'
 if ($CartellaRete) {
     Write-Info "Copia su ${CartellaRete}: l'attività gira come SYSTEM, quindi sulla condivisione serve il permesso di scrittura per l'account computer $env:COMPUTERNAME`$."
 }

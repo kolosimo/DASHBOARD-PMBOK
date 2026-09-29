@@ -79,8 +79,10 @@ if (-not $suDbApp) {
         $sql = "select 'utenti', count(*) from utenti union all select 'commesse', count(*) from commesse " +
         "union all select 'elaborati', count(*) from elaborati union all select 'registrazioni_ore', count(*) from registrazioni_ore " +
         "union all select 'audit_log', count(*) from audit_log union all select 'migrazioni', count(*) from adonis_schema"
-        Write-Info 'Righe nel database di prova (confrontarle con quelle dell''app):'
+        Write-Info "Righe nel database di prova ($DbDestinazione):"
         & $psql -d $DbDestinazione -c $sql | Out-Host
+        Write-Info "Righe nel database dell'app ($dbApp), per confronto (se il backup è di oggi devono coincidere):"
+        & $psql -d $dbApp -c $sql | Out-Host
         Write-Info "A prova finita il database si elimina con: psql -U postgres -c `"drop database $DbDestinazione`""
     } finally {
         Clear-VariabiliPg

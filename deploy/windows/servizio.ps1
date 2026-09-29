@@ -78,6 +78,11 @@ switch ($Azione) {
     }
     'certificato' {
         $codice = Invoke-Ace -Config $config -Argomenti @('certificato:scadenza')
+        if ($codice -eq 1) {
+            Write-EventoCruscotto -Messaggio 'Il certificato HTTPS del Cruscotto commesse scade entro 30 giorni (o è scaduto): chiedere il rinnovo all''IT.' -Tipo Warning -Id 5001
+        } elseif ($codice -ne 0) {
+            Write-EventoCruscotto -Messaggio 'Il certificato HTTPS del Cruscotto commesse non si legge (PFX o password).' -Tipo Error -Id 5002
+        }
         exit $codice
     }
     'stato' {
