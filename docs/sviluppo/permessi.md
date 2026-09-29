@@ -1,4 +1,4 @@
-# Permessi (Fase 1)
+# Permessi (Fase 2)
 
 Le abilità sono in `app/abilities/main.ts` e si usano con
 `await bouncer.authorize(abilita, ...)` nei controller e con `@can('abilita', ...)` nei template.
@@ -48,9 +48,12 @@ Ruoli di commessa: `pm`, `progettista`, `verificatore`, `osservatore`.
 | Rotta | Chi | Esito per chi non può |
 |---|---|---|
 | `GET /commesse/:id/anagrafica` | `vedeCommessa` (in sola lettura senza `modificaCommessa`) | 403 |
-| `POST /commesse/:id/anagrafica/**`, `/team`, `/milestone`, `/elaborati/**` (A1) | `modificaCommessa` | 403 |
+| `POST /commesse/:id/anagrafica/**`, `/limiti-wip`, `/team`, `/milestone`, `/elaborati/**` (A1) | `modificaCommessa` | 403 |
+| `GET /commesse/:id/elaborati/nuovo`, `/elaborati/import`, `/elaborati/:elaboratoId/modifica` (form) | `modificaCommessa` | 403 |
+| `GET /commesse/:id/elaborati/:elaboratoId` (scheda elaborato) | `vedeCommessa` | 403 |
 | `/admin/**` (commesse, utenti e ruoli, discipline, stati e pesi, colonne e WIP, cause) | `admin` | 403 |
-| `GET /commesse/:id/lps/**` | `vedeCommessa` | 403 |
+| `GET /commesse/:id/lps/settimana`, `/lps/lookahead` e i loro `/frammento` | `vedeCommessa` | 403 |
+| `GET /commesse/:id/lps/attivita/nuova`, `/attivita/:id/modifica`, `/vincoli/nuovo`, `/vincoli/:id/modifica` (form) | `gestisceLps` | 403 |
 | `POST /commesse/:id/lps/**` (lookahead, vincoli, promessa e chiusura del piano) | `gestisceLps` | 403 anche ai POST (niente redirect indietro) |
 | `POST` esito di una riga del piano | `gestisceLps` oppure last planner della riga | 403 |
 | `GET /commesse/:id/flusso/**` | `vedeCommessa` (board in sola lettura senza `spostaElaborati`) | 403 |
@@ -58,7 +61,8 @@ Ruoli di commessa: `pm`, `progettista`, `verificatore`, `osservatore`.
 | `/ore`, `POST /ore/celle` | autenticati; `registraOre` solo per sé | 403 |
 | `GET /ore/correzione`, `POST /ore/correzione/celle` | `admin`; motivo obbligatorio, anche su settimane chiuse | 403 |
 | `GET /commesse/:id/ore` | `vedeCommessa`; dettaglio per persona con `vedeOrePerPersona` | 403 |
-| `GET /commesse/:id/evm/**` | `vedeCommessa` | 403 |
+| `GET /commesse/:id/evm`, `GET /commesse/:id/evm/contenuto` | `vedeCommessa` | 403 |
+| `GET /commesse/:id/evm/baseline` (editor della baseline) | `modificaCommessa` | 403 |
 | `POST /commesse/:id/evm/baseline/**` (bozza, mancanti, approvazione, scarto) | `modificaCommessa` | 403 |
 
 Le abilità negate da Bouncer sulle scritture (POST, PUT, PATCH, DELETE) rispondono **403**
@@ -66,5 +70,37 @@ anche per i form HTML: il gestore degli errori (`app/exceptions/handler.ts`) non
 redirect indietro previsto da Bouncer; alle richieste HTMX aggiunge un toast
 (`HX-Trigger`) con il messaggio.
 
-Il test completo "rotte × ruoli" è compito dell'agente B3 (Fase 2); in Fase 0 i casi
-principali sono in `tests/functional/permessi.spec.ts`.
+## Rotte della Fase 2
+
+| Rotta | Chi | Esito per chi non può |
+|---|---|---|
+| `GET /admin/registro` (registro attività, filtri `dal`, `al`, `utente`, `entita`, `pagina`) | `admin` | 403 |
+
+## Dati di un'altra commessa
+
+Ogni rotta `/commesse/:id/...` con un dato figlio (elaborato, milestone, membro del team,
+attività, vincolo, piano, impegno, baseline) cerca il dato **filtrando per la commessa
+dell'URL**. Se il dato è di un'altra commessa: 404 (o, per le scritture, un errore gestito
+senza modificare nulla), **anche per l'admin**. Commessa inesistente: 404 anche per l'admin.
+
+## Test "rotte × ruoli" (B3)
+
+In `tests/functional/permessi/`:
+
+- `matrice_attesa.ts`: esito atteso per **ogni rotta registrata** (per nome) e per
+  sette ruoli: anonimo, non membro, osservatore, progettista membro, direzione, PM della
+  commessa, admin. Esiti: `ok` (GET 200; POST non negato), `negato` (403), `accesso`
+  (302 al login), `home` (302 altrove), oppure uno stato preciso.
+  Le rotte non provate stanno in `ESCLUSE` con il motivo.
+- `matrice.spec.ts`: legge le rotte dal router di Adonis. **Una rotta nuova senza riga
+  nella matrice fa fallire il test**: chi aggiunge una rotta aggiunge anche la riga, allineata
+  a questo documento. Prova anche il 404 su commessa inesistente, i dati di altre commesse,
+  il logout, i canali Transmit e la registrazione delle ore per conto d'altri (sempre 403).
+- `art4.spec.ts`: controllo art. 4 Statuto dei lavoratori su portafoglio, Obeya, ore e home.
+  Nel codice e nei template: niente vocabolario da classifica, niente ordinamenti per persona
+  nei template, query raggruppate per persona ordinate solo per nome. Nelle pagine (admin,
+  direzione, PM, progettista): nessuna classifica, parametri di ordinamento ignorati, ore per
+  persona in ordine alfabetico e mai visibili alla direzione.
+
+Il registro attività è uno strumento di controllo dell'amministratore: si legge in ordine di
+tempo, si può filtrare per utente ma non produce conteggi, totali o ordinamenti per persona.

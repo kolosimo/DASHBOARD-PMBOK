@@ -1,0 +1,125 @@
+{{--
+  Registro attività (audit_log), solo admin.
+  Variabili: sezioni, sezione, intestazione, descrizione, messaggio, filtri, errori,
+  utenti, entita, voci, totale, pagina, ultimaPagina, precedente, successiva
+--}}
+@component('layouts/app', { titolo: 'Registro attività', voceAttiva })
+  @include('modules/admin/_testata')
+
+  <form class="panel campi" method="GET" action="/admin/registro" data-testid="filtri-registro">
+    <label>
+      
+      Dal
+
+      <input type="date" name="dal" value="{{ filtri.dal || '' }}" />
+    </label>
+    <label>
+      
+      Al
+
+      <input type="date" name="al" value="{{ filtri.al || '' }}" />
+    </label>
+    <label>
+      Utente
+      <select name="utente" data-testid="filtro-utente">
+        <option value="">tutti</option>
+        @each(u in utenti)
+          <option value="{{ u.id }}" {{ filtri.utenteId === u.id ? 'selected' : '' }}>
+            {{ u.nome }}{{ u.attivo ? '' : ' (disattivato)' }}
+          </option>
+        @end
+      </select>
+    </label>
+    <label>
+      Entità
+      <select name="entita" data-testid="filtro-entita">
+        <option value="">tutte</option>
+        @each(e in entita)
+          <option value="{{ e }}" {{ filtri.entita === e ? 'selected' : '' }}>{{ e }}</option>
+        @end
+      </select>
+    </label>
+    <button class="btn primary" type="submit">Filtra</button>
+    <a class="btn ghost" href="/admin/registro">Azzera i filtri</a>
+  </form>
+  @each(e in errori)
+    <div class="messaggio errore" role="alert" data-testid="errore-filtri">
+      <p>{{ e }}</p>
+    </div>
+  @end
+
+  <section class="panel" aria-labelledby="titolo-voci">
+    <div class="panel-h">
+      <h3 id="titolo-voci">Voci</h3>
+      <span class="muted" data-testid="conteggio-voci">
+        {{ formato.numero(totale) }}
+        {{ totale === 1 ? 'voce' : 'voci' }}
+        · pagina
+        {{ formato.numero(pagina) }}
+        di
+        {{ formato.numero(ultimaPagina) }}
+      </span>
+    </div>
+    <div class="tbl">
+      <table data-testid="tabella-registro">
+        <thead>
+          <tr>
+            <th>Quando</th>
+            <th>Utente</th>
+            <th>Azione</th>
+            <th>Entità</th>
+            <th>Commessa</th>
+            <th>IP</th>
+            <th>Dettagli</th>
+          </tr>
+        </thead>
+        <tbody>
+          @each(v in voci)
+            <tr data-testid="voce-registro">
+              <td class="num">{{ formato.dataOra(v.creatoIl) }}</td>
+              <td>{{ v.utenteNome || 'sistema' }}</td>
+              <td><span class="code">{{ v.azione }}</span></td>
+              <td>
+                {{ v.entita }}
+                @if(v.entitaId)
+                  <span class="muted">#{{ v.entitaId }}</span>
+                @end
+              </td>
+              <td>{{ formato.testo(v.commessaCodice) }}</td>
+              <td class="mono">{{ formato.testo(v.ip) }}</td>
+              <td>
+                @if(v.datiPrima || v.datiDopo)
+                  <details>
+                    <summary>Mostra</summary>
+                    @if(v.datiPrima)
+                      <div class="muted">Prima</div>
+                      <pre class="mono">{{ v.datiPrima }}</pre>
+                    @end
+                    @if(v.datiDopo)
+                      <div class="muted">Dopo</div>
+                      <pre class="mono">{{ v.datiDopo }}</pre>
+                    @end
+                  </details>
+                @else
+                  <span class="muted">—</span>
+                @end
+              </td>
+            </tr>
+          @else
+            <tr>
+              <td colspan="7" class="muted">Nessuna voce con questi filtri.</td>
+            </tr>
+          @end
+        </tbody>
+      </table>
+    </div>
+    <nav class="campi" aria-label="Pagine del registro" data-testid="paginazione">
+      @if(precedente)
+        <a class="btn" href="{{ precedente }}" rel="prev">← Più recenti</a>
+      @end
+      @if(successiva)
+        <a class="btn" href="{{ successiva }}" rel="next">Meno recenti →</a>
+      @end
+    </nav>
+  </section>
+@end
