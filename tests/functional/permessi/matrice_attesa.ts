@@ -79,6 +79,28 @@ export const MATRICE: Record<string, Riga> = {
   'accesso': riga(200, 'home', 'home', 'home', 'home', 'home', 'home'),
   'auth.login': riga(503, 503, 503, 503, 503, 503, 503),
   'auth.callback': riga(400, 400, 400, 400, 400, 400, 400),
+  // Account locali (B6). Login a password: pubblico, a corpo vuoto 422. Cambio
+  // password: solo per chi ha un account locale; gli utenti del login di sviluppo
+  // (senza password) e gli anonimi tornano a /accesso.
+  'accesso.locale': riga(422, 'home', 'home', 'home', 'home', 'home', 'home'),
+  'accesso.cambia_password': riga(
+    'accesso',
+    'accesso',
+    'accesso',
+    'accesso',
+    'accesso',
+    'accesso',
+    'accesso'
+  ),
+  'accesso.cambia_password.salva': riga(
+    'accesso',
+    'accesso',
+    'accesso',
+    'accesso',
+    'accesso',
+    'accesso',
+    'accesso'
+  ),
 
   // Pagine globali
   'home': AUTENTICATI,
@@ -90,7 +112,10 @@ export const MATRICE: Record<string, Riga> = {
 
   // Obeya, dettaglio elaborato, ore della commessa
   'obeya.show': VEDE,
+  'obeya.contenuto': VEDE,
   'elaborato_dettaglio.show': VEDE,
+  'elaborato_dettaglio.frammento': VEDE,
+  'elaborato_dettaglio.stato': SPOSTA,
   'ore.commessa': VEDE,
 
   // Anagrafica (A1)
@@ -158,6 +183,9 @@ export const MATRICE: Record<string, Riga> = {
   'admin.commesse.crea': ADMIN,
   'admin.utenti': ADMIN,
   'admin.utenti.aggiorna': ADMIN,
+  'admin.utenti.crea': ADMIN,
+  'admin.utenti.password': ADMIN,
+  'admin.utenti.sblocca': ADMIN,
   'admin.stati': ADMIN,
   'admin.stati.aggiorna': ADMIN,
   'admin.colonne': ADMIN,
@@ -191,19 +219,12 @@ export const GET_CON_REDIREZIONE_AMMESSA = new Set<string>([])
 /**
  * Corpo dei POST per le rotte che, a corpo vuoto, non arrivano al controllo dei
  * permessi in modo pulito. `p` sono gli identificativi reali usati nel test.
- * - ore.correzione.cella: senza utente_id il controller risponde 500 (richiesta
- *   di correzione al modulo ore nell'handoff di B3); qui si prova il permesso.
  */
 export const CORPI_DI_PROVA: Record<string, (p: Record<string, string>) => Record<string, string>> =
-  {
-    'ore.correzione.cella': (p) => ({ utente_id: p.utenteId }),
-  }
+  {}
 
 /**
  * Rotte escluse dal test "dato figlio di un'altra commessa", con il motivo.
  * Da togliere appena la rotta legge il dato filtrando per commessa (404).
  */
-export const FIGLI_NON_CONTROLLATI: Record<string, string> = {
-  'elaborato_dettaglio.show':
-    'segnaposto della Fase 1: non legge ancora l’elaborato (scheda elaborato, agente B4, Fase 2)',
-}
+export const FIGLI_NON_CONTROLLATI: Record<string, string> = {}
