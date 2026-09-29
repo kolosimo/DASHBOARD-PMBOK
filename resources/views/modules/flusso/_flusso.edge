@@ -154,7 +154,7 @@
             data-testid="scheda-{{ s.codice }}"
           >
             <div class="row">
-              <span class="code">{{ s.codice }}</span>
+              <a class="code" href="/commesse/{{ commessa.id }}/elaborati/{{ s.elaboratoId }}" data-testid="link-scheda-{{ s.codice }}">{{ s.codice }}</a>
               <span
                 class="pill plain {{
                   s.classeServizio === 'urgente'

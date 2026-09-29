@@ -637,6 +637,58 @@ export async function elaboratiDellaCommessa(commessaId: number): Promise<Opzion
   }))
 }
 
+// ---------------------------------------------------------------------------
+// Letture per la scheda elaborato
+// ---------------------------------------------------------------------------
+
+export interface ImpegnoElaborato extends RigaImpegno {
+  settimana: Lunedi
+  statoPiano: StatoPiano
+}
+
+export interface CollegamentiElaborato {
+  /** Attività del lookahead collegate all'elaborato, con i loro vincoli */
+  attivita: RigaLookahead[]
+  /** Vincoli delle attività collegate (prima gli aperti) */
+  vincoli: RigaVincolo[]
+  /** Impegni dei piani settimanali sull'elaborato o sulle sue attività, dal più recente */
+  impegni: ImpegnoElaborato[]
+}
+
+/** Attività, vincoli e impegni del Last Planner collegati a un elaborato */
+export async function collegamentiElaborato(
+  commessaId: number,
+  elaboratoId: number
+): Promise<CollegamentiElaborato> {
+  const righeAttivita = await queryAttivita(commessaId)
+    .where('a.elaborato_id', elaboratoId)
+    .orderBy('a.settimana_inizio', 'asc')
+    .orderBy('a.codice', 'asc')
+  const attivita = righeAttivita.map(mappaAttivita)
+
+  const idVincoli = new Set(attivita.flatMap((a) => a.vincoli.map((v) => v.id)))
+  const registro = idVincoli.size === 0 ? [] : await registroVincoli(commessaId, 'tutti')
+  const vincoli = registro.filter((v) => idVincoli.has(v.id))
+
+  const righeImpegni = await queryImpegni()
+    .join('piani_settimanali as p', 'p.id', 'i.piano_id')
+    .where('p.commessa_id', commessaId)
+    .where((q) => {
+      q.where('i.elaborato_id', elaboratoId).orWhere('a.elaborato_id', elaboratoId)
+    })
+    .select('p.settimana as piano_settimana', 'p.stato as piano_stato')
+    .orderBy('p.settimana', 'desc')
+    .orderBy('i.ordine', 'asc')
+    .orderBy('i.id', 'asc')
+  const impegni = righeImpegni.map((r) => ({
+    ...mappaImpegno(r),
+    settimana: r.piano_settimana as Lunedi,
+    statoPiano: r.piano_stato as StatoPiano,
+  }))
+
+  return { attivita, vincoli, impegni }
+}
+
 export async function disciplineAttive(): Promise<{ id: number; codice: string; nome: string }[]> {
   return db
     .from('discipline')

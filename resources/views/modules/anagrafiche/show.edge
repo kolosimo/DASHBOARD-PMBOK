@@ -73,7 +73,7 @@
                 <span class="code">{{ e.codice }}</span>
               @end
             </td>
-            <td>{{ e.titolo }}</td>
+            <td><a href="/commesse/{{ commessa.id }}/elaborati/{{ e.id }}" data-testid="link-scheda-{{ e.codice }}">{{ e.titolo }}</a></td>
             <td>{{ e.disciplina }}</td>
             <td class="r num">{{ formato.oreEsatte(e.budgetMinuti) }}</td>
             <td>
