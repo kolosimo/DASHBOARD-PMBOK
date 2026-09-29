@@ -272,8 +272,8 @@ sovrascritto di nascosto. Ogni modifica finisce nel registro di audit.
   [glossario](glossario.md)).
 - **Non trovo una persona da aggiungere al team.** Non ha ancora un account: nel
   pilota gli account li crea l'amministratore.
-- **Posso aprire io una commessa nuova?** No, la apre l'amministratore indicandoti
-  come PM; tutto il resto lo completi tu.
+- **Posso aprire io una commessa nuova?** Sì: in *Le mie commesse* premi **Nuova
+  commessa** e ne diventi il PM. Può aprirla anche l'amministratore indicandoti come PM.
 - **Chi decide le soglie dei colori?** L'amministratore; quelle di partenza si
   tareranno con i PM durante il pilota.
 - **Posso cambiare il peso di uno stato solo per la mia commessa?** No: i pesi sono
