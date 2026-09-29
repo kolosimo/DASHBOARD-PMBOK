@@ -16,6 +16,7 @@ import { Browser } from '#tests/helpers/browser'
 import { conTransazione } from '#tests/helpers/db'
 import {
   CORPI_DI_PROVA,
+  FIGLI_NON_CONTROLLATI,
   ESCLUSE,
   GET_CON_REDIREZIONE_AMMESSA,
   MATRICE,
@@ -230,6 +231,83 @@ test.group('Permessi · dati di altre commesse', (group) => {
     }
     assert.isNotNull(await db.from('milestone').where('id', milestone.id).first())
     assert.isNotNull(await db.from('membri_commessa').where('id', membro.id).first())
+  })
+
+  test('ogni rotta con un dato figlio risponde 404 se il dato è di un’altra commessa, anche all’admin', async ({
+    assert,
+  }) => {
+    const uffici = await Commessa.findByOrFail('codice', 'CL-2026-018')
+    const p = await parametri()
+    // Si spostano nella commessa "uffici" i dati usati come parametro: passando
+    // dalla commessa "scuola" non devono più essere raggiungibili.
+    const tabelle: Record<string, string> = {
+      elaboratoId: 'elaborati',
+      milestoneId: 'milestone',
+      attivitaId: 'attivita_lookahead',
+      vincoloId: 'vincoli',
+      pianoId: 'piani_settimanali',
+      baselineId: 'baseline',
+    }
+    for (const [param, tabella] of Object.entries(tabelle)) {
+      await db.from(tabella).where('id', p[param]).update({ commessa_id: uffici.id })
+    }
+    const impegno = await db.from('impegni').where('id', p.impegnoId).first()
+    await db
+      .from('piani_settimanali')
+      .where('id', impegno.piano_id)
+      .update({ commessa_id: uffici.id })
+
+    const tabellePerParametro: Record<string, string> = { ...tabelle, impegnoId: 'impegni' }
+    const fotografia = async () => {
+      const righe: Record<string, unknown> = {}
+      for (const [param, tabella] of Object.entries(tabellePerParametro)) {
+        righe[param] = await db.from(tabella).where('id', p[param]).first()
+      }
+      return JSON.stringify(righe)
+    }
+    const prima = await fotografia()
+
+    const { b, csrf } = await browserPer('admin')
+    const scostamenti: string[] = []
+    for (const rotta of rotteRegistrate()) {
+      if (!rotta.pattern.startsWith('/commesse/:id')) continue
+      const figlio = Object.keys(tabellePerParametro).findLast((f) =>
+        rotta.pattern.includes(`:${f}`)
+      )
+      if (!figlio || FIGLI_NON_CONTROLLATI[rotta.nome]) continue
+      const url = riempi(rotta.pattern, p)
+      let r: Response
+      if (rotta.metodo === 'GET') {
+        r = await b.get(url)
+      } else {
+        // Corpo con la versione giusta: la richiesta arriva fino alla ricerca del dato
+        const riga = await db.from(tabellePerParametro[figlio]).where('id', p[figlio]).first()
+        r = await b.post(url, { version: String(riga?.version ?? 1) }, { 'x-csrf-token': csrf })
+      }
+      await r.arrayBuffer()
+      // GET: 404. POST: 404 oppure un errore gestito (redirezione con messaggio,
+      // 409, 422), purché il dato dell'altra commessa resti com'era.
+      const ok =
+        r.status === 404 ||
+        (rotta.metodo === 'POST' && r.status >= 300 && r.status < 500 && r.status !== 403)
+      const intatto = (await fotografia()) === prima
+      if (!ok || !intatto) {
+        scostamenti.push(
+          `${rotta.metodo} ${rotta.pattern}: ${r.status}${intatto ? '' : ', dato modificato'}`
+        )
+      }
+    }
+    assert.deepEqual(scostamenti, [])
+  })
+
+  test('ore: nessuno registra per un altro, nemmeno l’admin', async ({ assert }) => {
+    const mec1 = await Utente.findByOrFail('email', 'mec1@climosfera.example')
+    for (const ruolo of ['admin', 'pm', 'direzione'] as const) {
+      const { b, csrf } = await browserPer(ruolo)
+      const r = await b.post('/ore/celle', { utente_id: String(mec1.id) }, { 'x-csrf-token': csrf })
+      assert.equal(r.status, 403, ruolo)
+      await r.arrayBuffer()
+    }
   })
 })
 

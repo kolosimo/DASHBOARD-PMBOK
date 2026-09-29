@@ -198,3 +198,12 @@ export const CORPI_DI_PROVA: Record<string, (p: Record<string, string>) => Recor
   {
     'ore.correzione.cella': (p) => ({ utente_id: p.utenteId }),
   }
+
+/**
+ * Rotte escluse dal test "dato figlio di un'altra commessa", con il motivo.
+ * Da togliere appena la rotta legge il dato filtrando per commessa (404).
+ */
+export const FIGLI_NON_CONTROLLATI: Record<string, string> = {
+  'elaborato_dettaglio.show':
+    'segnaposto della Fase 1: non legge ancora l’elaborato (scheda elaborato, agente B4, Fase 2)',
+}
