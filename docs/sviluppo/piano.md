@@ -274,6 +274,57 @@ Dettagli per agente:
   - l'installazione della PWA;
   - una modifica contemporanea con un collega.
 
+### Fase 2: esito (29/09)
+
+**Decisioni dell'utente (29/09):** pilota con **2 PM** sul server aziendale Windows
+Server 2019; login del pilota con **account locali** (email e password gestite
+dall'admin), Microsoft 365 attivabile dopo con `AUTH_MODE=oidc`; il pilota parte
+**vuoto** (solo configurazione e utenti) e i **PM aprono da sé le proprie commesse**.
+
+**Integrazione:** fusi in serie B4 → B1 → B6 → B3 → B5 → T3 (B2 e QA non avevano un
+branch: il tempo reale con due browser resta da provare al Gate 2; lo scenario e2e del
+pilota l'ha scritto l'integratore). Nessun conflitto.
+
+**Test:**
+- `npm run verifica` **tutta verde**: typecheck, lint, dipendenze native;
+- unit 123/123 (compresi i 10 di `avvisi.spec.ts`);
+- funzionali 378/378 (matrice permessi rotte × ruoli aggiornata con le rotte di Fase 2);
+- e2e 4/4, compreso `e2e/pilota.smoke.ts`: l'admin crea un PM locale → il PM entra,
+  cambia password, apre una commessa vuota, aggiunge 2 elaborati, apre l'Obeya (passi
+  mancanti, nessun errore), registra 2 ore e sposta un elaborato nel Kanban;
+- `npm run screenshot` verde, con scheda elaborato, utenti, registro attività, nuova
+  commessa e cambio password.
+
+**Produzione (prova in Linux):** `npm run pacchetto` crea lo zip (circa 8.500 voci,
+11 MB, nessun modulo nativo); `node ace db:inizializza-produzione` su un DB vuoto nuovo
+semina 4 discipline, 4 colonne, 6 stati, 8 cause, 10 impostazioni e al secondo giro
+non aggiunge nulla; `utenti:crea-admin` crea il primo admin; il server del pacchetto
+con `NODE_ENV=production` e `AUTH_MODE=locale` risponde su `/accesso` con il form a
+password e 404 su `/dev/login`.
+
+**Aggiunte dell'orchestratore:**
+- abilità `creaCommessa` (admin e ruolo globale `pm`) e pagina `/commesse/nuova`
+  (pulsante **Nuova commessa** in home); creazione condivisa con `/admin/commesse`;
+- rotte del registro attività in `start/routes.ts` e voce nel menu admin;
+- `AUTH_MODE=locale` nei controlli di avvio (chiamati sempre), variabili HTTPS nello
+  schema di `start/env.ts`, script `npm run pacchetto`;
+- link **Cambia password** nel menu utente, piè di pagina "Pilota · Fase 2";
+- correzione ore: `utente_id` non valido → 404 (prima 500); totale di riga del
+  timesheet aggiornato senza perdere il `data-testid`;
+- guide del pilota senza più [DA VERIFICARE SULLO SCHERMO].
+
+**Residui per la Fase 3 o per il Gate 2:**
+- script PowerShell mai eseguiti su Windows: vanno provati sul server nell'ordine
+  installa, servizio, backup, ripristino di prova, aggiorna, ritorno automatico;
+- lettura LPS per più commesse (oggi il portafoglio legge `piani_settimanali` e
+  `impegni` direttamente) e lettura EVM aggregata per il portafoglio (H2);
+- classi CSS condivise per griglia KPI a 3 colonne, tabelle compatte e note sotto i
+  semafori (oggi `<style>` locali nelle viste EVM e scheda elaborato);
+- voce admin "Certificato HTTPS" con i giorni alla scadenza;
+- limitatore dei tentativi di accesso in memoria (si azzera al riavvio); reimpostare
+  una password non chiude le sessioni già aperte (scadono per inattività, 10 h);
+- manifest PWA (Fase 3, H1) ed esportazione delle ore.
+
 ### Fase 3: hardening (6 agenti)
 
 | Agente | Compito |
