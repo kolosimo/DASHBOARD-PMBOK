@@ -1,4 +1,4 @@
-<title>Cruscotto Commesse Climosfera</title>
+<title>Cruscotto Commesse – prova</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -29,35 +29,39 @@
   --pv:#8C9C98; --ev:#4DB1B6; --ac:#E5895F;
 }
 *{box-sizing:border-box}
-body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5}
-.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:0 48px}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:0 96px}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .num{font-variant-numeric:tabular-nums}
 h1,h2,h3{font-family:var(--cond);font-weight:600;margin:0;text-wrap:balance;letter-spacing:.005em}
 h1{font-size:22px} h2{font-size:18px} h3{font-size:15px}
 .eyebrow{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
 button{font:inherit;color:inherit;cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.55}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* testata */
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);border-bottom:1px solid var(--line)}
-.top-in{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:12px 0;display:flex;flex-direction:column;gap:10px}
+.top-in{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:10px 0;display:flex;flex-direction:column;gap:8px}
 .brandrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;justify-content:space-between}
 .brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .brand small{color:var(--ink-3);font-size:12px}
-.sample{font-size:12px;color:var(--warn);background:var(--warn-soft);padding:3px 9px;border-radius:4px}
-.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.chi{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--ink-2)}
+.prova{font-size:12px;color:var(--warn);background:var(--warn-soft);padding:4px 10px;border-radius:4px}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;align-items:flex-end}
 .tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:8px 12px;color:var(--ink-2);white-space:nowrap;font-weight:500}
 .tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
 .tabs button:hover{color:var(--ink)}
+.tabs .sep{align-self:center;padding:0 6px 6px 14px;font-family:var(--mono);font-size:12px;color:var(--accent);white-space:nowrap;border-left:1px solid var(--line);margin-left:6px}
 
 .view{display:flex;flex-direction:column;gap:20px;padding-top:22px}
 .head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:8px 20px}
-.head p{margin:4px 0 0;color:var(--ink-2);max-width:68ch}
+.head p{margin:4px 0 0;color:var(--ink-2);max-width:72ch}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px}
 .panel-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .panel-h .note{color:var(--ink-3);font-size:12px}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:20px}
+.hint{color:var(--ink-3);font-size:12.5px;margin:10px 0 0}
 
 /* KPI */
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
@@ -68,26 +72,54 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:1px 8px;border-radius:999px;white-space:nowrap}
 .pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
 .g{color:var(--good);background:var(--good-soft)} .w{color:var(--warn);background:var(--warn-soft)} .c{color:var(--crit);background:var(--crit-soft)} .n{color:var(--ink-2);background:var(--sunken)}
-.pill.plain::before{display:none}
 
 /* tabelle */
 .tbl{overflow-x:auto}
 table{border-collapse:collapse;width:100%;min-width:640px}
 th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:500;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
-td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
 tr:last-child td{border-bottom:0}
 td.r,th.r{text-align:right}
 .code{font-family:var(--mono);font-size:12.5px;color:var(--accent);white-space:nowrap}
 .muted{color:var(--ink-3)}
 tr.click{cursor:pointer} tr.click:hover td{background:var(--sunken)}
-select,.btn{font:inherit;font-size:13px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:4px 8px}
-.btn:hover{border-color:var(--accent)}
+tr.err td{background:var(--crit-soft)}
+.err-t{color:var(--crit);font-size:12.5px}
+
+/* moduli */
+select,.btn,input[type=text],input[type=date],input[type=number],textarea{font:inherit;font-size:13px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:5px 8px}
+input[type=number]{width:90px}
+textarea{width:100%;min-height:120px;font-family:var(--mono);font-size:12.5px}
+.btn:hover:not(:disabled){border-color:var(--accent)}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .btn.ghost{border-color:transparent;background:none;color:var(--ink-2)}
+.btn.danger{color:var(--crit)}
+.form{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:flex-end}
+.form label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--ink-2)}
+.form label.grow{flex:1 1 220px}
+.form label.grow input{width:100%}
+fieldset{border:0;padding:0;margin:0;min-width:0}
+.azioni{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .toggle{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
 .toggle button{border:0;background:var(--surface);padding:4px 12px;font-size:13px;color:var(--ink-2)}
 .toggle button[aria-pressed="true"].yes{background:var(--good);color:#fff}
 .toggle button[aria-pressed="true"].no{background:var(--crit);color:#fff}
+.cella{width:58px;text-align:right;font-family:var(--mono)}
+.checks{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px}
+.checks label{flex-direction:row;align-items:center;gap:6px;color:var(--ink)}
+
+/* accesso */
+.profili{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.profili button{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.profili button:hover{border-color:var(--accent)}
+.profili b{font-weight:600}
+.profili span{font-size:12px;color:var(--ink-3)}
+
+/* passi */
+.passi{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.passi li{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:4px;background:var(--sunken)}
+.passi .ok{color:var(--good);font-weight:600}
+.passi .no{color:var(--warn);font-weight:600}
 
 /* milestone */
 .ms{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0}
@@ -109,7 +141,6 @@ select,.btn{font:inherit;font-size:13px;background:var(--surface);color:var(--in
 .bar.blocked{background:var(--crit-soft);border:1px dashed var(--crit)}
 .bar.mile{background:var(--accent);height:14px;width:14px;transform:rotate(45deg);margin:4px auto;border-radius:2px}
 .la th.wk{text-align:center}
-.la th.now{color:var(--accent)}
 
 /* kanban */
 .kb{display:grid;grid-template-columns:repeat(4,minmax(220px,1fr));gap:12px;overflow-x:auto;padding-bottom:4px}
@@ -133,8 +164,18 @@ svg .gl{stroke:var(--line);stroke-width:1}
 .pareto .r{display:grid;grid-template-columns:minmax(0,190px) 1fr 28px;gap:10px;align-items:center;font-size:13px}
 .pareto .b{height:12px;background:var(--accent-soft);border-radius:2px;position:relative;overflow:hidden}
 .pareto .b span{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:2px}
-.foot{color:var(--ink-3);font-size:12px;display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;border-top:1px solid var(--line);padding-top:14px;margin-top:8px}
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--ground);padding:8px 14px;border-radius:5px;font-size:13px;max-width:calc(100% - 32px)}
+.vuoto{color:var(--ink-3);padding:18px 0;text-align:center}
+
+.foot{color:var(--ink-3);font-size:12px;display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:14px;margin-top:8px}
+.foot .azioni{justify-content:space-between}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--ground);padding:8px 14px;border-radius:5px;font-size:13px;max-width:calc(100% - 32px);z-index:20}
+.fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:8;box-shadow:0 2px 8px rgb(0 0 0 / .18)}
+dialog{border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);padding:18px;width:min(520px,calc(100% - 32px))}
+dialog::backdrop{background:rgb(0 0 0 / .35)}
+dialog h3{margin-bottom:8px}
+dialog p{margin:0 0 10px;color:var(--ink-2)}
+dialog .azioni{justify-content:flex-end;margin-top:14px}
+dialog textarea{min-height:90px;font-family:var(--sans)}
 @media (max-width:560px){ .wrap,.top-in{padding-inline:16px} .kpi .v{font-size:20px} }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -142,332 +183,785 @@ svg .gl{stroke:var(--line);stroke-width:1}
 <header class="top">
   <div class="top-in">
     <div class="brandrow">
-      <div class="brand"><h1>Cruscotto commesse</h1><small>Climosfera · PMBOK + Last Planner</small></div>
-      <span class="sample">Prototipo con dati di esempio · nessun dato reale</span>
+      <div class="brand"><h1>Cruscotto commesse</h1><small>Climosfera · versione di prova</small></div>
+      <div class="chi" id="chi"></div>
     </div>
+    <div class="prova" id="banner">Versione di prova: non è l'app definitiva.</div>
     <nav class="tabs" role="tablist" id="tabs"></nav>
   </div>
 </header>
 
 <main class="wrap" id="app"></main>
+<button class="btn primary fab" id="fab-segnala" hidden>Segnala</button>
 <div class="toast" id="toast" hidden></div>
 
+<dialog id="dlg"><form method="dialog" id="dlg-form">
+  <h3 id="dlg-t"></h3><p id="dlg-p"></p>
+  <div id="dlg-campo"></div>
+  <div class="azioni"><button class="btn" value="annulla" id="dlg-no">Annulla</button><button class="btn primary" value="ok" id="dlg-ok">Conferma</button></div>
+</form></dialog>
+
+<dialog id="dlg-segnala"><form method="dialog" id="seg-form">
+  <h3>Segnala</h3>
+  <p>Cosa hai notato in questa pagina? Una frase basta. Le segnalazioni servono a migliorare l'app prima dell'installazione vera.</p>
+  <div class="form" style="flex-direction:column;align-items:stretch;gap:10px">
+    <div class="checks" role="radiogroup" aria-label="Tipo di segnalazione">
+      <label><input type="radio" name="tipo" value="Non capisco" checked> Non capisco</label>
+      <label><input type="radio" name="tipo" value="Errore"> Errore</label>
+      <label><input type="radio" name="tipo" value="Manca qualcosa"> Manca qualcosa</label>
+      <label><input type="radio" name="tipo" value="Suggerimento"> Suggerimento</label>
+    </div>
+    <label>Descrizione<textarea id="seg-testo" required></textarea></label>
+    <span class="muted" style="font-size:12px" id="seg-pagina"></span>
+  </div>
+  <div class="azioni"><button class="btn" value="annulla" formnovalidate>Annulla</button><button class="btn primary" value="ok">Invia la segnalazione</button></div>
+</form></dialog>
+
 <script>
-/* ---------- dati di esempio ---------- */
-const OGGI_SETT = 39;           // settimana ISO corrente (24/09/2026)
-const PESI = [0,20,50,70,85,100];
-const STATI = ["Non iniziato","Impostato","Calcoli e dimensionamento","Emissione interna","Verificato","Emesso al cliente"];
-const CAUSE = ["Input mancante da altri","Criteri o requisiti cambiati","Approvazione cliente/ente attesa","Risorsa non disponibile","Stima troppo ottimista","Errore o rilavorazione","Priorità cambiata dal PM","Altro"];
-
-const BASE = {
-  elaborati:[
-    {id:"MEC-RT-001",t:"Relazione tecnica impianti meccanici",d:"MEC",bud:40,st:3,ac:31,pv:4,age:6,cls:"Standard"},
-    {id:"MEC-CA-002",t:"Calcolo carichi termici invernali ed estivi",d:"MEC",bud:60,st:5,ac:66,pv:5,age:0,cls:"Standard"},
-    {id:"MEC-PL-101",t:"Pianta PT – impianto di riscaldamento",d:"MEC",bud:48,st:2,ac:30,pv:4,age:12,cls:"Standard"},
-    {id:"MEC-PL-102",t:"Pianta P1 – impianto di riscaldamento",d:"MEC",bud:48,st:1,ac:14,pv:3,age:4,cls:"Standard"},
-    {id:"MEC-PL-110",t:"VMC – piante e schemi funzionali",d:"MEC",bud:56,st:2,ac:38,pv:3,age:9,cls:"Standard"},
-    {id:"ELE-SC-201",t:"Schemi quadri elettrici",d:"ELE",bud:64,st:2,ac:40,pv:2,age:15,cls:"Standard"},
-    {id:"ELE-PL-210",t:"Pianta PT – illuminazione",d:"ELE",bud:36,st:3,ac:24,pv:3,age:3,cls:"Standard"},
-    {id:"IDR-PL-301",t:"Impianto idrico-sanitario – piante",d:"IDR",bud:40,st:1,ac:18,pv:2,age:5,cls:"Standard"},
-    {id:"ANT-RT-401",t:"Relazione tecnica antincendio",d:"ANT",bud:32,st:4,ac:30,pv:4,age:2,cls:"Data fissa"}
-  ],
-  wwp:[
-    {a:"Completare dimensionamento radiatori PT",e:"MEC-PL-101",lp:"Progettista MEC 1",f:true,c:""},
-    {a:"Schemi VMC aula tipo",e:"MEC-PL-110",lp:"Progettista MEC 2",f:true,c:""},
-    {a:"Schema quadro elettrico generale",e:"ELE-SC-201",lp:"Progettista ELE 1",f:false,c:"Input mancante da altri"},
-    {a:"Impostazione tavola idrico PT",e:"IDR-PL-301",lp:"Progettista IDR 1",f:true,c:""},
-    {a:"Verifica interna relazione antincendio",e:"ANT-RT-401",lp:"PM",f:false,c:"Risorsa non disponibile"},
-    {a:"Revisione relazione dopo commenti di verifica",e:"MEC-RT-001",lp:"Progettista MEC 1",f:true,c:""},
-    {a:"Calcolo illuminotecnico corridoi",e:"ELE-PL-210",lp:"Progettista ELE 2",f:true,c:""}
-  ],
-  vincoli:[
-    {id:"V-12",t:"Layout arredi P1 dall'architetto",cat:"Input da altri",att:"L1",resp:"PM",need:"29/09",aperto:true},
-    {id:"V-13",t:"Planimetria architettonica rev. C",cat:"Input da altri",att:"L2",resp:"PM",need:"29/09",aperto:true},
-    {id:"V-14",t:"Conferma ricambi d'aria dal committente",cat:"Approvazione",att:"L4",resp:"PM",need:"06/10",aperto:true},
-    {id:"V-15",t:"Verificatore interno disponibile",cat:"Risorsa",att:"L5",resp:"Resp. qualità",need:"29/09",aperto:true},
-    {id:"V-16",t:"Tavole strutturali aggiornate dallo strutturista",cat:"Input da altri",att:"L6",resp:"PM",need:"13/10",aperto:true},
-    {id:"V-17",t:"Criteri illuminotecnici approvati",cat:"Criteri",att:"L3",resp:"Progettista ELE 1",need:"06/10",aperto:false}
-  ],
-  utente:"Progettista MEC 1",
-  ore:{"Progettista MEC 1":{"MEC-PL-101":[4,6,3,0,0],"MEC-RT-001":[2,0,3,0,0]},"Progettista ELE 1":{"ELE-SC-201":[6,5,0,0,0]}}
-};
-const GIORNI=["Lun 21","Mar 22","Mer 23","Gio 24","Ven 25"];
-const ASSEGNAZIONI={
-  "Progettista MEC 1":["MEC-PL-101","MEC-RT-001","MEC-PL-102"],
-  "Progettista MEC 2":["MEC-PL-110","MEC-CA-002"],
-  "Progettista ELE 1":["ELE-SC-201"],
-  "Progettista ELE 2":["ELE-PL-210"],
-  "Progettista IDR 1":["IDR-PL-301"],
-  "PM":["ANT-RT-401","MEC-RT-001"]
-};
-const LOOKAHEAD = [
-  {id:"L1",t:"MEC-PL-102 · Pianta P1 riscaldamento",da:40,a:41},
-  {id:"L2",t:"ELE-SC-201 · Schemi quadri elettrici",da:40,a:42},
-  {id:"L3",t:"ELE-PL-210 · Emissione illuminazione PT",da:40,a:40},
-  {id:"L5",t:"ANT-RT-401 · Emissione relazione antincendio",da:40,a:40},
-  {id:"L4",t:"MEC-PL-110 · VMC piante e schemi",da:41,a:43},
-  {id:"L7",t:"IDR-PL-301 · Idrico-sanitario piante",da:41,a:42},
-  {id:"L6",t:"Coordinamento impianti / strutture",da:42,a:43},
-  {id:"M1",t:"Milestone · Esecutivo meccanico",da:44,a:44,mile:true},
-  {id:"M2",t:"Milestone · Esecutivo elettrico",da:45,a:45,mile:true}
+"use strict";
+/* ================= costanti (come nell'app) ================= */
+const PESI=[0,20,50,70,85,100];
+const STATI=["Non iniziato","Impostato","Calcoli e dimensionamento","Emissione interna","Verificato","Emesso al cliente"];
+const CAUSE=["Input mancante da altri","Criteri o requisiti cambiati","Approvazione cliente/ente attesa","Risorsa non disponibile","Stima troppo ottimista","Errore o rilavorazione","Priorità cambiata dal PM","Altro"];
+const DISC=[["MEC","Impianti meccanici"],["ELE","Impianti elettrici"],["IDR","Impianti idrico-sanitari"],["ANT","Antincendio"]];
+const RUOLI=["pm","progettista","verificatore","osservatore"];
+const PERSONE=[
+  {id:"pm1",nome:"PM 1",desc:"PM: apre e guida le commesse"},
+  {id:"pm2",nome:"PM 2",desc:"PM: apre e guida le commesse"},
+  {id:"mec1",nome:"Progettista MEC 1",desc:"registra ore, avanza elaborati"},
+  {id:"mec2",nome:"Progettista MEC 2",desc:"registra ore, avanza elaborati"},
+  {id:"ele1",nome:"Progettista ELE 1",desc:"registra ore, avanza elaborati"},
+  {id:"ele2",nome:"Progettista ELE 2",desc:"registra ore, avanza elaborati"},
+  {id:"idr1",nome:"Progettista IDR 1",desc:"registra ore, avanza elaborati"},
+  {id:"ver1",nome:"Verificatore",desc:"verifica gli elaborati"},
+  {id:"dir",nome:"Direzione",desc:"vede tutte le commesse, solo totali"}
 ];
-const PV_SERIE = [0,18,45,80,122,168,212,252,285,312,340,362,382,398,410,419,424]; // W30..W46, ore
-const EV_FR = [0,.05,.13,.23,.35,.48,.6,.72,.86,1];
-const AC_FR = [0,.07,.16,.27,.39,.52,.64,.76,.88,1];
-const PPC_STORIA = [[31,52],[32,58],[33,55],[34,63],[35,61],[36,68],[37,66],[38,72]];
-const CAUSE_STORIA = {"Input mancante da altri":9,"Approvazione cliente/ente attesa":5,"Risorsa non disponibile":4,"Stima troppo ottimista":4,"Criteri o requisiti cambiati":3,"Errore o rilavorazione":2,"Priorità cambiata dal PM":2,"Altro":1};
-const MILESTONE = [
-  {t:"Avvio commessa",d:"01/07",s:"done"},{t:"Definitivo approvato",d:"04/09",s:"done"},
-  {t:"Esecutivo meccanico",d:"30/10 · W44",s:"next"},{t:"Esecutivo elettrico",d:"06/11 · W45",s:""},{t:"Emissione finale",d:"13/11 · W46",s:""}
-];
-const ALTRE = [
-  {cod:"CL-2026-018",nome:"Uffici Lotto B – HVAC e BMS",spi:1.04,cpi:0.97,ppc:78,vinc:2,ms:"Definitivo · 02/10"},
-  {cod:"CL-2025-077",nome:"RSA – antincendio e idrico-sanitario",spi:0.86,cpi:0.81,ppc:58,vinc:7,ms:"Pratica VVF · 30/09"}
-];
+const COLS=[["Da fare",null,[0]],["In corso","corso",[1,2]],["In verifica","verifica",[3,4]],["Emesso",null,[5]]];
+const ORE_MAX_GIORNO=12, GIORNI_CORREZIONE=7, ETA_FERMO=10;
+const nomeDi=id=>(PERSONE.find(p=>p.id===id)||{nome:id||"—"}).nome;
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-/* ---------- stato ---------- */
-const KEY="cruscotto-climosfera-v3";
-let S;
-function load(){ try{ const r=localStorage.getItem(KEY); if(r){ S=JSON.parse(r); return; } }catch(e){} S=JSON.parse(JSON.stringify(BASE)); }
-function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
-load();
+/* ================= date ================= */
+const pad=n=>String(n).padStart(2,"0");
+const D=s=>{const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d,12);};
+const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const addG=(s,n)=>{const d=D(s); d.setDate(d.getDate()+n); return iso(d);};
+const lunedi=s=>{const d=D(s); d.setDate(d.getDate()-(d.getDay()+6)%7); return iso(d);};
+const giorniTra=(a,b)=>Math.round((D(b)-D(a))/864e5);
+function settIso(s){const d=D(s); d.setDate(d.getDate()+3-(d.getDay()+6)%7); const w1=new Date(d.getFullYear(),0,4,12); return 1+Math.round(((d-w1)/864e5-3+(w1.getDay()+6)%7)/7);}
+const dm=s=>s?`${s.slice(8,10)}/${s.slice(5,7)}`:"—";
+const dmy=s=>s?`${s.slice(8,10)}/${s.slice(5,7)}/${s.slice(0,4)}`:"—";
+const W=s=>"W"+settIso(s);
+function oggi(){ return addG(iso(new Date()),7*(LOC.spost||0)); }
+/* come distribuisciDate dell'app: n date uniformi tra inizio e fine incluse */
+function distribuisci(a,b,n){ const g=Math.max(0,giorniTra(a,b)); return Array.from({length:n},(_,i)=>addG(a,Math.round(i*g/(n-1)))); }
+const GIORNI_SETT=["Lun","Mar","Mer","Gio","Ven"];
 
-/* ---------- calcoli ---------- */
-function evm(){
-  let bac=0,ev=0,pv=0,ac=0;
-  S.elaborati.forEach(e=>{bac+=e.bud; ev+=e.bud*PESI[e.st]/100; pv+=e.bud*PESI[e.pv]/100; ac+=acDi(e);});
-  const spi=pv?ev/pv:null, cpi=ac&&ev?ev/ac:null, eac=cpi?bac/cpi:null;
-  return {bac,ev,pv,ac,spi,cpi,eac,etc:eac===null?null:eac-ac,vac:eac===null?null:bac-eac};
+/* ================= stato ================= */
+const KEY_DATI="cruscotto-climosfera-v4", KEY_LOC="cruscotto-climosfera-v4-locale";
+let DATI={commesse:{},segnalazioni:{}};
+const LOC={profilo:null,cur:null,tab:"portafoglio",spost:0,oreOff:0,altri:false};
+let MODO="locale", DB=null, SOLA_LETTURA=false, CARICATO=false;
+const UI={};   // stato dei pannelli aperti (non salvato)
+let haDatiLocali=false;
+function leggiLocale(){
+  try{ const r=localStorage.getItem(KEY_DATI); if(r){ DATI=JSON.parse(r); haDatiLocali=true; } }catch(e){}
+  try{ const r=localStorage.getItem(KEY_LOC); if(r) Object.assign(LOC,JSON.parse(r)); }catch(e){}
+  DATI.commesse=DATI.commesse||{}; DATI.segnalazioni=DATI.segnalazioni||{};
 }
-function oreSett(id){ let t=0; Object.values(S.ore).forEach(m=>{ (m[id]||[]).forEach(h=>t+=+h||0); }); return t; }
-function acDi(e){ return e.ac+oreSett(e.id); }
-function ppc(){ const p=S.wwp.length, f=S.wwp.filter(x=>x.f).length; return {p,f,v:p?Math.round(f/p*100):0}; }
-function pcr(){ const n=S.vincoli.length, r=S.vincoli.filter(v=>!v.aperto).length; return {n,r,v:n?Math.round(r/n*100):0}; }
-const f1=x=>x===null||!isFinite(x)?"n.d.":x.toFixed(2).replace(".",",");
-const f0=x=>x===null||!isFinite(x)?"n.d.":Math.round(x).toLocaleString("it-IT");
+function salvaLoc(){ try{ localStorage.setItem(KEY_LOC,JSON.stringify(LOC)); }catch(e){} }
+function salvaDatiLocali(){ if(MODO!=="locale") return; try{ localStorage.setItem(KEY_DATI,JSON.stringify(DATI)); }catch(e){} }
+const nuovoId=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+
+function erroreDb(e){
+  const code=e&&e.code;
+  if(code==="invalid_argument"||code==="revoked"||code==="not_granted"){ SOLA_LETTURA=true; toast("Non puoi modificare i dati condivisi: il tuo accesso è in sola lettura."); render(); }
+  else if(code==="quota_exceeded") toast("Spazio dei dati condivisi esaurito.");
+  else toast("Salvataggio non riuscito, riprova tra poco.");
+}
+function registra(c,cosa){ c.registro=[{q:new Date().toISOString(),chi:LOC.profilo,cosa},...(c.registro||[])].slice(0,40); }
+function salvaC(c,cosa){
+  if(cosa) registra(c,cosa);
+  const E=evm(c); c.storiaEVM=c.storiaEVM||{}; c.storiaEVM[lunedi(oggi())]={ev:E.ev,ac:E.ac};
+  DATI.commesse[c.id]=c;
+  if(MODO==="condiviso"){ DB.collection("commesse").doc(c.id).set(JSON.parse(JSON.stringify(c))).catch(erroreDb); }
+  else salvaDatiLocali();
+}
+function eliminaC(id){
+  delete DATI.commesse[id];
+  if(MODO==="condiviso") DB.collection("commesse").doc(id).delete().catch(erroreDb); else salvaDatiLocali();
+}
+function salvaSegnalazione(s){
+  DATI.segnalazioni[s.id]=s;
+  if(MODO==="condiviso") DB.collection("segnalazioni").doc(s.id).set(s).catch(erroreDb); else salvaDatiLocali();
+}
+
+/* ================= commessa di esempio ================= */
+function creaEsempio(){
+  const L0=lunedi(oggi()), w=k=>addG(L0,7*k), ven=k=>addG(L0,7*k+4);
+  const base=[
+    ["MEC-RT-001","Relazione tecnica impianti meccanici","MEC",40,3,31,6,"mec1","m3",-12,1],
+    ["MEC-CA-002","Calcolo carichi termici invernali ed estivi","MEC",60,5,66,0,"mec2","m3",-12,-3],
+    ["MEC-PL-101","Pianta PT – impianto di riscaldamento","MEC",48,2,30,12,"mec1","m3",-10,2],
+    ["MEC-PL-102","Pianta P1 – impianto di riscaldamento","MEC",48,1,14,4,"mec1","m3",-6,4],
+    ["MEC-PL-110","VMC – piante e schemi funzionali","MEC",56,2,38,9,"mec2","m3",-8,4],
+    ["ELE-SC-201","Schemi quadri elettrici","ELE",64,2,40,15,"ele1","m4",-9,3],
+    ["ELE-PL-210","Pianta PT – illuminazione","ELE",36,3,24,3,"ele2","m4",-8,1],
+    ["IDR-PL-301","Impianto idrico-sanitario – piante","IDR",40,1,18,5,"idr1","m5",-6,5],
+    ["ANT-RT-401","Relazione tecnica antincendio","ANT",32,4,30,2,"pm1","m5",-10,0]
+  ];
+  const c={id:"esempio",esempio:true,codice:"CL-2026-031",nome:"Scuola primaria – impianti meccanici ed elettrici (esempio)",cliente:"Comune (esempio)",
+    inizio:w(-12),fine:ven(7),
+    team:[{p:"pm1",ruolo:"pm"},{p:"pm2",ruolo:"pm"},{p:"mec1",ruolo:"progettista"},{p:"mec2",ruolo:"progettista"},{p:"ele1",ruolo:"progettista"},{p:"ele2",ruolo:"progettista"},{p:"idr1",ruolo:"progettista"},{p:"ver1",ruolo:"verificatore"}],
+    milestone:[{id:"m1",t:"Avvio commessa",data:w(-12),fatta:true},{id:"m2",t:"Definitivo approvato",data:ven(-3),fatta:true},{id:"m3",t:"Esecutivo meccanico",data:ven(5),fatta:false},{id:"m4",t:"Esecutivo elettrico",data:ven(6),fatta:false},{id:"m5",t:"Emissione finale",data:ven(7),fatta:false}],
+    elaborati:base.map(([cod,t,d,bud,st,ac,age,resp,ms])=>({cod,t,d,bud,st,acBase:ac,stDal:addG(oggi(),-age),resp,ms})),
+    wip:{corso:4,verifica:3},
+    baseline:{stato:"approvata",ver:1,motivo:"",approvata:w(-11),righe:{}},
+    attivita:[
+      {id:"A1",cod:"A1",t:"Completare dimensionamento radiatori PT",lp:"mec1",d:"MEC",e:"MEC-PL-101",da:w(0),a:w(0)},
+      {id:"A2",cod:"A2",t:"Schemi VMC aula tipo",lp:"mec2",d:"MEC",e:"MEC-PL-110",da:w(0),a:w(0)},
+      {id:"A3",cod:"A3",t:"Schema quadro elettrico generale",lp:"ele1",d:"ELE",e:"ELE-SC-201",da:w(0),a:w(0)},
+      {id:"A4",cod:"A4",t:"Impostazione tavola idrico PT",lp:"idr1",d:"IDR",e:"IDR-PL-301",da:w(0),a:w(0)},
+      {id:"A5",cod:"A5",t:"Verifica interna relazione antincendio",lp:"ver1",d:"ANT",e:"ANT-RT-401",da:w(0),a:w(0)},
+      {id:"A6",cod:"A6",t:"Revisione relazione dopo commenti di verifica",lp:"mec1",d:"MEC",e:"MEC-RT-001",da:w(0),a:w(0)},
+      {id:"A7",cod:"A7",t:"Calcolo illuminotecnico corridoi",lp:"ele2",d:"ELE",e:"ELE-PL-210",da:w(0),a:w(0)},
+      {id:"L1",cod:"L1",t:"Pianta P1 riscaldamento",lp:"mec1",d:"MEC",e:"MEC-PL-102",da:w(1),a:w(2)},
+      {id:"L2",cod:"L2",t:"Schemi quadri elettrici",lp:"ele1",d:"ELE",e:"ELE-SC-201",da:w(1),a:w(3)},
+      {id:"L3",cod:"L3",t:"Emissione illuminazione PT",lp:"ele2",d:"ELE",e:"ELE-PL-210",da:w(1),a:w(1)},
+      {id:"L4",cod:"L4",t:"VMC piante e schemi",lp:"mec2",d:"MEC",e:"MEC-PL-110",da:w(2),a:w(4)},
+      {id:"L5",cod:"L5",t:"Emissione relazione antincendio",lp:"pm1",d:"ANT",e:"ANT-RT-401",da:w(1),a:w(1)},
+      {id:"L6",cod:"L6",t:"Coordinamento impianti / strutture",lp:"pm1",d:"MEC",e:"",da:w(3),a:w(4)}
+    ],
+    vincoli:[
+      {id:"V-12",t:"Layout arredi P1 dall'architetto",chi:"PM 1",entro:ven(0),att:["L1"],stato:"aperto"},
+      {id:"V-13",t:"Planimetria architettonica rev. C",chi:"Architetto (esterno)",entro:ven(0),att:["L2"],stato:"aperto"},
+      {id:"V-14",t:"Conferma ricambi d'aria dal committente",chi:"PM 1",entro:ven(1),att:["L4"],stato:"aperto"},
+      {id:"V-15",t:"Verificatore interno disponibile",chi:"Verificatore",entro:ven(0),att:["L5"],stato:"aperto"},
+      {id:"V-16",t:"Tavole strutturali aggiornate dallo strutturista",chi:"Strutturista (esterno)",entro:ven(2),att:["L6"],stato:"aperto"},
+      {id:"V-17",t:"Criteri illuminotecnici approvati",chi:"Progettista ELE 1",entro:addG(L0,2),att:["L3"],stato:"rimosso"}
+    ],
+    piani:{},
+    storiaPPC:[52,58,55,63,61,68,66,72].map((v,i)=>[w(i-8),v]),
+    causeStoria:{"Input mancante da altri":9,"Approvazione cliente/ente attesa":5,"Risorsa non disponibile":4,"Stima troppo ottimista":4,"Criteri o requisiti cambiati":3,"Errore o rilavorazione":2,"Priorità cambiata dal PM":2,"Altro":1},
+    ore:{mec1:{"MEC-PL-101":{[L0]:[4,6,3,0,0]},"MEC-RT-001":{[L0]:[2,0,3,0,0]}},ele1:{"ELE-SC-201":{[L0]:[6,5,0,0,0]}}},
+    storiaEVM:{},registro:[]};
+  base.forEach(([cod,, ,bud,,,,,,da,a])=>{ c.baseline.righe[cod]={bud,date:distribuisci(w(da),ven(a),5)}; });
+  c.piani[L0]={stato:"promesso",impegni:c.attivita.slice(0,7).map((a,i)=>({id:"i"+i,att:a.id,a:a.t,e:a.e,lp:a.lp,f:null,c:"",perche:"",dopo:false}))};
+  const E=evm(c), FR=[.05,.13,.23,.35,.48,.6,.72,.86,.93];
+  FR.forEach((f,i)=>{ c.storiaEVM[w(i-9)]={ev:E.ev*f,ac:E.ac*(f+.02)}; });
+  return c;
+}
+function commessaVuota({codice,nome,cliente,inizio,fine}){
+  return {id:nuovoId("c"),codice,nome,cliente,inizio,fine,creata:oggi(),
+    team:[{p:LOC.profilo,ruolo:"pm"}],milestone:[],elaborati:[],wip:{corso:4,verifica:3},baseline:null,
+    attivita:[],vincoli:[],piani:{},storiaPPC:[],causeStoria:{},ore:{},storiaEVM:{},registro:[]};
+}
+
+/* ================= calcoli ================= */
+const baseAppr=c=>c.baseline?(c.baseline.stato==="approvata"?c.baseline:c.baseline.precedente||null):null;
+function oreCella(c,p,cod,lun){ return (((c.ore||{})[p]||{})[cod]||{})[lun]||[0,0,0,0,0]; }
+function acDi(c,cod){ const e=c.elaborati.find(x=>x.cod===cod); let t=e?(e.acBase||0):0; Object.values(c.ore||{}).forEach(m=>{ const s=m[cod]; if(s) Object.values(s).forEach(a=>a.forEach(h=>t+=+h||0)); }); return t; }
+function oreSettimana(c,cod,lun){ let t=0; Object.values(c.ore||{}).forEach(m=>{ ((m[cod]||{})[lun]||[]).forEach(h=>t+=+h||0); }); return t; }
+function pvAlla(c,data){ const b=baseAppr(c); if(!b) return null; let pv=0; Object.values(b.righe).forEach(r=>{ let o=0; r.date.forEach((d,i)=>{ if(d&&d<=data) o=Math.max(o,i+1); }); pv+=r.bud*PESI[o]/100; }); return pv; }
+/* come componiEvm: con baseline budget congelati e fuori baseline a budget 0 (solo AC); senza baseline PV n.d. */
+function evElab(c,e){ const b=baseAppr(c); const bud=b?(b.righe[e.cod]?b.righe[e.cod].bud:0):e.bud; return bud*PESI[e.st]/100; }
+function evm(c){
+  const b=baseAppr(c); let ev=0,ac=0,bac=0;
+  c.elaborati.forEach(e=>{ ev+=evElab(c,e); ac+=acDi(c,e.cod); if(!b) bac+=e.bud; });
+  if(b) bac=Object.values(b.righe).reduce((s,r)=>s+r.bud,0);
+  const pv=pvAlla(c,oggi());
+  const spi=pv?ev/pv:null, cpi=ac?ev/ac:null, eac=cpi?bac/cpi:null;
+  return {bac,ev,pv,ac,spi,cpi,eac,etc:eac===null?null:eac-ac,vac:eac===null?null:bac-eac,fuori:b?c.elaborati.filter(e=>!b.righe[e.cod]).length:0};
+}
+const pianoDi=(c,lun)=>(c.piani||{})[lun||lunedi(oggi())]||null;
+function ppcDi(p){ if(!p||p.stato==="bozza") return null; if(p.stato==="promesso"&&p.impegni.every(i=>i.dopo||i.f===null)) return null; const im=p.impegni.filter(i=>!i.dopo); if(!im.length) return null; return Math.round(im.filter(i=>i.f===true).length/im.length*100); }
+function storiaPPC(c){ const m=new Map(c.storiaPPC||[]); Object.entries(c.piani||{}).forEach(([w,p])=>{ if(p.stato==="chiuso"&&p.ppc!==null&&p.ppc!==undefined) m.set(w,p.ppc); }); return [...m.entries()].filter(([w])=>w<=lunedi(oggi())).sort((a,b)=>a[0]<b[0]?-1:1); }
+function ppc4(c){ const s=storiaPPC(c).slice(-4); return s.length?Math.round(s.reduce((a,[,v])=>a+v,0)/s.length):null; }
+function pcr(c){ const L=lunedi(oggi()),F=addG(L,6); const vs=(c.vincoli||[]).filter(v=>v.stato!=="annullato"&&v.entro>=L&&v.entro<=F); const r=vs.filter(v=>v.stato==="rimosso").length; return {n:vs.length,r,v:vs.length?Math.round(r/vs.length*100):null}; }
+const bloccata=(c,id)=>(c.vincoli||[]).some(v=>v.stato==="aperto"&&v.att.includes(id));
+const colDi=st=>COLS.findIndex(x=>x[2].includes(st));
+const limite=(c,ci)=>COLS[ci][1]?c.wip[COLS[ci][1]]:null;
+const eta=e=>Math.max(0,giorniTra(e.stDal||oggi(),oggi()));
+const f1=x=>x===null||x===undefined||!isFinite(x)?"n.d.":x.toFixed(2).replace(".",",");
+const f0=x=>x===null||x===undefined||!isFinite(x)?"n.d.":Math.round(x).toLocaleString("it-IT");
+const fh=x=>(Math.round(x*100)/100).toLocaleString("it-IT");
+const pct=x=>x===null||x===undefined?"n.d.":x+"%";
 function tone(x){ return x===null||!isFinite(x)?"n":x>=0.95?"g":x>=0.85?"w":"c"; }
-function tonePPC(x){ return x>=70?"g":x>=55?"w":"c"; }
+function tonePPC(x){ return x===null?"n":x>=70?"g":x>=55?"w":"c"; }
 const pill=(cls,txt)=>`<span class="pill ${cls}">${txt}</span>`;
 
-/* ---------- navigazione ---------- */
-const TABS=[["portafoglio","Le mie commesse"],["obeya","Commessa"],["settimana","Piano settimanale"],["lookahead","Lookahead e vincoli"],["kanban","Kanban"],["ore","Ore"],["evm","Avanzamento EVM"]];
-let cur="obeya";
-try{ const h=location.hash.replace("#",""); if(TABS.some(t=>t[0]===h)) cur=h; }catch(e){}
-function go(id){ cur=id; try{history.replaceState(null,"","#"+id);}catch(e){} render(); window.scrollTo({top:0}); }
-function tabs(){
-  document.getElementById("tabs").innerHTML=TABS.map(([id,l])=>`<button role="tab" aria-selected="${id===cur}" data-tab="${id}">${l}</button>`).join("");
-}
-document.getElementById("tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]"); if(b) go(b.dataset.tab);});
-let tt; function toast(m){const t=document.getElementById("toast"); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true,2600);}
+/* ================= permessi (semplificati) ================= */
+const ruoloIn=(c,p=LOC.profilo)=>{ const t=(c.team||[]).find(x=>x.p===p); return t?t.ruolo:null; };
+const eDirezione=()=>LOC.profilo==="dir";
+const puoPM=c=>!SOLA_LETTURA&&ruoloIn(c)==="pm";
+const puoLavorare=c=>!SOLA_LETTURA&&["pm","progettista","verificatore"].includes(ruoloIn(c));
+const ePM=()=>["pm1","pm2"].includes(LOC.profilo);
+function visibili(){ return Object.values(DATI.commesse).filter(c=>eDirezione()||ruoloIn(c)).sort((a,b)=>a.codice<b.codice?-1:1); }
+function corrente(){ const c=DATI.commesse[LOC.cur]; return c&&(eDirezione()||ruoloIn(c))?c:null; }
 
-/* ---------- grafici ---------- */
-function curvaS(h){
-  const W=1100,H=h||280,L=46,R=14,T=12,B=28, n=PV_SERIE.length;
-  const E=evm(); const evS=EV_FR.map(f=>f*E.ev), acS=AC_FR.map(f=>f*E.ac);
-  const ymax=Math.ceil(Math.max(E.bac,E.ac,E.eac===null||E.eac>E.bac*1.4?E.bac:E.eac)/100)*100;
-  const x=i=>L+i*(W-L-R)/(n-1), y=v=>T+(H-T-B)*(1-v/ymax);
-  const path=s=>s.map((v,i)=>`${i?"L":"M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join("");
-  let g=""; for(let v=0;v<=ymax;v+=100){ g+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`; }
-  let xl=""; for(let i=0;i<n;i+=2){ xl+=`<text x="${x(i)}" y="${H-8}" text-anchor="middle">W${30+i}</text>`; }
-  const io=OGGI_SETT-30;
-  const eacY=y(Math.min(E.eac,ymax));
-  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Curva S: valore pianificato, guadagnato e costo effettivo in ore">
-    ${g}${xl}
-    <line x1="${x(io)}" x2="${x(io)}" y1="${T}" y2="${H-B}" stroke="var(--ink-3)" stroke-dasharray="3 3"/>
-    <text x="${x(io)+4}" y="${T+10}" style="fill:var(--ink-2)">oggi</text>
-    ${E.eac===null?"":`<line x1="${x(n-1)-40}" x2="${x(n-1)}" y1="${eacY}" y2="${eacY}" stroke="var(--ac)" stroke-dasharray="4 3"/><text x="${x(n-1)-44}" y="${eacY-5}" text-anchor="end" style="fill:var(--ac)">EAC ${f0(E.eac)} h</text>`}
-    <path d="${path(PV_SERIE)}" fill="none" stroke="var(--pv)" stroke-width="2" stroke-dasharray="5 4"/>
-    <path d="${path(acS)}" fill="none" stroke="var(--ac)" stroke-width="2.25"/>
-    <path d="${path(evS)}" fill="none" stroke="var(--ev)" stroke-width="2.5"/>
-    <circle cx="${x(io)}" cy="${y(E.ev)}" r="4" fill="var(--ev)"/><circle cx="${x(io)}" cy="${y(E.ac)}" r="4" fill="var(--ac)"/><circle cx="${x(io)}" cy="${y(E.pv)}" r="3.5" fill="var(--pv)"/>
-  </svg>
-  <div class="legend"><span><i style="background:var(--pv)"></i>PV pianificato ${f0(E.pv)} h</span><span><i style="background:var(--ev)"></i>EV guadagnato ${f0(E.ev)} h</span><span><i style="background:var(--ac)"></i>AC ore registrate ${f0(E.ac)} h</span><span class="muted">BAC ${f0(E.bac)} h</span></div>`;
-}
-function graficoPPC(h){
-  const W=520,H=h||220,L=36,R=10,T=12,B=26; const dati=[...PPC_STORIA,[OGGI_SETT,ppc().v]]; const n=dati.length;
-  const bw=(W-L-R)/n; const y=v=>T+(H-T-B)*(1-v/100);
-  let g=""; [0,25,50,75,100].forEach(v=>{g+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`;});
-  const bars=dati.map(([w,v],i)=>{const last=i===n-1; const bx=L+i*bw+bw*0.2; return `<rect x="${bx}" y="${y(v)}" width="${bw*0.6}" height="${y(0)-y(v)}" rx="2" fill="${last?"var(--accent)":"var(--accent-soft)"}" ${last?"":`stroke="var(--accent)" stroke-width="1"`}/>
-    <text x="${bx+bw*0.3}" y="${y(v)-5}" text-anchor="middle" style="fill:${last?"var(--ink)":"var(--ink-3)"}">${v}</text>
-    <text x="${bx+bw*0.3}" y="${H-8}" text-anchor="middle">W${w}</text>`;}).join("");
-  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="PPC per settimana, in percentuale">${g}${bars}</svg>`;
+/* ================= navigazione ================= */
+const TAB_C=[["obeya","Commessa"],["anagrafica","Anagrafica"],["settimana","Piano settimanale"],["lookahead","Lookahead e vincoli"],["kanban","Kanban"],["orec","Ore"],["evm","Avanzamento EVM"]];
+const NOMI_TAB={portafoglio:"Le mie commesse",ore:"Le mie ore",segnalazioni:"Segnalazioni",...Object.fromEntries(TAB_C)};
+function go(tab,cid){ if(cid) LOC.cur=cid; LOC.tab=tab; salvaLoc(); render(); window.scrollTo({top:0}); }
+let tt; function toast(m){const t=document.getElementById("toast"); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true,3200);}
+
+/* finestra di conferma / domanda (al posto di confirm e prompt, bloccati in alcuni browser) */
+function chiedi({titolo,testo="",campo=null,ok="Conferma",valore=""}){
+  return new Promise(res=>{
+    const d=document.getElementById("dlg");
+    document.getElementById("dlg-t").textContent=titolo;
+    document.getElementById("dlg-p").textContent=testo;
+    document.getElementById("dlg-ok").textContent=ok;
+    const box=document.getElementById("dlg-campo");
+    box.innerHTML=campo?`<label class="form" style="display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ink-2)">${esc(campo)}<textarea id="dlg-in" style="min-height:70px;font-family:var(--sans)">${esc(valore)}</textarea></label>`:"";
+    d.onclose=()=>{ const v=d.returnValue; if(v!=="ok") return res(null); if(!campo) return res(true); const t=document.getElementById("dlg-in").value.trim(); res(t); };
+    d.returnValue=""; d.showModal(); if(campo) document.getElementById("dlg-in").focus();
+  });
 }
 
-/* ---------- viste ---------- */
+/* ================= grafici ================= */
+function passoAsse(max){ const r=max/4; const p=Math.pow(10,Math.floor(Math.log10(Math.max(r,1)))); return [1,2,2.5,5,10].map(k=>k*p).find(s=>s>=r)||r; }
+function curvaS(c,h){
+  if(!c.inizio||!c.fine) return `<p class="vuoto">La curva S compare quando la commessa ha le date di inizio e fine.</p>`;
+  const L0=lunedi(oggi()); const sett=[]; for(let w=lunedi(c.inizio);w<=lunedi(c.fine);w=addG(w,7)) sett.push(w);
+  if(sett.length<2) return `<p class="vuoto">Servono almeno due settimane tra inizio e fine.</p>`;
+  const E=evm(c), b=baseAppr(c);
+  const pvS=b?sett.map(w=>pvAlla(c,addG(w,4))):null;
+  const pti=k=>sett.map((w,i)=>{ if(w>L0) return null; const s=w===L0?{ev:E.ev,ac:E.ac}:(c.storiaEVM||{})[w]; return s?[i,s[k]]:null; }).filter(Boolean);
+  const evP=pti("ev"), acP=pti("ac");
+  const vals=[E.bac,...(pvS||[]),...evP.map(p=>p[1]),...acP.map(p=>p[1])]; if(E.eac!==null&&E.eac<E.bac*1.4) vals.push(E.eac);
+  const st=passoAsse(Math.max(1,...vals)), ymax=Math.ceil(Math.max(1,...vals)/st)*st;
+  const Wd=1100,H=h||280,Lm=52,R=14,T=12,B=28,n=sett.length;
+  const x=i=>Lm+i*(Wd-Lm-R)/(n-1), y=v=>T+(H-T-B)*(1-v/ymax);
+  const path=pp=>pp.map(([i,v],k)=>`${k?"L":"M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join("");
+  let g=""; for(let v=0;v<=ymax+1e-9;v+=st){ g+=`<line class="gl" x1="${Lm}" x2="${Wd-R}" y1="${y(v)}" y2="${y(v)}"/><text x="${Lm-6}" y="${y(v)+4}" text-anchor="end">${f0(v)}</text>`; }
+  const salto=Math.max(1,Math.ceil(n/10)); let xl=""; sett.forEach((w,i)=>{ if(i%salto===0) xl+=`<text x="${x(i)}" y="${H-8}" text-anchor="middle">${W(w)}</text>`; });
+  const io=sett.indexOf(L0);
+  return `<div class="tbl"><svg viewBox="0 0 ${Wd} ${H}" width="100%" style="min-width:640px" role="img" aria-label="Curva S: valore pianificato, guadagnato e costo effettivo in ore">${g}${xl}
+    ${io>=0?`<line x1="${x(io)}" x2="${x(io)}" y1="${T}" y2="${H-B}" stroke="var(--ink-3)" stroke-dasharray="3 3"/><text x="${x(io)+4}" y="${T+10}" style="fill:var(--ink-2)">oggi</text>`:""}
+    ${pvS?`<path d="${path(pvS.map((v,i)=>[i,v]))}" fill="none" stroke="var(--pv)" stroke-width="2" stroke-dasharray="5 4"/>`:""}
+    ${acP.length?`<path d="${path(acP)}" fill="none" stroke="var(--ac)" stroke-width="2.25"/>`:""}
+    ${evP.length?`<path d="${path(evP)}" fill="none" stroke="var(--ev)" stroke-width="2.5"/>`:""}
+    ${io>=0?`<circle cx="${x(io)}" cy="${y(E.ev)}" r="4" fill="var(--ev)"/><circle cx="${x(io)}" cy="${y(E.ac)}" r="4" fill="var(--ac)"/>${E.pv!==null?`<circle cx="${x(io)}" cy="${y(E.pv)}" r="3.5" fill="var(--pv)"/>`:""}`:""}
+  </svg></div>
+  <div class="legend"><span><i style="background:var(--pv)"></i>PV pianificato ${f0(E.pv)} h</span><span><i style="background:var(--ev)"></i>EV guadagnato ${f0(E.ev)} h</span><span><i style="background:var(--ac)"></i>AC ore registrate ${f0(E.ac)} h</span><span class="muted">BAC ${f0(E.bac)} h</span></div>
+  ${b?"":`<p class="hint">PV e SPI restano n.d. finché non approvi la baseline (scheda Avanzamento EVM).</p>`}`;
+}
+function graficoPPC(c,h){
+  const dati=storiaPPC(c).slice(-8); const p=pianoDi(c);
+  if(p&&p.stato==="promesso"){ const v=ppcDi(p); if(v!==null) dati.push([lunedi(oggi()),v]); }
+  if(!dati.length) return `<p class="vuoto">Nessun piano chiuso finora: il PPC compare dopo il primo venerdì.</p>`;
+  const Wd=520,H=h||220,L=36,R=10,T=14,B=26,n=Math.max(dati.length,4); const bw=(Wd-L-R)/n; const y=v=>T+(H-T-B)*(1-v/100);
+  let g=""; [0,25,50,75,100].forEach(v=>{g+=`<line class="gl" x1="${L}" x2="${Wd-R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`;});
+  const bars=dati.map(([w,v],i)=>{const last=i===dati.length-1; const bx=L+i*bw+bw*0.2; return `<rect x="${bx}" y="${y(v)}" width="${bw*0.6}" height="${Math.max(0,y(0)-y(v))}" rx="2" fill="${last?"var(--accent)":"var(--accent-soft)"}" ${last?"":`stroke="var(--accent)" stroke-width="1"`}/>
+    <text x="${bx+bw*0.3}" y="${y(v)-5}" text-anchor="middle" style="fill:${last?"var(--ink)":"var(--ink-3)"}">${v}</text><text x="${bx+bw*0.3}" y="${H-8}" text-anchor="middle">${W(w)}</text>`;}).join("");
+  return `<svg viewBox="0 0 ${Wd} ${H}" width="100%" role="img" aria-label="PPC per settimana, in percentuale">${g}${bars}</svg>`;
+}
+function pareto(c){
+  const cnt={...(c.causeStoria||{})}; Object.values(c.piani||{}).forEach(p=>p.impegni.forEach(i=>{ if(i.f===false&&i.c) cnt[i.c]=(cnt[i.c]||0)+1; }));
+  const par=Object.entries(cnt).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]); if(!par.length) return `<p class="vuoto">Nessuna causa registrata.</p>`;
+  const mx=par[0][1];
+  return `<div class="pareto">${par.map(([k,v])=>`<div class="r"><span>${esc(k)}</span><span class="b"><span style="width:${v/mx*100}%"></span></span><span class="num r">${v}</span></div>`).join("")}</div>`;
+}
+
+/* ================= viste ================= */
+function vAccesso(){
+  return `<div class="head"><div><div class="eyebrow">Accesso</div><h2>Con quale profilo vuoi provare?</h2>
+  <p>Nell'app vera si entra con email e password (al primo accesso si sceglie una password nuova). Qui basta scegliere un profilo: si può cambiare quando si vuole dal pulsante <b>Cambia profilo</b> in alto.</p></div></div>
+  <div class="profili">${PERSONE.map(p=>`<button data-act="profilo" data-p="${p.id}"><b>${esc(p.nome)}</b><span>${esc(p.desc)}</span></button>`).join("")}</div>
+  <div class="panel"><h3>Come si prova</h3><ol style="margin:8px 0 0;padding-left:20px;color:var(--ink-2)">
+   <li>Entra come <b>PM 1</b> o <b>PM 2</b> e apri <b>CL-2026-031 (esempio)</b> per vedere un'app già piena di dati.</li>
+   <li>Poi crea una tua <b>Nuova commessa</b> e seguila passo passo come descritto nella guida rapida.</li>
+   <li>Quando qualcosa non è chiaro o non funziona, premi <b>Segnala</b> in basso a destra.</li></ol></div>`;
+}
+function prossimaMs(c){ return [...(c.milestone||[])].filter(m=>!m.fatta).sort((a,b)=>a.data<b.data?-1:1)[0]; }
 function vPortafoglio(){
-  const E=evm(), P=ppc(), aperti=S.vincoli.filter(v=>v.aperto).length;
-  const righe=[{cod:"CL-2026-031",nome:"Scuola primaria – impianti meccanici ed elettrici",spi:E.spi,cpi:E.cpi,ppc:Math.round((66+72+P.v+68)/4),vinc:aperti,ms:"Esecutivo MEC · 30/10",det:true},...ALTRE];
-  return `<div class="head"><div><div class="eyebrow">Portafoglio PM · settimana ${OGGI_SETT}</div><h2>Le mie commesse attive</h2>
-  <p>Un PM segue al massimo tre commesse. Da qui si vede subito quale ha bisogno di attenzione; si apre la commessa cliccando sulla riga.</p></div></div>
-  <div class="panel tbl"><table><thead><tr><th>Commessa</th><th>Descrizione</th><th class="r">SPI</th><th class="r">CPI</th><th class="r">PPC 4 sett.</th><th class="r">Vincoli aperti</th><th>Prossima milestone</th></tr></thead><tbody>
-  ${righe.map(r=>`<tr class="click" data-open="${r.det?1:0}"><td class="code">${r.cod}</td><td>${r.nome}</td>
-    <td class="r">${pill(tone(r.spi),f1(r.spi))}</td><td class="r">${pill(tone(r.cpi),f1(r.cpi))}</td><td class="r">${pill(tonePPC(r.ppc),r.ppc+"%")}</td>
-    <td class="r num">${r.vinc}</td><td>${r.ms}</td></tr>`).join("")}
-  </tbody></table></div>
-  <div class="panel"><div class="panel-h"><h3>Come leggere gli indicatori</h3><span class="note">soglie di esempio, da tarare con i PM</span></div>
+  const cs=visibili();
+  const righe=cs.map(c=>{const E=evm(c), P=ppc4(c), m=prossimaMs(c), ap=(c.vincoli||[]).filter(v=>v.stato==="aperto").length;
+    return `<tr class="click" data-act="apri" data-c="${c.id}"><td class="code">${esc(c.codice)}</td><td>${esc(c.nome)}<div class="muted" style="font-size:12px">${esc(c.cliente||"")}</div></td><td>${esc(ruoloIn(c)||"direzione")}</td>
+    <td class="r">${pill(tone(E.spi),f1(E.spi))}</td><td class="r">${pill(tone(E.cpi),f1(E.cpi))}</td><td class="r">${pill(tonePPC(P),pct(P))}</td>
+    <td class="r num">${ap}</td><td>${m?`${esc(m.t)} · ${dm(m.data)}`:'<span class="muted">—</span>'}</td></tr>`;}).join("");
+  const nuovo=ePM()&&!SOLA_LETTURA;
+  return `<div class="head"><div><div class="eyebrow">Portafoglio · settimana ${W(oggi())}</div><h2>Le mie commesse</h2>
+  <p>Le commesse di cui fai parte, con il tuo ruolo. Si apre una commessa cliccando sulla riga.</p></div>
+  ${nuovo?`<button class="btn primary" data-act="toggle" data-k="nuova">Nuova commessa</button>`:""}</div>
+  ${nuovo&&UI.nuova?`<div class="panel"><div class="panel-h"><h3>Nuova commessa</h3><span class="note">ne diventi il PM</span></div>
+   <div class="form"><label>Codice<input type="text" id="nc-codice" placeholder="CL-2026-040"></label>
+   <label class="grow">Nome<input type="text" id="nc-nome"></label><label class="grow">Cliente<input type="text" id="nc-cliente"></label>
+   <label>Inizio<input type="date" id="nc-inizio"></label><label>Fine prevista<input type="date" id="nc-fine"></label>
+   <button class="btn primary" data-act="creaCommessa">Crea commessa</button></div><p class="err-t" id="nc-err"></p></div>`:""}
+  <div class="panel tbl">${cs.length?`<table><thead><tr><th>Commessa</th><th>Descrizione</th><th>Ruolo</th><th class="r">SPI</th><th class="r">CPI</th><th class="r">PPC 4 sett.</th><th class="r">Vincoli aperti</th><th>Prossima milestone</th></tr></thead><tbody>${righe}</tbody></table>`
+   :`<p class="vuoto">${MODO==="condiviso"&&!DATI.commesse.esempio?`Nessuna commessa ancora. <button class="btn" data-act="esempio">Carica la commessa di esempio</button>`:ePM()?"Nessuna commessa: premi Nuova commessa.":"Nessuna commessa: chiedi al PM di aggiungerti al team."}</p>`}</div>
+  <div class="panel"><div class="panel-h"><h3>Come leggere gli indicatori</h3><span class="note">soglie di partenza</span></div>
   <div class="grid2" style="gap:12px">
-   <div><b>SPI</b> (EV/PV): sotto 1 la commessa produce meno di quanto pianificato. <b>CPI</b> (EV/AC): sotto 1 servono più ore del previsto per il lavoro fatto.</div>
+   <div><b>SPI</b> (EV/PV): sotto 1 la commessa produce meno di quanto pianificato. <b>CPI</b> (EV/AC): sotto 1 servono più ore del previsto per il lavoro fatto. <b>n.d.</b> = mancano i dati.</div>
    <div><b>PPC</b>: impegni settimanali mantenuti sul totale promesso. Misura l'affidabilità del piano del team, non la bravura dei singoli.</div>
   </div><p style="margin:12px 0 0" class="num">${pill("g","≥ 0,95 / ≥ 70%")} ${pill("w","0,85–0,95 / 55–70%")} ${pill("c","< 0,85 / < 55%")}</p></div>`;
 }
-function avvisi(){
-  const E=evm(), out=[];
+function avvisi(c){
+  const E=evm(c), out=[], L=lunedi(oggi()), F=addG(L,6);
   if(E.spi!==null&&E.spi<0.9) out.push(["c",`SPI ${f1(E.spi)}: in ritardo di ${f0(E.pv-E.ev)} h di lavoro rispetto al piano`]);
-  if(E.cpi!==null&&E.cpi<0.9) out.push(["c",`CPI ${f1(E.cpi)}: a completamento si stimano ${f0(E.eac)} h contro ${f0(E.bac)} h a budget (servono ancora ${f0(E.etc)} h)`]);
-  S.vincoli.filter(v=>v.aperto&&v.need==="29/09").forEach(v=>out.push(["w",`Vincolo ${v.id} da rimuovere entro il 29/09: ${v.t}`]));
-  const inCorso=S.elaborati.filter(e=>e.st>=1&&e.st<=2).length; if(inCorso>4) out.push(["w",`Kanban: ${inCorso} elaborati in corso con limite WIP 4`]);
-  S.elaborati.filter(e=>e.age>=10&&e.st<5).forEach(e=>out.push(["w",`${e.id} fermo nello stesso stato da ${e.age} giorni`]));
+  if(E.cpi!==null&&E.cpi<0.9) out.push(["c",`CPI ${f1(E.cpi)}: a completamento si stimano ${f0(E.eac)} h contro ${f0(E.bac)} h a budget`]);
+  (c.vincoli||[]).filter(v=>v.stato==="aperto"&&v.entro<=F).forEach(v=>out.push([v.entro<oggi()?"c":"w",`Vincolo ${esc(v.id)} ${v.entro<oggi()?"scaduto il":"da rimuovere entro il"} ${dm(v.entro)}: ${esc(v.t)}`]));
+  COLS.forEach(([nome],ci)=>{ const lim=limite(c,ci); const n=c.elaborati.filter(e=>colDi(e.st)===ci).length; if(lim&&n>lim) out.push(["w",`Kanban: ${n} elaborati "${nome}" con limite WIP ${lim}`]); });
+  c.elaborati.filter(e=>e.st<5&&eta(e)>=ETA_FERMO).forEach(e=>out.push(["w",`${esc(e.cod)} fermo in "${STATI[e.st]}" da ${eta(e)} giorni`]));
+  (c.milestone||[]).filter(m=>!m.fatta&&giorniTra(oggi(),m.data)<=14).forEach(m=>{ const n=c.elaborati.filter(e=>e.ms===m.id&&e.st<5).length; out.push([m.data<oggi()?"c":"w",`Milestone "${esc(m.t)}" il ${dm(m.data)}${n?`: ${n} elaborati non ancora emessi`:""}`]); });
+  if(E.fuori) out.push(["w",`${E.fuori} elaborati fuori baseline: le ore contano, il valore pianificato no`]);
+  const p=pianoDi(c); if(p&&p.stato==="promesso"&&(D(oggi()).getDay()===5||D(oggi()).getDay()===6||D(oggi()).getDay()===0)) out.push(["w","Piano della settimana da chiudere"]);
   return out;
 }
-function vObeya(){
-  const E=evm(),P=ppc(),aperti=S.vincoli.filter(v=>v.aperto).length;
-  return `<div class="head"><div><div class="eyebrow">CL-2026-031 · Obeya di commessa</div><h2>Scuola primaria – impianti meccanici ed elettrici</h2>
-  <p>La vista unica per la riunione settimanale del team: tempi, costi, affidabilità del piano e ostacoli.</p></div>
-  <div class="muted num" style="font-size:12px">Prototipo: i dati restano solo in questo browser</div></div>
+function passiMancanti(c){
+  const ore=c.elaborati.some(e=>acDi(c,e.cod)>0);
+  return [[c.elaborati.length>0,"Elaborati con budget","anagrafica"],[(c.milestone||[]).length>0,"Milestone","anagrafica"],[!!baseAppr(c),"Baseline approvata","evm"],
+    [Object.values(c.piani||{}).some(p=>p.stato!=="bozza"),"Primo piano settimanale promesso","settimana"],[ore,"Prime ore registrate","ore"]];
+}
+function vObeya(c){
+  const E=evm(c), p=pianoDi(c), P=ppcDi(p), ap=(c.vincoli||[]).filter(v=>v.stato==="aperto").length, C=pcr(c);
+  const passi=passiMancanti(c), mancano=passi.some(x=>!x[0]);
+  const ms=[...(c.milestone||[])].sort((a,b)=>a.data<b.data?-1:1); const nx=prossimaMs(c);
+  return `<div class="head"><div><div class="eyebrow">${esc(c.codice)} · Obeya di commessa</div><h2>${esc(c.nome)}</h2>
+  <p>La pagina per la riunione del lunedì: tempi, ore, affidabilità del piano e ostacoli.</p></div></div>
+  ${mancano?`<div class="panel"><div class="panel-h"><h3>Per partire mancano</h3><span class="note">si aggiorna da solo</span></div>
+   <ul class="passi">${passi.map(([ok,t,tab])=>`<li><span><span class="${ok?"ok":"no"}">${ok?"✓":"○"}</span> ${t}</span>${ok?"":`<button class="btn ghost" data-act="go" data-tab="${tab}">Vai →</button>`}</li>`).join("")}</ul></div>`:""}
   <div class="kpis">
-   <div class="kpi"><span class="eyebrow">SPI</span><span class="v">${f1(E.spi)}</span>${pill(tone(E.spi),E.spi<1?"in ritardo":"in linea")}</div>
-   <div class="kpi"><span class="eyebrow">CPI</span><span class="v">${f1(E.cpi)}</span>${pill(tone(E.cpi),E.cpi<1?"ore oltre il valore":"in linea")}</div>
+   <div class="kpi"><span class="eyebrow">SPI</span><span class="v">${f1(E.spi)}</span>${pill(tone(E.spi),E.spi===null?"n.d.":E.spi<1?"in ritardo":"in linea")}</div>
+   <div class="kpi"><span class="eyebrow">CPI</span><span class="v">${f1(E.cpi)}</span>${pill(tone(E.cpi),E.cpi===null?"n.d.":E.cpi<1?"ore oltre il valore":"in linea")}</div>
    <div class="kpi"><span class="eyebrow">Stima a completamento EAC</span><span class="v">${f0(E.eac)} h</span><span class="s num">budget ${f0(E.bac)} h · scarto ${f0(E.vac)} h</span></div>
-   <div class="kpi"><span class="eyebrow">PPC settimana ${OGGI_SETT}</span><span class="v">${P.v}%</span><span class="s">${P.f} di ${P.p} impegni mantenuti</span></div>
-   <div class="kpi"><span class="eyebrow">Vincoli aperti</span><span class="v">${aperti}</span><span class="s">nel lookahead a 6 settimane</span></div>
+   <div class="kpi"><span class="eyebrow">PPC settimana ${W(oggi())}</span><span class="v">${pct(P)}</span><span class="s">${p?(P===null&&p.stato==="promesso"?"promesso: Sì/No venerdì":`piano ${p.stato}`):"nessun piano"}</span></div>
+   <div class="kpi"><span class="eyebrow">Vincoli aperti</span><span class="v">${ap}</span><span class="s">PCR settimana ${pct(C.v)}</span></div>
   </div>
-  <div class="panel"><div class="panel-h"><h3>Master schedule</h3><span class="note">milestone contrattuali</span></div>
-   <div class="ms">${MILESTONE.map(m=>`<div class="${m.s}"><b>${m.t}</b><span class="num">${m.d}</span></div>`).join("")}</div></div>
+  <div class="panel"><div class="panel-h"><h3>Milestone</h3><button class="btn ghost" data-act="go" data-tab="anagrafica">Gestisci →</button></div>
+   ${ms.length?`<div class="ms">${ms.map(m=>`<div class="${m.fatta?"done":nx&&m.id===nx.id?"next":""}"><b>${esc(m.t)}</b><span class="num">${dm(m.data)} · ${W(m.data)}</span></div>`).join("")}</div>`:`<p class="vuoto">Nessuna milestone.</p>`}</div>
   <div class="grid2">
    <div class="panel"><div class="panel-h"><h3>Da affrontare in riunione</h3><span class="note">generato dai dati</span></div>
-    <ul class="alerts">${avvisi().map(([t,m])=>`<li>${pill(t,t==="c"?"critico":"attenzione")}<span>${m}</span></li>`).join("")||"<li>Nessun avviso.</li>"}</ul></div>
-   <div class="panel"><div class="panel-h"><h3>Affidabilità del piano (PPC)</h3><button class="btn ghost" data-go="settimana">Apri piano →</button></div>${graficoPPC(230)}</div>
+    <ul class="alerts">${avvisi(c).map(([t,m])=>`<li>${pill(t,t==="c"?"critico":"attenzione")}<span>${m}</span></li>`).join("")||"<li>Nessun avviso.</li>"}</ul></div>
+   <div class="panel"><div class="panel-h"><h3>Affidabilità del piano (PPC)</h3><button class="btn ghost" data-act="go" data-tab="settimana">Apri piano →</button></div>${graficoPPC(c,230)}</div>
   </div>
-  <div class="panel"><div class="panel-h"><h3>Curva S in ore</h3><button class="btn ghost" data-go="evm">Dettaglio EVM →</button></div>${curvaS(260)}</div>`;
+  <div class="panel"><div class="panel-h"><h3>Curva S in ore</h3><button class="btn ghost" data-act="go" data-tab="evm">Dettaglio EVM →</button></div>${curvaS(c,260)}</div>`;
 }
-function vSettimana(){
-  const P=ppc();
-  const cnt={...CAUSE_STORIA}; S.wwp.filter(w=>!w.f&&w.c).forEach(w=>cnt[w.c]=(cnt[w.c]||0)+1);
-  const par=Object.entries(cnt).sort((a,b)=>b[1]-a[1]); const mx=par[0]?par[0][1]:1;
-  return `<div class="head"><div><div class="eyebrow">Last Planner · Weekly Work Plan</div><h2>Piano settimanale – settimana ${OGGI_SETT}</h2>
-  <p>Ogni progettista promette solo attività pronte, cioè senza vincoli aperti. A fine settimana si segna sì o no; per ogni "no" si sceglie una causa. Il PPC si aggiorna subito.</p></div>
-  <div class="kpis" style="min-width:220px"><div class="kpi"><span class="eyebrow">PPC</span><span class="v">${P.v}%</span><span class="s">${P.f} / ${P.p} mantenuti</span></div></div></div>
-  <div class="panel tbl"><table><thead><tr><th>Impegno</th><th>Elaborato</th><th>Last planner</th><th>Fatto?</th><th>Causa se non fatto</th></tr></thead><tbody>
-  ${S.wwp.map((w,i)=>`<tr><td>${w.a}</td><td class="code">${w.e}</td><td>${w.lp}</td>
-   <td><span class="toggle"><button class="yes" aria-pressed="${w.f}" data-wf="${i}" data-v="1">Sì</button><button class="no" aria-pressed="${!w.f}" data-wf="${i}" data-v="0">No</button></span></td>
-   <td>${w.f?'<span class="muted">—</span>':`<select id="causa-${i}" data-wc="${i}" aria-label="Causa di non completamento"><option value="">Scegli la causa…</option>${CAUSE.map(c=>`<option ${c===w.c?"selected":""}>${c}</option>`).join("")}</select>`}</td></tr>`).join("")}
-  </tbody></table></div>
+function vAnagrafica(c){
+  const pm=puoPM(c), dis=pm?"":"disabled";
+  const libere=PERSONE.filter(p=>p.id!=="dir"&&!c.team.some(t=>t.p===p.id));
+  const opzTeam=sel=>`<option value="">—</option>`+c.team.filter(t=>t.ruolo!=="osservatore").map(t=>`<option value="${t.p}" ${t.p===sel?"selected":""}>${esc(nomeDi(t.p))}</option>`).join("");
+  const opzMs=sel=>`<option value="">—</option>`+(c.milestone||[]).map(m=>`<option value="${m.id}" ${m.id===sel?"selected":""}>${esc(m.t)}</option>`).join("");
+  const imp=UI.imp&&UI.imp.cid===c.id?UI.imp:null;
+  return `<div class="head"><div><div class="eyebrow">${esc(c.codice)} · Anagrafica</div><h2>Dati, team, milestone ed elaborati</h2>
+  <p>${pm?"Da qui prepari la commessa: si fa una volta all'inizio e si aggiorna quando serve.":"Solo il PM della commessa modifica questa pagina; tu la vedi in sola lettura."}</p></div></div>
+  <fieldset ${dis}>
+  <div class="panel"><div class="panel-h"><h3>Dati della commessa</h3><span class="note">Inizio e Fine prevista servono alla baseline</span></div>
+   <div class="form"><label>Codice<input type="text" value="${esc(c.codice)}" readonly></label>
+   <label class="grow">Nome<input type="text" id="an-nome" value="${esc(c.nome)}"></label><label class="grow">Cliente<input type="text" id="an-cliente" value="${esc(c.cliente||"")}"></label>
+   <label>Inizio<input type="date" id="an-inizio" value="${c.inizio||""}"></label><label>Fine prevista<input type="date" id="an-fine" value="${c.fine||""}"></label>
+   <button class="btn primary" data-act="salvaDati">Salva</button></div></div>
+
   <div class="grid2">
-   <div class="panel"><div class="panel-h"><h3>PPC nelle ultime settimane</h3><span class="note">W31–W38 esempio · W${OGGI_SETT} dal piano sopra</span></div>${graficoPPC()}</div>
-   <div class="panel"><div class="panel-h"><h3>Cause di mancato completamento</h3><span class="note">ultime 9 settimane, Pareto</span></div>
-    <div class="pareto">${par.map(([k,v])=>`<div class="r"><span>${k}</span><span class="b"><span style="width:${v/mx*100}%"></span></span><span class="num r">${v}</span></div>`).join("")}</div>
-    <p class="muted" style="margin:12px 0 0;font-size:12.5px">"Input mancante da altri" in testa suggerisce di anticipare nel lookahead le richieste all'architetto e allo strutturista.</p></div>
+  <div class="panel tbl"><div class="panel-h"><h3>Team</h3><span class="note">${c.team.length} persone</span></div>
+   <table style="min-width:0"><thead><tr><th>Persona</th><th>Ruolo</th><th></th></tr></thead><tbody>
+   ${c.team.map((t,i)=>`<tr><td>${esc(nomeDi(t.p))}</td><td><select data-ch="ruolo" data-i="${i}" aria-label="Ruolo di ${esc(nomeDi(t.p))}">${RUOLI.map(r=>`<option ${r===t.ruolo?"selected":""}>${r}</option>`).join("")}</select></td>
+    <td class="r"><button class="btn ghost danger" data-act="togliTeam" data-i="${i}" aria-label="Togli ${esc(nomeDi(t.p))}">Togli</button></td></tr>`).join("")}</tbody></table>
+   <div class="form" style="margin-top:12px"><label>Aggiungi persona<select id="tm-p">${libere.map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join("")||"<option value=''>tutti già nel team</option>"}</select></label>
+   <label>Ruolo<select id="tm-r">${RUOLI.slice(1).map(r=>`<option>${r}</option>`).join("")}</select></label><button class="btn" data-act="aggTeam">Aggiungi</button></div></div>
+
+  <div class="panel tbl"><div class="panel-h"><h3>Milestone</h3><span class="note">contrattuali e interne</span></div>
+   ${(c.milestone||[]).length?`<table style="min-width:0"><thead><tr><th>Titolo</th><th>Data target</th><th>Raggiunta</th><th></th></tr></thead><tbody>
+   ${[...c.milestone].sort((a,b)=>a.data<b.data?-1:1).map(m=>`<tr><td>${esc(m.t)}</td><td class="num">${dmy(m.data)}</td><td><input type="checkbox" data-ch="msFatta" data-id="${m.id}" ${m.fatta?"checked":""} aria-label="${esc(m.t)} raggiunta"></td>
+   <td class="r"><button class="btn ghost danger" data-act="togliMs" data-id="${m.id}">Elimina</button></td></tr>`).join("")}</tbody></table>`:`<p class="muted">Nessuna milestone.</p>`}
+   <div class="form" style="margin-top:12px"><label class="grow">Titolo<input type="text" id="ms-t"></label><label>Data target<input type="date" id="ms-d"></label><button class="btn" data-act="aggMs">Aggiungi</button></div></div>
+  </div>
+
+  <div class="panel tbl"><div class="panel-h"><h3>Elaborati</h3><div class="azioni"><button class="btn" data-act="toggle" data-k="nuovoEl">Nuovo elaborato</button><button class="btn" data-act="toggle" data-k="importa">Importa da Excel</button></div></div>
+   ${UI.nuovoEl?`<div class="form" style="margin-bottom:14px"><label>Codice<input type="text" id="el-cod"></label><label class="grow">Titolo<input type="text" id="el-t"></label>
+    <label>Disciplina<select id="el-d">${DISC.map(([k,n])=>`<option value="${k}">${k} · ${n}</option>`).join("")}</select></label><label>Budget ore<input type="number" id="el-bud" min="0" step="0.5"></label>
+    <button class="btn primary" data-act="aggEl">Aggiungi elaborato</button><span class="err-t" id="el-err"></span></div>`:""}
+   ${UI.importa?`<div style="margin-bottom:14px"><p style="margin:0 0 6px;color:var(--ink-2)">Copia da Excel quattro colonne (<b>codice, titolo, disciplina, budget in ore</b>) e incollale qui. Discipline: ${DISC.map(d=>d[0]).join(", ")}.</p>
+    <textarea id="imp-testo" placeholder="E-MEC-10&#9;Centrale termica – schema&#9;MEC&#9;24">${esc(imp?imp.testo:"")}</textarea>
+    <div class="azioni" style="margin-top:8px"><button class="btn" data-act="anteprima">Anteprima</button>${imp?`<button class="btn primary" data-act="importa" ${imp.errate||!imp.righe.length?"disabled":""}>Importa ${imp.righe.length} elaborati</button><span class="${imp.errate?"err-t":"muted"}">${imp.errate?`${imp.errate} righe con errori: correggi il testo e ripremi Anteprima. Non si importa nulla finché ci sono errori.`:"Tutte le righe sono corrette."}</span>`:""}</div>
+    ${imp&&imp.righe.length?`<table style="margin-top:10px"><thead><tr><th>Riga</th><th>Codice</th><th>Titolo</th><th>Disc.</th><th class="r">Budget h</th><th>Errori</th></tr></thead><tbody>
+    ${imp.righe.map(r=>`<tr class="${r.errori.length?"err":""}"><td class="num">${r.n}</td><td class="code">${esc(r.cod)}</td><td>${esc(r.t)}</td><td>${esc(r.d)}</td><td class="r num">${r.bud===null?"":fh(r.bud)}</td><td class="err-t">${esc(r.errori.join("; "))}</td></tr>`).join("")}</tbody></table>`:""}</div>`:""}
+   ${c.elaborati.length?`<table><thead><tr><th>Codice</th><th>Titolo</th><th>Disc.</th><th class="r">Budget h</th><th>Responsabile</th><th>Milestone</th><th>Stato</th></tr></thead><tbody>
+   ${c.elaborati.map((e,i)=>`<tr><td class="code">${esc(e.cod)}</td><td>${esc(e.t)}</td><td>${esc(e.d)}</td>
+    <td class="r"><input type="number" min="0" step="0.5" value="${e.bud}" data-ch="bud" data-i="${i}" aria-label="Budget ore ${esc(e.cod)}" style="width:80px;text-align:right"></td>
+    <td><select data-ch="resp" data-i="${i}" aria-label="Responsabile ${esc(e.cod)}">${opzTeam(e.resp)}</select></td><td><select data-ch="ms" data-i="${i}" aria-label="Milestone ${esc(e.cod)}">${opzMs(e.ms)}</select></td>
+    <td class="muted">${STATI[e.st]}</td></tr>`).join("")}</tbody></table>
+   <p class="hint">Dopo l'import assegna Responsabile e Milestone: l'import non li imposta.${baseAppr(c)?" Il budget di un elaborato già in baseline resta congelato nell'EVM fino alla prossima baseline.":""}</p>`:`<p class="vuoto">Nessun elaborato: usa <b>Importa da Excel</b> o <b>Nuovo elaborato</b>.</p>`}</div>
+
+  <div class="grid2">
+  <div class="panel"><div class="panel-h"><h3>Limiti WIP della commessa</h3><span class="note">quanti elaborati insieme per colonna</span></div>
+   <div class="form"><label>In corso<input type="number" id="wip-c" min="1" value="${c.wip.corso}"></label><label>In verifica<input type="number" id="wip-v" min="1" value="${c.wip.verifica}"></label><button class="btn" data-act="salvaWip">Salva</button></div></div>
+  <div class="panel"><div class="panel-h"><h3>Registro attività</h3><span class="note">ultime modifiche</span></div>
+   ${(c.registro||[]).length?`<ul class="alerts">${c.registro.slice(0,8).map(r=>`<li><span class="muted num" style="white-space:nowrap">${dm(r.q.slice(0,10))} ${r.q.slice(11,16)}</span><span>${esc(nomeDi(r.chi))}: ${esc(r.cosa)}</span></li>`).join("")}</ul>`:`<p class="muted">Nessuna modifica registrata.</p>`}</div>
+  </div>
+  </fieldset>`;
+}
+function vSettimana(c){
+  const L=lunedi(oggi()), p=pianoDi(c), P=ppcDi(p), pm=puoPM(c);
+  const attSett=(c.attivita||[]).filter(a=>a.da<=L&&a.a>=L);
+  const puoSegnare=i=>p&&p.stato==="promesso"&&!SOLA_LETTURA&&(pm||i.lp===LOC.profilo);
+  let corpo;
+  if(!p) corpo=`<div class="panel"><p style="margin:0">Il piano di questa settimana non è ancora stato preparato.</p>
+    ${pm?`<p class="hint">Lunedì, nella riunione di team: prepara il piano, aggiungi gli impegni e premi <b>Prometti il piano</b>.</p><div class="azioni" style="margin-top:10px"><button class="btn primary" data-act="preparaPiano">Prepara il piano (bozza)</button></div>`:`<p class="hint">Lo prepara il PM il lunedì.</p>`}</div>`;
+  else corpo=`<div class="panel tbl"><div class="panel-h"><h3>Impegni ${pill(p.stato==="chiuso"?"g":p.stato==="promesso"?"w":"n",p.stato)}</h3>
+    <div class="azioni">${pm&&p.stato==="bozza"?`<button class="btn primary" data-act="promettiPiano">Prometti il piano</button>`:""}${pm&&p.stato==="promesso"?`<button class="btn primary" data-act="chiudiPiano">Chiudi il piano</button>`:""}</div></div>
+    ${p.impegni.length?`<table><thead><tr><th>Impegno</th><th>Elaborato</th><th>Last planner</th><th>Fatto?</th><th>Causa se non fatto</th><th></th></tr></thead><tbody>
+    ${p.impegni.map((i,k)=>`<tr><td>${esc(i.a)} ${i.dopo?pill("n","fuori dal PPC"):""}</td><td class="code">${esc(i.e||"")}</td><td>${esc(nomeDi(i.lp))}</td>
+     <td>${p.stato==="bozza"?'<span class="muted">dopo la promessa</span>':`<span class="toggle"><button class="yes" aria-pressed="${i.f===true}" data-act="fatto" data-k="${k}" data-v="1" ${puoSegnare(i)?"":"disabled"}>Sì</button><button class="no" aria-pressed="${i.f===false}" data-act="fatto" data-k="${k}" data-v="0" ${puoSegnare(i)?"":"disabled"}>No</button></span>`}</td>
+     <td>${i.f===false?`<select id="causa-${k}" data-ch="causa" data-k="${k}" aria-label="Causa di non completamento" ${puoSegnare(i)?"":"disabled"}><option value="">Scegli la causa…</option>${CAUSE.map(x=>`<option ${x===i.c?"selected":""}>${x}</option>`).join("")}</select>
+       <input type="text" id="perche-${k}" data-ch="perche" data-k="${k}" value="${esc(i.perche||"")}" placeholder="5 perché (facoltativo)" style="margin-top:4px;width:100%" ${puoSegnare(i)?"":"disabled"}>`:'<span class="muted">—</span>'}</td>
+     <td class="r">${pm&&p.stato==="bozza"?`<button class="btn ghost danger" data-act="togliImp" data-k="${k}">Togli</button>`:""}</td></tr>`).join("")}</tbody></table>`:`<p class="muted">Nessun impegno.</p>`}
+    ${pm&&p.stato!=="chiuso"?`<div class="form" style="margin-top:14px;border-top:1px solid var(--line);padding-top:12px">
+      <label>Attività<select id="im-att"><option value="">— libera —</option>${attSett.map(a=>`<option value="${a.id}">${esc(a.cod)} · ${esc(a.t)}${bloccata(c,a.id)?" (vincolata)":""}</option>`).join("")}</select></label>
+      <label class="grow">Impegno<input type="text" id="im-a" placeholder="cosa si promette di finire"></label>
+      <label>Elaborato<select id="im-e"><option value="">—</option>${c.elaborati.map(e=>`<option>${esc(e.cod)}</option>`).join("")}</select></label>
+      <label>Last planner<select id="im-lp">${c.team.filter(t=>t.ruolo!=="osservatore").map(t=>`<option value="${t.p}">${esc(nomeDi(t.p))}</option>`).join("")}</select></label>
+      <button class="btn" data-act="aggImp">Aggiungi impegno</button></div>
+      ${p.stato==="promesso"?`<p class="hint">Il piano è già promesso: gli impegni aggiunti ora sono segnati "fuori dal PPC".</p>`:""}`:""}
+    ${p.stato==="chiuso"?`<p class="hint">Piano chiuso: PPC ${pct(p.ppc)}.</p>`:""}</div>`;
+  return `<div class="head"><div><div class="eyebrow">Last Planner · piano settimanale</div><h2>Settimana ${W(L)} (${dm(L)} – ${dm(addG(L,4))})</h2>
+  <p>Lunedì si promettono solo attività pronte (senza vincoli aperti). Venerdì ognuno segna Sì o No; per ogni No si sceglie la causa. Il PPC conta solo gli impegni promessi.</p></div>
+  <div class="kpis" style="min-width:220px"><div class="kpi"><span class="eyebrow">PPC</span><span class="v">${pct(P)}</span><span class="s">${p?p.impegni.filter(i=>!i.dopo&&i.f===true).length+" di "+p.impegni.filter(i=>!i.dopo).length+" mantenuti":"nessun piano"}</span></div></div></div>
+  ${corpo}
+  <div class="grid2">
+   <div class="panel"><div class="panel-h"><h3>PPC nelle ultime settimane</h3></div>${graficoPPC(c)}</div>
+   <div class="panel"><div class="panel-h"><h3>Cause di mancato completamento</h3><span class="note">Pareto</span></div>${pareto(c)}</div>
   </div>`;
 }
-function vLookahead(){
-  const W=[40,41,42,43,44,45]; const C=pcr();
-  const bloccata=id=>S.vincoli.some(v=>v.att===id&&v.aperto);
+function vLookahead(c){
+  const L=lunedi(oggi()), WK=[0,1,2,3,4,5].map(k=>addG(L,7*k)), C=pcr(c), lav=puoLavorare(c);
+  const att=[...(c.attivita||[])].sort((a,b)=>a.da<b.da?-1:a.da>b.da?1:0).filter(a=>a.a>=L);
+  const msF=(c.milestone||[]).filter(m=>m.data>=L&&m.data<addG(L,42));
   return `<div class="head"><div><div class="eyebrow">Last Planner · make-ready</div><h2>Lookahead a 6 settimane e registro vincoli</h2>
-  <p>Le attività delle prossime sei settimane con lo stato dei loro vincoli. Un'attività entra nel piano settimanale solo quando tutti i vincoli sono rimossi.</p></div>
-  <div class="kpis" style="min-width:220px"><div class="kpi"><span class="eyebrow">Vincoli rimossi (PCR)</span><span class="v">${C.v}%</span><span class="s">${C.r} di ${C.n} identificati</span></div></div></div>
-  <div class="panel tbl la"><table><thead><tr><th>Attività</th>${W.map(w=>`<th class="wk">W${w}</th>`).join("")}<th>Stato</th></tr></thead><tbody>
-  ${LOOKAHEAD.map(a=>{const b=!a.mile&&bloccata(a.id);return `<tr><td>${a.t}</td>${W.map(w=>`<td class="wk">${w>=a.da&&w<=a.a?(a.mile?'<div class="bar mile" title="milestone"></div>':`<div class="bar ${b?"blocked":"ready"}"></div>`):""}</td>`).join("")}
-   <td>${a.mile?pill("n","milestone"):b?pill("c","vincolata"):pill("g","pronta")}</td></tr>`;}).join("")}
-  </tbody></table></div>
-  <div class="panel tbl"><div class="panel-h"><h3>Registro vincoli</h3><span class="note">clicca per segnare un vincolo come rimosso o riaprirlo</span></div>
-  <table><thead><tr><th>ID</th><th>Vincolo</th><th>Categoria</th><th>Attività</th><th>Chi lo rimuove</th><th>Serve entro</th><th>Stato</th><th></th></tr></thead><tbody>
-  ${S.vincoli.map((v,i)=>{const att=LOOKAHEAD.find(a=>a.id===v.att);return `<tr><td class="code">${v.id}</td><td>${v.t}</td><td>${v.cat}</td><td class="muted">${att?att.t.split(" · ")[0]:""}</td><td>${v.resp}</td><td class="num">${v.need}</td>
-   <td>${v.aperto?pill("c","aperto"):pill("g","rimosso")}</td><td><button class="btn" data-vt="${i}">${v.aperto?"Segna rimosso":"Riapri"}</button></td></tr>`;}).join("")}
-  </tbody></table></div>`;
+  <p>Per ogni attività chiediti "cosa manca per poterla fare?": ogni risposta è un vincolo. Un'attività senza vincoli aperti è pronta, e solo quelle vanno promesse.</p></div>
+  <div class="kpis" style="min-width:220px"><div class="kpi"><span class="eyebrow">PCR settimana</span><span class="v">${pct(C.v)}</span><span class="s">${C.r} di ${C.n} in scadenza rimossi</span></div></div></div>
+  <div class="panel tbl la"><div class="panel-h"><h3>Attività</h3>${lav?`<button class="btn" data-act="toggle" data-k="nuovaAtt">Nuova attività</button>`:""}</div>
+   ${UI.nuovaAtt&&lav?`<div class="form" style="margin-bottom:14px"><label>Codice<input type="text" id="at-cod" style="width:80px"></label><label class="grow">Titolo<input type="text" id="at-t"></label>
+    <label>Last planner<select id="at-lp">${c.team.filter(t=>t.ruolo!=="osservatore").map(t=>`<option value="${t.p}">${esc(nomeDi(t.p))}</option>`).join("")}</select></label>
+    <label>Disciplina<select id="at-d">${DISC.map(([k])=>`<option>${k}</option>`).join("")}</select></label>
+    <label>Elaborato<select id="at-e"><option value="">—</option>${c.elaborati.map(e=>`<option>${esc(e.cod)}</option>`).join("")}</select></label>
+    <label>Settimane da<select id="at-da">${WK.map(w=>`<option value="${w}">${W(w)} · ${dm(w)}</option>`).join("")}</select></label>
+    <label>a<select id="at-a">${WK.map(w=>`<option value="${w}">${W(w)} · ${dm(w)}</option>`).join("")}</select></label>
+    <button class="btn primary" data-act="aggAtt">Aggiungi</button><span class="err-t" id="at-err"></span></div>`:""}
+   ${att.length||msF.length?`<table><thead><tr><th>Attività</th>${WK.map(w=>`<th class="wk">${W(w)}</th>`).join("")}<th>Stato</th></tr></thead><tbody>
+   ${att.map(a=>{const b=bloccata(c,a.id); return `<tr><td><span class="code">${esc(a.cod)}</span> ${esc(a.t)}<div class="muted" style="font-size:12px">${esc(nomeDi(a.lp))}${a.e?" · "+esc(a.e):""}</div></td>${WK.map(w=>`<td class="wk">${w>=a.da&&w<=a.a?`<div class="bar ${b?"blocked":"ready"}"></div>`:""}</td>`).join("")}<td>${b?pill("c","vincolata"):pill("g","pronta")}</td></tr>`;}).join("")}
+   ${msF.map(m=>`<tr><td>Milestone · ${esc(m.t)}</td>${WK.map(w=>`<td class="wk">${m.data>=w&&m.data<addG(w,7)?'<div class="bar mile" title="milestone"></div>':""}</td>`).join("")}<td>${pill("n","milestone")}</td></tr>`).join("")}
+   </tbody></table>`:`<p class="vuoto">Nessuna attività nelle prossime sei settimane.</p>`}</div>
+  <div class="panel tbl"><div class="panel-h"><h3>Registro vincoli</h3>${lav?`<button class="btn" data-act="toggle" data-k="nuovoVinc">Nuovo vincolo</button>`:""}</div>
+   ${UI.nuovoVinc&&lav?`<div class="form" style="margin-bottom:14px"><label class="grow">Vincolo<input type="text" id="vc-t" placeholder="cosa manca"></label>
+    <label>Chi lo rimuove<input type="text" id="vc-chi" list="vc-team" placeholder="del team o esterno"><datalist id="vc-team">${c.team.map(t=>`<option value="${esc(nomeDi(t.p))}">`).join("")}</datalist></label>
+    <label>Serve entro<input type="date" id="vc-entro"></label>
+    <div style="flex-basis:100%"><div class="muted" style="font-size:12px;margin-bottom:4px">Attività che blocca</div><div class="checks">${(c.attivita||[]).filter(a=>a.a>=L).map(a=>`<label><input type="checkbox" name="vc-att" value="${a.id}"> ${esc(a.cod)} · ${esc(a.t)}</label>`).join("")||'<span class="muted">nessuna attività: aggiungine una sopra</span>'}</div></div>
+    <button class="btn primary" data-act="aggVinc">Aggiungi vincolo</button><span class="err-t" id="vc-err"></span></div>`:""}
+   ${(c.vincoli||[]).length?`<table><thead><tr><th>ID</th><th>Vincolo</th><th>Chi lo rimuove</th><th>Serve entro</th><th>Attività</th><th>Stato</th><th></th></tr></thead><tbody>
+   ${c.vincoli.map((v,i)=>`<tr><td class="code">${esc(v.id)}</td><td>${esc(v.t)}</td><td>${esc(v.chi)}</td><td class="num ${v.stato==="aperto"&&v.entro<oggi()?"age-old":""}">${dm(v.entro)}</td>
+    <td class="muted">${v.att.map(id=>esc(((c.attivita||[]).find(a=>a.id===id)||{cod:id}).cod)).join(", ")}</td>
+    <td>${v.stato==="aperto"?pill("c","aperto"):v.stato==="rimosso"?pill("g","rimosso"):pill("n","annullato")}</td>
+    <td class="r">${lav?(v.stato==="aperto"?`<button class="btn" data-act="vinc" data-i="${i}" data-s="rimosso">Segna rimosso</button> <button class="btn ghost" data-act="vinc" data-i="${i}" data-s="annullato">Annulla</button>`:`<button class="btn ghost" data-act="vinc" data-i="${i}" data-s="aperto">Riapri</button>`):""}</td></tr>`).join("")}</tbody></table>
+   <p class="hint">PCR della settimana = vincoli in scadenza questa settimana già rimossi / vincoli in scadenza questa settimana. Gli annullati non contano.</p>`:`<p class="vuoto">Nessun vincolo registrato.</p>`}</div>`;
 }
-const COLS=[["Da fare",null,[0]],["In corso",4,[1,2]],["In verifica",3,[3,4]],["Emesso",null,[5]]];
-function colDi(st){ return COLS.findIndex(c=>c[2].includes(st)); }
-function vKanban(){
-  return `<div class="head"><div><div class="eyebrow">Flusso degli elaborati</div><h2>Kanban di commessa</h2>
-  <p>Ogni scheda è un elaborato. Spostarla cambia il suo stato e quindi il valore guadagnato (EV). La colonna si evidenzia quando supera il limite WIP.</p></div></div>
-  <div class="kb">${COLS.map(([nome,lim,sts],ci)=>{const cards=S.elaborati.map((e,i)=>({...e,i})).filter(e=>sts.includes(e.st)); const over=lim&&cards.length>lim;
+function vKanban(c){
+  const lav=puoLavorare(c), b=baseAppr(c);
+  return `<div class="head"><div><div class="eyebrow">${esc(c.codice)} · flusso degli elaborati</div><h2>Kanban</h2>
+  <p>Ogni scheda è un elaborato. Si avanza di uno stato alla volta, con la freccia o trascinando la scheda. Per tornare indietro serve un motivo. Il valore guadagnato (EV) dipende solo dallo stato.</p></div></div>
+  ${c.elaborati.length?`<div class="kb">${COLS.map(([nome],ci)=>{const cards=c.elaborati.map((e,i)=>({e,i})).filter(x=>colDi(x.e.st)===ci); const lim=limite(c,ci); const over=lim&&cards.length>lim;
    return `<section class="col ${over?"over":""}" data-col="${ci}"><div class="col-h"><h3>${nome}</h3><span class="num ${over?"age-old":"muted"}">${cards.length}${lim?" / "+lim:""}</span></div>
-   ${cards.map(e=>`<article class="card" draggable="true" data-card="${e.i}"><div class="row"><span class="code">${e.id}</span>${e.cls==="Data fissa"?pill("w","data fissa"):""}</div>
-    <div class="t">${e.t}</div><div class="row"><span class="muted" style="font-size:12px">${STATI[e.st]}</span><span class="num ${e.age>=10&&e.st<5?"age-old":"muted"}" style="font-size:12px">${e.st<5?e.age+" gg":""}</span></div>
-    <div class="row"><span class="muted num" style="font-size:12px">${f0(acDi(e))} / ${e.bud} h</span><span class="mv">${ci>0?`<button data-mv="${e.i}" data-d="-1" aria-label="Sposta indietro">←</button>`:""}${ci<3?`<button data-mv="${e.i}" data-d="1" aria-label="Sposta avanti">→</button>`:""}</span></div></article>`).join("")}
-   </section>`;}).join("")}</div>
-  <p class="muted" style="font-size:12.5px;margin:0">Età in giorni = tempo nello stato attuale (Work Item Age). Le schede ferme da 10 giorni o più sono in rosso.</p>`;
+   ${cards.map(({e,i})=>`<article class="card" ${lav?'draggable="true"':""} data-card="${i}"><div class="row"><span class="code">${esc(e.cod)}</span>${b&&!b.righe[e.cod]?pill("w","fuori baseline"):""}</div>
+    <div class="t">${esc(e.t)}</div><div class="row"><span class="muted" style="font-size:12px">${STATI[e.st]}</span><span class="num ${e.st<5&&eta(e)>=ETA_FERMO?"age-old":"muted"}" style="font-size:12px">${e.st<5?eta(e)+" gg":""}</span></div>
+    <div class="row"><span class="muted" style="font-size:12px">${esc(nomeDi(e.resp))}</span></div>
+    <div class="row"><span class="muted num" style="font-size:12px">${f0(acDi(c,e.cod))} / ${fh(e.bud)} h</span><span class="mv">${lav&&e.st>0?`<button data-act="passo" data-i="${i}" data-d="-1" aria-label="Indietro di uno stato">←</button>`:""}${lav&&e.st<5?`<button data-act="passo" data-i="${i}" data-d="1" aria-label="Avanti di uno stato">→</button>`:""}</span></div></article>`).join("")}
+   </section>`;}).join("")}</div>`:`<div class="panel"><p class="vuoto">Nessun elaborato: aggiungili dalla scheda Anagrafica.</p></div>`}
+  <p class="muted" style="font-size:12.5px;margin:0">Età = giorni nello stato attuale. Le schede ferme da ${ETA_FERMO} giorni o più sono in rosso. Limiti WIP: in corso ${c.wip.corso}, in verifica ${c.wip.verifica}.</p>`;
+}
+function vOreCommessa(c){
+  const L=lunedi(oggi()), pm=puoPM(c)||ruoloIn(c)==="pm", dir=eDirezione()&&!ruoloIn(c);
+  const tot=c.elaborati.reduce((a,e)=>a+acDi(c,e.cod),0), totS=c.elaborati.reduce((a,e)=>a+oreSettimana(c,e.cod,L),0);
+  const perP={}; Object.entries(c.ore||{}).forEach(([p,m])=>{ Object.values(m).forEach(s=>Object.entries(s).forEach(([w,a])=>{ const h=a.reduce((x,y)=>x+(+y||0),0); perP[p]=perP[p]||{t:0,s:0}; perP[p].t+=h; if(w===L) perP[p].s+=h; })); });
+  return `<div class="head"><div><div class="eyebrow">${esc(c.codice)} · ore</div><h2>Ore della commessa</h2>
+  <p>Le ore registrate sono il costo effettivo (AC). Ognuno registra le proprie da <b>Le mie ore</b>. Nessuna classifica: i totali servono a organizzare il lavoro.</p></div></div>
+  <div class="kpis"><div class="kpi"><span class="eyebrow">Ore a oggi</span><span class="v">${f0(tot)} h</span><span class="s">compreso lo storico</span></div>
+   <div class="kpi"><span class="eyebrow">Settimana ${W(L)}</span><span class="v">${fh(totS)} h</span></div>
+   <div class="kpi"><span class="eyebrow">Budget</span><span class="v">${f0(c.elaborati.reduce((a,e)=>a+e.bud,0))} h</span></div></div>
+  ${dir?`<p class="muted">La direzione vede solo i totali della commessa.</p>`:`
+  <div class="panel tbl"><div class="panel-h"><h3>Per elaborato</h3></div>${c.elaborati.length?`<table><thead><tr><th>Elaborato</th><th>Responsabile</th><th class="r">Settimana</th><th class="r">A oggi</th><th class="r">Budget</th><th></th></tr></thead><tbody>
+   ${c.elaborati.map(e=>{const a=acDi(c,e.cod); return `<tr><td><span class="code">${esc(e.cod)}</span> ${esc(e.t)}</td><td>${esc(nomeDi(e.resp))}</td><td class="r num">${fh(oreSettimana(c,e.cod,L))}</td><td class="r num">${fh(a)}</td><td class="r num">${fh(e.bud)}</td><td>${a>e.bud?pill("c","oltre il budget"):""}</td></tr>`;}).join("")}</tbody></table>`:`<p class="vuoto">Nessun elaborato.</p>`}</div>
+  ${pm?`<div class="panel tbl"><div class="panel-h"><h3>Per persona</h3><span class="note">visibile solo al PM, per organizzare il lavoro</span></div>
+   ${Object.keys(perP).length?`<table style="min-width:0"><thead><tr><th>Persona</th><th class="r">Settimana ${W(L)}</th><th class="r">Registrate nell'app</th></tr></thead><tbody>${Object.entries(perP).map(([p,v])=>`<tr><td>${esc(nomeDi(p))}</td><td class="r num">${fh(v.s)}</td><td class="r num">${fh(v.t)}</td></tr>`).join("")}</tbody></table>`:`<p class="muted">Nessuna ora registrata nell'app.</p>`}</div>`:""}`}`;
+}
+function righeOre(){
+  const me=LOC.profilo, out=[];
+  visibili().filter(c=>["pm","progettista","verificatore"].includes(ruoloIn(c))).forEach(c=>{
+    const L=addG(lunedi(oggi()),7*LOC.oreOff);
+    c.elaborati.forEach(e=>{ const mio=e.resp===me, conOre=oreCella(c,me,e.cod,L).some(h=>+h>0); if(mio||conOre||LOC.altri) out.push({c,e,mio}); });
+  });
+  return out.sort((a,b)=>(b.mio-a.mio)||(a.c.codice<b.c.codice?-1:a.c.codice>b.c.codice?1:0)||(a.e.cod<b.e.cod?-1:1));
 }
 function vOre(){
-  const u=S.utente, righe=ASSEGNAZIONI[u], m=S.ore[u]||{};
-  const tot=GIORNI.map((_,g)=>righe.reduce((a,id)=>a+(+((m[id]||[])[g])||0),0));
-  const totSett=tot.reduce((a,b)=>a+b,0);
-  return `<div class="head"><div><div class="eyebrow">Timesheet · settimana ${OGGI_SETT}</div><h2>Ore sulle commesse</h2>
-  <p>Ogni persona registra le ore sugli elaborati che ha assegnati. Queste ore sono il costo effettivo (AC) dell'EVM: SPI, CPI ed EAC si aggiornano appena si salva.</p></div>
-  <label class="muted" style="display:flex;gap:8px;align-items:center" for="utente">Stai registrando come
-   <select id="utente" data-utente="1">${Object.keys(ASSEGNAZIONI).map(p=>`<option ${p===u?"selected":""}>${p}</option>`).join("")}</select></label></div>
-  <div class="panel tbl"><table><thead><tr><th>Elaborato</th>${GIORNI.map(g=>`<th class="r">${g}</th>`).join("")}<th class="r">Totale</th><th class="r">Ore a oggi / budget</th></tr></thead><tbody>
-  ${righe.map(id=>{const e=S.elaborati.find(x=>x.id===id); const v=m[id]||[0,0,0,0,0]; const t=v.reduce((a,b)=>a+(+b||0),0);
-   return `<tr><td><span class="code">${id}</span><div class="muted" style="font-size:12px">${e.t}</div></td>
-   ${GIORNI.map((_,g)=>`<td class="r"><input id="h-${id}-${g}" data-h="${id}" data-g="${g}" type="number" min="0" max="12" step="0.5" value="${v[g]||""}" inputmode="decimal" aria-label="Ore ${id} ${GIORNI[g]}" style="width:58px;text-align:right;font:inherit;font-family:var(--mono);background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:3px 6px"></td>`).join("")}
-   <td class="r num"><b>${t||""}</b></td><td class="r num">${f0(acDi(e))} / ${e.bud} ${acDi(e)>e.bud?pill("c","oltre"):""}</td></tr>`;}).join("")}
-  <tr><td class="muted">Totale giorno</td>${tot.map(t=>`<td class="r num ${t>8?"age-old":""}">${t||""}</td>`).join("")}<td class="r num"><b>${totSett}</b></td><td></td></tr>
-  </tbody></table></div>
-  <p class="muted" style="font-size:12.5px;margin:0">Le ore servono al controllo di commessa. Il PM vede le ore della sua commessa, la direzione solo i totali, ognuno le proprie: nessuna classifica individuale.</p>`;
+  if(eDirezione()) return `<div class="head"><div><h2>Le mie ore</h2><p>La direzione non registra ore in questa prova.</p></div></div>`;
+  const me=LOC.profilo, L=addG(lunedi(oggi()),7*LOC.oreOff), lim=addG(L,6+GIORNI_CORREZIONE), bloc=oggi()>lim;
+  const righe=righeOre(); const totG=[0,1,2,3,4].map(g=>totaleGiorno(me,L,g));
+  return `<div class="head"><div><div class="eyebrow">Timesheet · ${esc(nomeDi(me))}</div><h2>Le mie ore · settimana ${W(L)} (${dm(L)} – ${dm(addG(L,4))})</h2>
+  <p>Una riga per elaborato, una colonna per giorno. Scrivi <b>1,5</b> o <b>1:30</b>: la cella si salva da sola quando esci dal campo. Per cancellare lascia la cella vuota.</p></div>
+  <div class="azioni"><button class="btn" data-act="oreSett" data-d="-1">← Precedente</button>${LOC.oreOff?`<button class="btn" data-act="oreSett" data-d="0">Questa settimana</button>`:""}<button class="btn" data-act="oreSett" data-d="1">Successiva →</button></div></div>
+  <p class="${bloc?"err-t":"muted"}" style="margin:0">${bloc?`Settimana bloccata dal ${dmy(addG(lim,1))}: per una correzione rivolgiti all'amministratore.`:`Modificabile fino al ${dmy(lim)}.`} Massimo ${ORE_MAX_GIORNO} ore al giorno.</p>
+  <div class="panel tbl">${righe.length?`<table><thead><tr><th>Elaborato</th>${GIORNI_SETT.map((g,i)=>`<th class="r">${g} ${dm(addG(L,i))}</th>`).join("")}<th class="r">Totale</th><th class="r">Ore a oggi / budget</th></tr></thead><tbody>
+  ${righe.map(({c,e})=>{const v=oreCella(c,me,e.cod,L); const t=v.reduce((a,b)=>a+(+b||0),0); const a=acDi(c,e.cod);
+   return `<tr><td><span class="code">${esc(e.cod)}</span> <span class="muted" style="font-size:12px">${esc(c.codice)}</span><div class="muted" style="font-size:12px">${esc(e.t)}</div></td>
+   ${[0,1,2,3,4].map(g=>`<td class="r"><input type="text" class="cella" id="h-${c.id}-${esc(e.cod)}-${g}" data-ch="ora" data-c="${c.id}" data-e="${esc(e.cod)}" data-g="${g}" value="${+v[g]?fh(+v[g]):""}" inputmode="decimal" aria-label="Ore ${esc(e.cod)} ${GIORNI_SETT[g]}" ${bloc||SOLA_LETTURA?"disabled":""}></td>`).join("")}
+   <td class="r num"><b>${t?fh(t):""}</b></td><td class="r num">${fh(a)} / ${fh(e.bud)} ${a>e.bud?pill("c","oltre"):""}</td></tr>`;}).join("")}
+  <tr><td class="muted">Totale giorno</td>${totG.map(t=>`<td class="r num">${t?fh(t):""}</td>`).join("")}<td class="r num"><b>${fh(totG.reduce((a,b)=>a+b,0))}</b></td><td></td></tr>
+  </tbody></table>`:`<p class="vuoto">Nessun elaborato assegnato a te in questa settimana.</p>`}</div>
+  <div class="azioni"><label class="muted" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-ch="altri" ${LOC.altri?"checked":""}> Mostra gli altri elaborati delle tue commesse</label></div>
+  <p class="muted" style="font-size:12.5px;margin:0">Chi vede le tue ore: tu sempre; il PM della commessa anche per persona; la direzione solo i totali.</p>`;
 }
-function vEvm(){
-  const E=evm();
-  return `<div class="head"><div><div class="eyebrow">Earned Value in ore</div><h2>Avanzamento per elaborato</h2>
-  <p>Il valore guadagnato si calcola dallo stato dell'elaborato, non da una percentuale dichiarata. Pesi per stato: ${STATI.slice(1).map((s,i)=>`${s.toLowerCase()} ${PESI[i+1]}%`).join(", ")}. I pesi sono di esempio e vanno tarati.</p></div></div>
+function totaleGiorno(p,L,g,escl){ let t=0; visibili().forEach(c=>{ Object.entries(((c.ore||{})[p])||{}).forEach(([cod,s])=>{ if(escl&&escl.c===c.id&&escl.e===cod) return; t+=+((s[L]||[])[g])||0; }); }); return t; }
+function vEvm(c){
+  const E=evm(c), b=c.baseline, pm=puoPM(c), ba=baseAppr(c);
+  let pannello;
+  if(!b) pannello=`<p style="margin:0">Senza baseline approvata <b>PV</b> e <b>SPI</b> restano <b>n.d.</b></p>
+    ${pm?(UI.prepara?`<p class="hint">Le date di ogni stato si distribuiscono tra Inizio (${dmy(c.inizio)}) e Fine prevista (${dmy(c.fine)}) della commessa; poi le correggi riga per riga.</p><div class="azioni" style="margin-top:10px"><button class="btn primary" data-act="creaBozza">Crea la bozza con date automatiche</button></div>`
+      :`<div class="azioni" style="margin-top:10px"><button class="btn primary" data-act="toggle" data-k="prepara">Prepara la baseline</button></div>`):`<p class="hint">La prepara il PM.</p>`}`;
+  else if(b.stato==="bozza") pannello=`<p style="margin:0">Bozza della baseline v${b.ver}${b.motivo?` · motivo: ${esc(b.motivo)}`:""}. Correggi le date che non tornano e premi <b>Salva</b> sulla riga; poi <b>Approva e congela</b>.${b.precedente?" Finché non approvi resta valida la baseline precedente.":""}</p>
+    <div class="tbl" style="margin-top:12px"><table><thead><tr><th>Elaborato</th><th class="r">Budget h</th>${STATI.slice(1).map(s=>`<th>${s}</th>`).join("")}<th></th></tr></thead><tbody>
+    ${c.elaborati.map(e=>{const r=b.righe[e.cod]||{date:distribuisci(c.inizio,c.fine,5)}; return `<tr><td class="code">${esc(e.cod)}</td><td class="r num">${fh(e.bud)}</td>
+     ${r.date.map((d,k)=>`<td><input type="date" data-bl="${esc(e.cod)}" data-k="${k}" value="${d||""}" aria-label="${esc(e.cod)} ${STATI[k+1]}" ${pm?"":"disabled"}></td>`).join("")}
+     <td class="r" style="white-space:nowrap">${pm?`<button class="btn ghost" data-act="distrib" data-e="${esc(e.cod)}">Distribuisci tra inizio e fine</button> <button class="btn" data-act="salvaRiga" data-e="${esc(e.cod)}">Salva</button>`:""}</td></tr>`;}).join("")}</tbody></table></div>
+    <p class="hint">"Distribuisci tra inizio e fine" riempie le date intermedie tra la prima (Impostato) e l'ultima (Emesso al cliente) della riga.</p>
+    ${pm?`<div class="azioni" style="margin-top:10px"><button class="btn primary" data-act="approva">Approva e congela</button><button class="btn ghost" data-act="annullaBozza">Annulla la bozza</button></div>`:""}`;
+  else pannello=`<p style="margin:0">Baseline v${b.ver} approvata il ${dmy(b.approvata)}${b.motivo?` · motivo: ${esc(b.motivo)}`:""}. Budget, pesi e valore pianificato restano fissi.</p>
+    ${E.fuori?`<p class="hint">${E.fuori} elaborati aggiunti dopo l'approvazione sono <b>fuori baseline</b>: le loro ore contano, ma non hanno valore pianificato né guadagnato finché non approvi una nuova baseline.</p>`:""}
+    ${pm?`<div class="azioni" style="margin-top:10px"><button class="btn" data-act="nuovaBaseline">Nuova baseline</button></div>`:""}`;
+  return `<div class="head"><div><div class="eyebrow">${esc(c.codice)} · Earned Value in ore</div><h2>Avanzamento EVM</h2>
+  <p>Il valore guadagnato si calcola dallo stato sul Kanban, non da una percentuale dichiarata. Pesi per stato: ${STATI.slice(1).map((s,i)=>`${s.toLowerCase()} ${PESI[i+1]}%`).join(", ")}.</p></div></div>
   <div class="kpis">
-   <div class="kpi"><span class="eyebrow">BAC budget</span><span class="v">${f0(E.bac)} h</span><span class="s">ore a budget per elaborato</span></div>
-   <div class="kpi"><span class="eyebrow">PV pianificato</span><span class="v">${f0(E.pv)} h</span></div>
-   <div class="kpi"><span class="eyebrow">EV guadagnato</span><span class="v">${f0(E.ev)} h</span></div>
-   <div class="kpi"><span class="eyebrow">AC consuntivo</span><span class="v">${f0(E.ac)} h</span><span class="s">storico + ore della settimana</span></div>
-   <div class="kpi"><span class="eyebrow">SPI · CPI</span><span class="v">${f1(E.spi)} · ${f1(E.cpi)}</span></div>
-   <div class="kpi"><span class="eyebrow">EAC · ETC</span><span class="v">${f0(E.eac)} · ${f0(E.etc)}</span><span class="s">EAC = BAC / CPI</span></div>
+   <div class="kpi"><span class="eyebrow">SPI</span><span class="v">${f1(E.spi)}</span>${pill(tone(E.spi),E.spi===null?"n.d.":E.spi<1?"in ritardo":"in linea")}<span class="s">siamo nei tempi?</span></div>
+   <div class="kpi"><span class="eyebrow">CPI</span><span class="v">${f1(E.cpi)}</span>${pill(tone(E.cpi),E.cpi===null?"n.d.":E.cpi<1?"servono più ore":"in linea")}<span class="s">spendiamo le ore previste?</span></div>
+   <div class="kpi"><span class="eyebrow">BAC budget</span><span class="v">${f0(E.bac)} h</span><span class="s">${ba?"congelato nella baseline":"budget attuale"}</span></div>
+   <div class="kpi"><span class="eyebrow">PV · EV · AC</span><span class="v" style="font-size:18px">${f0(E.pv)} · ${f0(E.ev)} · ${f0(E.ac)}</span><span class="s">ore</span></div>
+   <div class="kpi"><span class="eyebrow">EAC · ETC</span><span class="v" style="font-size:18px">${f0(E.eac)} · ${f0(E.etc)}</span><span class="s">EAC = BAC / CPI</span></div>
   </div>
-  <div class="panel">${curvaS()}</div>
-  <div class="panel tbl"><div class="panel-h"><h3>Registro elaborati</h3><span class="note">cambia lo stato per vedere EV, SPI e CPI ricalcolati</span></div>
-  <table><thead><tr><th>Elaborato</th><th>Titolo</th><th>Disc.</th><th>Stato attuale</th><th class="r">Budget h</th><th class="r">EV h</th><th class="r">Ore registrate</th><th class="r">CPI</th></tr></thead><tbody>
-  ${S.elaborati.map((e,i)=>{const ev=e.bud*PESI[e.st]/100; const a=acDi(e); const c=a?ev/a:0; return `<tr><td class="code">${e.id}</td><td>${e.t}</td><td>${e.d}</td>
-   <td><select id="stato-${i}" data-st="${i}" aria-label="Stato di ${e.id}">${STATI.map((s,k)=>`<option value="${k}" ${k===e.st?"selected":""}>${s} (${PESI[k]}%)</option>`).join("")}</select></td>
-   <td class="r num">${e.bud}</td><td class="r num">${f0(ev)}</td><td class="r num">${f0(a)}</td><td class="r">${pill(tone(c),f1(c))}</td></tr>`;}).join("")}
-  </tbody></table></div>`;
+  <div class="panel"><div class="panel-h"><h3>Baseline</h3><span class="note">${b?`v${b.ver} · ${b.stato}`:"non preparata"}</span></div>${pannello}</div>
+  <div class="panel"><div class="panel-h"><h3>Curva S</h3><span class="note">EV sotto PV = ritardo · AC sopra EV = più ore del lavoro prodotto</span></div>${curvaS(c)}</div>
+  <div class="panel tbl"><div class="panel-h"><h3>Registro per elaborato</h3><span class="note">dove nasce lo scarto</span></div>
+  ${c.elaborati.length?`<table><thead><tr><th>Elaborato</th><th>Titolo</th><th>Stato (dal Kanban)</th><th class="r">Budget h</th><th class="r">EV h</th><th class="r">Ore registrate</th><th class="r">CPI</th></tr></thead><tbody>
+  ${c.elaborati.map(e=>{const ev=evElab(c,e), a=acDi(c,e.cod), ci=a?ev/a:null; return `<tr><td class="code">${esc(e.cod)}</td><td>${esc(e.t)} ${ba&&!ba.righe[e.cod]?pill("w","fuori baseline"):""}</td><td>${STATI[e.st]} <span class="muted">(${PESI[e.st]}%)</span></td>
+   <td class="r num">${fh(ba&&ba.righe[e.cod]?ba.righe[e.cod].bud:e.bud)}</td><td class="r num">${f0(ev)}</td><td class="r num">${fh(a)}</td><td class="r">${pill(tone(ci),f1(ci))}</td></tr>`;}).join("")}</tbody></table>`:`<p class="vuoto">Nessun elaborato.</p>`}</div>`;
+}
+function vSegnalazioni(){
+  const ss=Object.values(DATI.segnalazioni).sort((a,b)=>a.quando<b.quando?1:-1);
+  return `<div class="head"><div><div class="eyebrow">Prova</div><h2>Segnalazioni</h2>
+  <p>${MODO==="condiviso"?"Le segnalazioni di tutti quelli che usano questo link.":"Le segnalazioni fatte da questo browser. Scaricale e mandale via mail o Teams a chi segue la prova."}</p></div>
+  <div class="azioni"><button class="btn primary" data-act="scaricaSeg" ${ss.length?"":"disabled"}>Scarica le segnalazioni (.csv)</button></div></div>
+  <div class="panel tbl">${ss.length?`<table><thead><tr><th>Quando</th><th>Chi</th><th>Pagina</th><th>Tipo</th><th>Descrizione</th></tr></thead><tbody>
+  ${ss.map(s=>`<tr><td class="num" style="white-space:nowrap">${dm(s.quando.slice(0,10))} ${s.quando.slice(11,16)}</td><td>${esc(nomeDi(s.profilo))}</td><td>${esc(s.pagina)}</td><td>${esc(s.tipo)}</td><td>${esc(s.testo)}</td></tr>`).join("")}</tbody></table>`:`<p class="vuoto">Nessuna segnalazione. Usa il pulsante <b>Segnala</b> in basso a destra.</p>`}</div>`;
 }
 
-const VIEWS={ore:vOre,portafoglio:vPortafoglio,obeya:vObeya,settimana:vSettimana,lookahead:vLookahead,kanban:vKanban,evm:vEvm};
+/* ================= render ================= */
+function testata(){
+  const b=document.getElementById("banner");
+  b.textContent=MODO==="attesa"?"Collegamento ai dati condivisi…":MODO==="condiviso"?`Versione di prova: non è l'app definitiva. I dati sono condivisi tra chi usa questo link${SOLA_LETTURA?" (tu in sola lettura)":""}.`:"Versione di prova: non è l'app definitiva. I dati restano solo in questo browser.";
+  document.getElementById("chi").innerHTML=LOC.profilo?`<span>Profilo: <b>${esc(nomeDi(LOC.profilo))}</b></span><button class="btn ghost" data-act="esci">Cambia profilo</button>`:"";
+  const c=corrente(); let h="";
+  if(LOC.profilo&&MODO!=="attesa"){
+    const t=[["portafoglio","Le mie commesse"],...(eDirezione()?[]:[["ore","Le mie ore"]])];
+    h=t.map(([id,l])=>`<button role="tab" aria-selected="${id===LOC.tab}" data-act="go" data-tab="${id}">${l}</button>`).join("");
+    if(c) h+=`<span class="sep">${esc(c.codice)}</span>`+TAB_C.map(([id,l])=>`<button role="tab" aria-selected="${id===LOC.tab}" data-act="go" data-tab="${id}">${l}</button>`).join("");
+  }
+  document.getElementById("tabs").innerHTML=h;
+  document.getElementById("fab-segnala").hidden=!LOC.profilo||MODO==="attesa";
+}
+function vista(){
+  if(MODO==="attesa"||(MODO==="condiviso"&&!CARICATO)) return `<p class="vuoto">Caricamento…</p>`;
+  if(!LOC.profilo) return vAccesso();
+  const c=corrente();
+  if(TAB_C.some(t=>t[0]===LOC.tab)){ if(!c){ LOC.tab="portafoglio"; return vPortafoglio(); }
+    return {obeya:vObeya,anagrafica:vAnagrafica,settimana:vSettimana,lookahead:vLookahead,kanban:vKanban,orec:vOreCommessa,evm:vEvm}[LOC.tab](c); }
+  if(LOC.tab==="ore") return vOre();
+  if(LOC.tab==="segnalazioni") return vSegnalazioni();
+  return vPortafoglio();
+}
 function render(){
-  tabs();
-  document.getElementById("app").innerHTML=`<section class="view">${VIEWS[cur]()}</section>
-  <div class="foot"><span>Formule: PPC = mantenuti / promessi · PCR = vincoli rimossi / identificati · SPI = EV/PV · CPI = EV/AC · EAC = BAC/CPI</span>
-  <button class="btn ghost" id="reset">Ripristina i dati di esempio</button></div>`;
+  const fid=document.activeElement&&document.activeElement.id;
+  testata();
+  const nS=Object.keys(DATI.segnalazioni).length, sim=LOC.spost?` (simulata: +${LOC.spost} sett.)`:"";
+  document.getElementById("app").innerHTML=`<section class="view">${vista()}</section>
+  ${LOC.profilo&&MODO!=="attesa"?`<div class="foot"><span>Formule: PPC = mantenuti / promessi · PCR = vincoli rimossi / in scadenza · SPI = EV/PV · CPI = EV/AC · EAC = BAC/CPI</span>
+  <div class="azioni"><span>Oggi: <b class="num">${dmy(oggi())}</b> · ${W(oggi())}${sim} <button class="btn ghost" data-act="sim" data-d="1">Simula settimana successiva</button>${LOC.spost?`<button class="btn ghost" data-act="sim" data-d="0">Torna a oggi</button>`:""}</span>
+  <span><button class="btn ghost" data-act="go" data-tab="segnalazioni">Segnalazioni (${nS})</button> <button class="btn ghost" data-act="esempio">Ripristina i dati di esempio</button>${ePM()&&!SOLA_LETTURA?` <button class="btn ghost danger" data-act="azzera">Azzera tutto</button>`:""}</span></div></div>`:""}`;
+  if(fid){ const f=document.getElementById(fid); if(f) f.focus(); }
 }
+let renderInSospeso=false;
+function richiediRender(){ const a=document.activeElement; if(a&&a.closest&&a.closest("#app")&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)){ renderInSospeso=true; return; } render(); }
+document.addEventListener("focusout",()=>{ if(renderInSospeso) setTimeout(()=>{ const a=document.activeElement; if(!(a&&a.closest&&a.closest("#app")&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))){ renderInSospeso=false; render(); } },0); });
 
-/* ---------- interazioni ---------- */
-const app=document.getElementById("app");
-app.addEventListener("click",e=>{
-  const t=e.target.closest("button,tr.click"); if(!t) return;
-  if(t.dataset.go) return go(t.dataset.go);
-  if(t.matches("tr.click")){ if(t.dataset.open==="1") go("obeya"); else toast("Nel prototipo solo CL-2026-031 ha il dettaglio completo"); return; }
-  if(t.id==="reset"){ S=JSON.parse(JSON.stringify(BASE)); save(); render(); toast("Dati di esempio ripristinati"); return; }
-  if(t.dataset.wf!==undefined){ const w=S.wwp[+t.dataset.wf]; w.f=t.dataset.v==="1"; if(w.f) w.c=""; save(); render(); return; }
-  if(t.dataset.vt!==undefined){ const v=S.vincoli[+t.dataset.vt]; v.aperto=!v.aperto; save(); render(); toast(v.aperto?`${v.id} riaperto`:`${v.id} rimosso`); return; }
-  if(t.dataset.mv!==undefined){ passo(+t.dataset.mv, Number(t.dataset.d)); }
-});
-app.addEventListener("change",e=>{
-  const t=e.target;
-  if(t.dataset.wc!==undefined){ S.wwp[+t.dataset.wc].c=t.value; save(); render(); }
-  if(t.dataset.utente){ S.utente=t.value; save(); render(); return; }
-  if(t.dataset.h){ const u=S.utente; S.ore[u]=S.ore[u]||{}; const v=S.ore[u][t.dataset.h]||[0,0,0,0,0]; v[+t.dataset.g]=Math.max(0,Math.min(12,+t.value||0)); S.ore[u][t.dataset.h]=v; save();
-    setTimeout(()=>{ const id=document.activeElement&&document.activeElement.id; render(); const f=id&&document.getElementById(id); if(f) f.focus(); },0); const E=evm(); toast(`Ore salvate · AC ${f0(E.ac)} h, CPI ${f1(E.cpi)}`); return; }
-  if(t.dataset.st!==undefined){ S.elaborati[+t.dataset.st].st=+t.value; S.elaborati[+t.dataset.st].age=0; save(); render(); }
-});
-function imposta(e,st){ e.st=st; e.age=0; save(); render(); const E=evm(); toast(`${e.id}: ${STATI[e.st].toLowerCase()} · EV totale ${f0(E.ev)} h, SPI ${f1(E.spi)}`); }
-function passo(i,d){ const e=S.elaborati[i]; const st=e.st+d; if(st<0||st>5) return; imposta(e,st); }
-function muovi(i,col){
-  const e=S.elaborati[i], da=colDi(e.st);
-  if(col===da) return;
+/* ================= azioni ================= */
+const val=id=>{ const e=document.getElementById(id); return e?e.value.trim():""; };
+const numIt=s=>{ const t=String(s).trim().replace(",","."); return /^\d+(\.\d+)?$/.test(t)?Number(t):NaN; };
+function analizzaImport(testo,c){
+  const esist=new Set(c.elaborati.map(e=>e.cod.toUpperCase())), visti=new Map(), righe=[];
+  testo.replace(/\r\n?/g,"\n").split("\n").forEach((ln,i)=>{
+    if(!ln.trim()) return; const sep=ln.includes("\t")?"\t":";"; const cel=ln.split(sep).map(x=>x.trim().replace(/^"(.*)"$/s,"$1").trim());
+    if(!righe.length&&((cel[0]||"").toLowerCase()==="codice")) return;
+    const [cod="",t="",d="",b=""]=cel, err=[];
+    if(cel.length<4) err.push("servono 4 colonne: codice; titolo; disciplina; budget ore");
+    if(cel.length>4&&cel.slice(4).some(x=>x!=="")) err.push("troppe colonne");
+    if(!cod) err.push("manca il codice"); else { const k=cod.toUpperCase(); if(esist.has(k)) err.push(`il codice ${cod} esiste già nella commessa`); if(visti.has(k)) err.push(`codice ${cod} ripetuto (già alla riga ${visti.get(k)})`); else visti.set(k,i+1); }
+    if(!t) err.push("manca il titolo");
+    let disc=""; if(!d) err.push("manca la disciplina"); else { const f=DISC.find(([k,n])=>k.toLowerCase()===d.toLowerCase()||n.toLowerCase()===d.toLowerCase()); if(!f) err.push(`disciplina "${d}" sconosciuta`); else disc=f[0]; }
+    let bud=null; if(!b) err.push("manca il budget in ore"); else { const n=numIt(b); if(!isFinite(n)||n<=0) err.push(`budget "${b}" non valido`); else bud=n; }
+    righe.push({n:i+1,cod,t,d:disc||d,bud,errori:err});
+  });
+  return {cid:c.id,testo,righe,errate:righe.filter(r=>r.errori.length).length};
+}
+function leggiOre(s){ s=String(s).trim(); if(!s) return 0; let m=s.match(/^(\d{1,2}):([0-5]\d)$/); if(m) return +m[1]+ +m[2]/60; const n=numIt(s); return isFinite(n)?n:NaN; }
+async function cambiaStato(c,i,d){
+  const e=c.elaborati[i], nuovo=e.st+d; if(nuovo<0||nuovo>5) return;
+  let nota="";
+  if(d<0){ const m=await chiedi({titolo:`Riportare ${e.cod} a "${STATI[nuovo]}"`,testo:"Per tornare indietro serve il motivo (per esempio i commenti del verificatore).",campo:"Motivo",ok:"Torna indietro"}); if(m===null) return; if(!m){ toast("Serve un motivo per tornare indietro"); return; } nota=` · motivo: ${m}`; }
+  const da=colDi(e.st), a=colDi(nuovo), lim=limite(c,a);
+  if(a!==da&&lim){ const n=c.elaborati.filter(x=>colDi(x.st)===a).length; if(n>=lim){ const m=await chiedi({titolo:`Limite WIP della colonna "${COLS[a][0]}"`,testo:`La colonna ha già ${n} elaborati su un limite di ${lim}. Prima di aprirne un altro, prova ad aiutare a chiudere quelli già lì. Se devi procedere, scrivi il motivo: resta nel registro attività.`,campo:"Motivo",ok:"Procedi comunque"}); if(m===null) return; if(!m){ toast("Serve un motivo per superare il limite WIP"); return; } nota+=` · oltre il limite WIP: ${m}`; } }
+  e.st=nuovo; e.stDal=oggi(); salvaC(c,`${e.cod}: ${STATI[nuovo]}${nota}`); render();
+  const E=evm(c); toast(`${e.cod}: ${STATI[nuovo].toLowerCase()} · EV ${f0(E.ev)} h, SPI ${f1(E.spi)}`);
+}
+function muovi(c,i,col){
+  const e=c.elaborati[i], da=colDi(e.st); if(col===da) return;
   if(Math.abs(col-da)>1){ toast("Si sposta una colonna alla volta"); return; }
   const st=e.st+(col>da?1:-1);
-  if(colDi(st)!==col){ toast(`${e.id}: prima completa lo stato "${STATI[e.st+(col>da?1:-1)]}" con le frecce`); return; }
-  imposta(e,st);
+  if(colDi(st)!==col){ toast(`${e.cod}: prima porta a termine "${STATI[st]}" con le frecce`); return; }
+  cambiaStato(c,i,col>da?1:-1);
 }
-let drag=null;
+const AZ={
+  profilo:t=>{ LOC.profilo=t.dataset.p; LOC.tab="portafoglio"; LOC.cur=null; salvaLoc(); render(); },
+  esci:()=>{ LOC.profilo=null; salvaLoc(); render(); },
+  go:t=>go(t.dataset.tab),
+  apri:t=>go("obeya",t.dataset.c),
+  toggle:t=>{ UI[t.dataset.k]=!UI[t.dataset.k]; render(); },
+  sim:t=>{ LOC.spost=t.dataset.d==="0"?0:(LOC.spost||0)+1; salvaLoc(); render(); toast(`Data simulata: ${dmy(oggi())} (${W(oggi())})`); },
+  oreSett:t=>{ LOC.oreOff=t.dataset.d==="0"?0:LOC.oreOff+Number(t.dataset.d); salvaLoc(); render(); },
+  esempio:async()=>{ if(DATI.commesse.esempio&&!(await chiedi({titolo:"Ripristinare la commessa di esempio?",testo:"CL-2026-031 torna com'era all'inizio. Le tue commesse non vengono toccate.",ok:"Ripristina"}))) return; salvaC(creaEsempio()); render(); toast("Commessa di esempio ripristinata"); },
+  azzera:async()=>{ if(!(await chiedi({titolo:"Azzerare tutte le commesse?",testo:MODO==="condiviso"?"Si cancellano TUTTE le commesse condivise, anche quelle degli altri. Le segnalazioni restano.":"Si cancellano tutte le commesse di questo browser. Le segnalazioni restano.",ok:"Azzera tutto"}))) return; Object.keys(DATI.commesse).forEach(eliminaC); LOC.cur=null; LOC.tab="portafoglio"; salvaLoc(); render(); toast("Commesse azzerate"); },
+  creaCommessa:()=>{
+    const v={codice:val("nc-codice"),nome:val("nc-nome"),cliente:val("nc-cliente"),inizio:val("nc-inizio"),fine:val("nc-fine")}; const err=document.getElementById("nc-err");
+    if(!v.codice||!v.nome){ err.textContent="Servono almeno Codice e Nome."; return; }
+    if(Object.values(DATI.commesse).some(c=>c.codice.toUpperCase()===v.codice.toUpperCase())){ err.textContent=`Esiste già una commessa ${v.codice}.`; return; }
+    if(v.inizio&&v.fine&&v.fine<v.inizio){ err.textContent="La fine prevista è prima dell'inizio."; return; }
+    const c=commessaVuota(v); salvaC(c,"commessa creata"); UI.nuova=false; go("anagrafica",c.id); toast(`Commessa ${v.codice} creata: ne sei il PM`);
+  }
+};
+const AZC={   // azioni sulla commessa corrente
+  salvaDati:c=>{ const i=val("an-inizio"),f=val("an-fine"); if(i&&f&&f<i) return toast("La fine prevista è prima dell'inizio"); if(!val("an-nome")) return toast("Il nome non può essere vuoto");
+    Object.assign(c,{nome:val("an-nome"),cliente:val("an-cliente"),inizio:i,fine:f}); salvaC(c,"dati della commessa"); render(); toast("Dati salvati"); },
+  aggTeam:c=>{ const p=val("tm-p"); if(!p) return; c.team.push({p,ruolo:val("tm-r")}); salvaC(c,`team: aggiunto ${nomeDi(p)}`); render(); },
+  togliTeam:(c,t)=>{ const i=+t.dataset.i, m=c.team[i]; if(m.ruolo==="pm"&&c.team.filter(x=>x.ruolo==="pm").length===1) return toast("Serve almeno un PM nel team"); c.team.splice(i,1); salvaC(c,`team: tolto ${nomeDi(m.p)}`); render(); },
+  aggMs:c=>{ const t=val("ms-t"),d=val("ms-d"); if(!t||!d) return toast("Servono titolo e data target"); c.milestone.push({id:nuovoId("m"),t,data:d,fatta:false}); salvaC(c,`milestone: ${t}`); render(); },
+  togliMs:(c,t)=>{ const id=t.dataset.id; c.milestone=c.milestone.filter(m=>m.id!==id); c.elaborati.forEach(e=>{ if(e.ms===id) e.ms=""; }); salvaC(c,"milestone eliminata"); render(); },
+  aggEl:c=>{ const cod=val("el-cod"),t=val("el-t"),d=val("el-d"),b=numIt(val("el-bud")); const err=document.getElementById("el-err");
+    if(!cod||!t) return err.textContent="Servono codice e titolo."; if(c.elaborati.some(e=>e.cod.toUpperCase()===cod.toUpperCase())) return err.textContent=`Esiste già un elaborato ${cod} in questa commessa.`; if(!isFinite(b)||b<=0) return err.textContent="Budget ore non valido.";
+    c.elaborati.push({cod,t,d,bud:b,st:0,acBase:0,stDal:oggi(),resp:"",ms:""}); salvaC(c,`elaborato ${cod}`); render(); toast(`${cod} aggiunto`); },
+  anteprima:c=>{ UI.imp=analizzaImport(document.getElementById("imp-testo").value,c); render(); },
+  importa:c=>{ const imp=UI.imp; if(!imp||imp.errate) return; imp.righe.forEach(r=>c.elaborati.push({cod:r.cod,t:r.t,d:r.d,bud:r.bud,st:0,acBase:0,stDal:oggi(),resp:"",ms:""})); salvaC(c,`import di ${imp.righe.length} elaborati`); UI.imp=null; UI.importa=false; render(); toast(`${imp.righe.length} elaborati importati`); },
+  salvaWip:c=>{ const a=+val("wip-c"),b=+val("wip-v"); if(!(a>=1&&b>=1)) return toast("I limiti WIP devono essere almeno 1"); c.wip={corso:a,verifica:b}; salvaC(c,`limiti WIP ${a}/${b}`); render(); toast("Limiti WIP salvati"); },
+  preparaPiano:c=>{ c.piani=c.piani||{}; c.piani[lunedi(oggi())]={stato:"bozza",impegni:[]}; salvaC(c,`piano ${W(oggi())}: bozza`); render(); },
+  aggImp:async c=>{ const p=pianoDi(c); const aid=val("im-att"); const a=(c.attivita||[]).find(x=>x.id===aid); const testo=val("im-a")||(a?a.t:"");
+    if(!testo) return toast("Scrivi l'impegno o scegli un'attività");
+    if(a&&bloccata(c,a.id)&&!(await chiedi({titolo:"Attività vincolata",testo:`${a.cod} ha vincoli aperti: nel Last Planner si promettono solo attività pronte. Aggiungerla comunque?`,ok:"Aggiungi comunque"}))) return;
+    p.impegni.push({id:nuovoId("i"),att:aid,a:testo,e:val("im-e")||(a?a.e:""),lp:val("im-lp"),f:null,c:"",perche:"",dopo:p.stato==="promesso"}); salvaC(c,`impegno: ${testo}`); render(); },
+  togliImp:(c,t)=>{ pianoDi(c).impegni.splice(+t.dataset.k,1); salvaC(c); render(); },
+  promettiPiano:c=>{ const p=pianoDi(c); if(!p.impegni.length) return toast("Aggiungi almeno un impegno"); p.stato="promesso"; salvaC(c,`piano ${W(oggi())}: promesso`); render(); toast("Piano promesso: venerdì si segnano Sì o No"); },
+  chiudiPiano:c=>{ const p=pianoDi(c); const senza=p.impegni.filter(i=>i.f===null).length, noCausa=p.impegni.filter(i=>i.f===false&&!i.c).length;
+    if(senza) return toast(`Mancano ${senza} risposte Sì/No`); if(noCausa) return toast(`Manca la causa per ${noCausa} impegni non fatti`);
+    p.stato="chiuso"; p.ppc=ppcDi(p); salvaC(c,`piano ${W(oggi())}: chiuso, PPC ${pct(p.ppc)}`); render(); toast(`Piano chiuso: PPC ${pct(p.ppc)}`); },
+  fatto:(c,t)=>{ const i=pianoDi(c).impegni[+t.dataset.k]; i.f=t.dataset.v==="1"; if(i.f){ i.c=""; i.perche=""; } salvaC(c); render(); if(!i.f){ const s=document.getElementById("causa-"+t.dataset.k); if(s) s.focus(); } },
+  aggAtt:c=>{ const cod=val("at-cod"),t=val("at-t"),da=val("at-da"),a=val("at-a"); const err=document.getElementById("at-err");
+    if(!cod||!t) return err.textContent="Servono codice e titolo."; if((c.attivita||[]).some(x=>x.cod.toUpperCase()===cod.toUpperCase())) return err.textContent=`Esiste già un'attività ${cod}.`; if(a<da) return err.textContent="La settimana finale è prima di quella iniziale.";
+    c.attivita=c.attivita||[]; c.attivita.push({id:nuovoId("a"),cod,t,lp:val("at-lp"),d:val("at-d"),e:val("at-e"),da,a}); salvaC(c,`attività ${cod}`); render(); toast(`Attività ${cod} aggiunta`); },
+  aggVinc:c=>{ const t=val("vc-t"),chi=val("vc-chi"),entro=val("vc-entro"); const att=[...document.querySelectorAll('input[name="vc-att"]:checked')].map(x=>x.value); const err=document.getElementById("vc-err");
+    if(!t||!chi||!entro) return err.textContent="Servono vincolo, chi lo rimuove e data."; if(!att.length) return err.textContent="Scegli almeno un'attività bloccata.";
+    c.vincoli=c.vincoli||[]; const n=c.vincoli.reduce((m,v)=>Math.max(m,+(String(v.id).match(/\d+/)||[0])[0]),0)+1;
+    c.vincoli.push({id:"V-"+n,t,chi,entro,att,stato:"aperto"}); salvaC(c,`vincolo V-${n}`); render(); toast(`Vincolo V-${n} registrato`); },
+  vinc:(c,t)=>{ const v=c.vincoli[+t.dataset.i]; v.stato=t.dataset.s; salvaC(c,`vincolo ${v.id}: ${v.stato}`); render(); toast(`${v.id} ${v.stato==="aperto"?"riaperto":v.stato}`); },
+  passo:(c,t)=>cambiaStato(c,+t.dataset.i,+t.dataset.d),
+  creaBozza:c=>{ if(!c.inizio||!c.fine) return toast("Inserisci Inizio e Fine prevista in Anagrafica"); if(!c.elaborati.length) return toast("Aggiungi prima gli elaborati");
+    const r={}; c.elaborati.forEach(e=>r[e.cod]={date:distribuisci(c.inizio,c.fine,5)}); c.baseline={stato:"bozza",ver:1,motivo:"",righe:r}; UI.prepara=false; salvaC(c,"baseline v1: bozza"); render(); },
+  distrib:(_c,t)=>{ const ins=[...document.querySelectorAll(`input[data-bl="${CSS.escape(t.dataset.e)}"]`)]; const a=ins[0].value,b=ins[4].value; if(!a||!b||b<a) return toast("Servono la prima e l'ultima data, in ordine"); distribuisci(a,b,5).forEach((d,k)=>ins[k].value=d); toast("Date distribuite: premi Salva sulla riga"); },
+  salvaRiga:(c,t)=>{ const date=[...document.querySelectorAll(`input[data-bl="${CSS.escape(t.dataset.e)}"]`)].map(x=>x.value);
+    if(date.some(d=>!d)) return toast("Servono tutte le date"); if(date.some((d,k)=>k&&d<date[k-1])) return toast("Le date devono essere in ordine, dal primo all'ultimo stato");
+    c.baseline.righe[t.dataset.e]={date}; salvaC(c); render(); toast(`${t.dataset.e}: date salvate`); },
+  approva:async c=>{ if(!(await chiedi({titolo:"Approvare e congelare la baseline?",testo:"Budget, pesi e valore pianificato di ogni settimana restano fissi. Se la commessa cambia davvero, si fa una nuova baseline con il motivo.",ok:"Approva e congela"}))) return;
+    const b=c.baseline; c.elaborati.forEach(e=>{ const r=b.righe[e.cod]||{date:distribuisci(c.inizio,c.fine,5)}; b.righe[e.cod]={bud:e.bud,date:r.date}; }); b.stato="approvata"; b.approvata=oggi(); delete b.precedente; salvaC(c,`baseline v${b.ver} approvata`); render(); toast("Baseline approvata: PV e SPI ora si calcolano"); },
+  annullaBozza:c=>{ const b=c.baseline; c.baseline=b.precedente||null; salvaC(c,"bozza di baseline annullata"); render(); },
+  nuovaBaseline:async c=>{ const m=await chiedi({titolo:"Nuova baseline",testo:"Si fa solo se la commessa cambia davvero (varianti, nuovi elaborati). La baseline attuale resta valida finché non approvi la nuova.",campo:"Motivo",ok:"Crea la bozza"}); if(m===null) return; if(!m) return toast("Serve il motivo");
+    const old=c.baseline, r={}; c.elaborati.forEach(e=>r[e.cod]={date:old.righe[e.cod]?[...old.righe[e.cod].date]:distribuisci(c.inizio,c.fine,5)});
+    c.baseline={stato:"bozza",ver:old.ver+1,motivo:m,righe:r,precedente:old}; salvaC(c,`baseline v${old.ver+1}: bozza (${m})`); render(); }
+};
+async function scaricaSegnalazioni(){
+  const ss=Object.values(DATI.segnalazioni).sort((a,b)=>a.quando<b.quando?-1:1);
+  const q=s=>`"${String(s??"").replace(/"/g,'""')}"`;
+  const csv="﻿"+["Quando;Profilo;Commessa;Pagina;Tipo;Descrizione",...ss.map(s=>[s.quando.replace("T"," ").slice(0,16),nomeDi(s.profilo),s.commessa||"",s.pagina,s.tipo,s.testo].map(q).join(";"))].join("\r\n");
+  const nome=`segnalazioni-cruscotto-${iso(new Date())}.csv`;
+  try{ if(window.claude&&typeof window.claude.use==="function"){ const d=await window.claude.use("downloads"); if(d){ await d.save({filename:nome,data:csv}); return; } } }catch(e){ if(e&&e.code==="declined") return; }
+  const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"})); a.download=nome; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},1000);
+}
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-act]"); if(!t||t.disabled) return;
+  const a=t.dataset.act;
+  if(a==="scaricaSeg") return scaricaSegnalazioni();
+  if(AZ[a]) return AZ[a](t);
+  const c=corrente(); if(c&&AZC[a]){ if(SOLA_LETTURA) return toast("Accesso in sola lettura"); return AZC[a](c,t); }
+});
+document.getElementById("app").addEventListener("change",e=>{
+  const t=e.target, k=t.dataset.ch; if(!k) return;
+  if(k==="altri"){ LOC.altri=t.checked; salvaLoc(); render(); return; }
+  if(SOLA_LETTURA) return;
+  if(k==="ora"){ const c=DATI.commesse[t.dataset.c]; if(!c) return; const me=LOC.profilo, L=addG(lunedi(oggi()),7*LOC.oreOff), g=+t.dataset.g, cod=t.dataset.e;
+    const h=leggiOre(t.value); if(!isFinite(h)||h<0){ toast("Scrivi le ore come 1,5 oppure 1:30"); t.value=""; return; }
+    if(totaleGiorno(me,L,g,{c:c.id,e:cod})+h>ORE_MAX_GIORNO){ toast(`Oltre ${ORE_MAX_GIORNO} ore nel giorno: non salvato`); render(); return; }
+    c.ore=c.ore||{}; c.ore[me]=c.ore[me]||{}; c.ore[me][cod]=c.ore[me][cod]||{}; const v=c.ore[me][cod][L]||[0,0,0,0,0]; v[g]=Math.round(h*100)/100; c.ore[me][cod][L]=v;
+    salvaC(c); setTimeout(render,0); const E=evm(c); toast(`Ore salvate · ${c.codice}: AC ${f0(E.ac)} h, CPI ${f1(E.cpi)}`); return; }
+  const c=corrente(); if(!c) return;
+  if(k==="ruolo"){ const m=c.team[+t.dataset.i]; if(m.ruolo==="pm"&&t.value!=="pm"&&c.team.filter(x=>x.ruolo==="pm").length===1){ toast("Serve almeno un PM nel team"); render(); return; } m.ruolo=t.value; salvaC(c,`${nomeDi(m.p)}: ruolo ${t.value}`); render(); }
+  if(k==="msFatta"){ const m=c.milestone.find(x=>x.id===t.dataset.id); m.fatta=t.checked; salvaC(c,`milestone ${m.t}: ${m.fatta?"raggiunta":"da raggiungere"}`); render(); }
+  if(k==="bud"){ const n=numIt(t.value); const e=c.elaborati[+t.dataset.i]; if(!isFinite(n)||n<=0){ toast("Budget non valido"); render(); return; } e.bud=n; salvaC(c,`${e.cod}: budget ${fh(n)} h`); render(); }
+  if(k==="resp"){ const e=c.elaborati[+t.dataset.i]; e.resp=t.value; salvaC(c,`${e.cod}: responsabile ${nomeDi(t.value)}`); render(); }
+  if(k==="ms"){ const e=c.elaborati[+t.dataset.i]; e.ms=t.value; salvaC(c); render(); }
+  if(k==="causa"){ pianoDi(c).impegni[+t.dataset.k].c=t.value; salvaC(c); render(); }
+  if(k==="perche"){ pianoDi(c).impegni[+t.dataset.k].perche=t.value.trim(); salvaC(c); }
+});
+let drag=null; const app=document.getElementById("app");
 app.addEventListener("dragstart",e=>{const c=e.target.closest("[data-card]"); if(c){drag=+c.dataset.card; e.dataTransfer.effectAllowed="move"; e.dataTransfer.setData("text/plain",c.dataset.card);}});
 app.addEventListener("dragend",()=>{drag=null;});
 app.addEventListener("dragover",e=>{if(drag!==null&&e.target.closest("[data-col]")) e.preventDefault();});
-app.addEventListener("drop",e=>{const c=e.target.closest("[data-col]"); if(c&&drag!==null){e.preventDefault(); muovi(drag,+c.dataset.col);} drag=null;});
+app.addEventListener("drop",e=>{const col=e.target.closest("[data-col]"); const c=corrente(); if(col&&drag!==null&&c&&puoLavorare(c)){e.preventDefault(); muovi(c,drag,+col.dataset.col);} drag=null;});
 
-render();
+/* segnalazioni */
+document.getElementById("fab-segnala").addEventListener("click",()=>{
+  const c=corrente(); document.getElementById("seg-pagina").textContent=`Pagina: ${NOMI_TAB[LOC.tab]||LOC.tab}${c&&TAB_C.some(t=>t[0]===LOC.tab)?" · "+c.codice:""} · profilo ${nomeDi(LOC.profilo)}`;
+  document.getElementById("seg-testo").value=""; const d=document.getElementById("dlg-segnala"); d.returnValue=""; d.showModal(); document.getElementById("seg-testo").focus();
+});
+document.getElementById("dlg-segnala").addEventListener("close",()=>{
+  const d=document.getElementById("dlg-segnala"); if(d.returnValue!=="ok") return;
+  const testo=document.getElementById("seg-testo").value.trim(); if(!testo) return;
+  const c=corrente(), inC=c&&TAB_C.some(t=>t[0]===LOC.tab);
+  salvaSegnalazione({id:nuovoId("s"),quando:new Date().toISOString(),profilo:LOC.profilo,commessa:inC?c.codice:"",pagina:NOMI_TAB[LOC.tab]||LOC.tab,tipo:(document.querySelector('#seg-form input[name="tipo"]:checked')||{}).value||"",testo});
+  render(); toast("Segnalazione registrata, grazie");
+});
+
+/* ================= avvio ================= */
+async function avvia(){
+  leggiLocale();
+  if(window.claude&&typeof window.claude.use==="function"){
+    MODO="attesa"; render();
+    let db=null; try{ db=await window.claude.use("db"); }catch(e){}
+    if(db){
+      DB=db; MODO="condiviso"; DATI={commesse:{},segnalazioni:{}};
+      let pronti=0; const fatto=()=>{ if(++pronti>=2){ CARICATO=true; } };
+      let primoC=true, primoS=true;
+      db.collection("commesse").onSnapshot(s=>{ const m={}; s.docs.forEach(d=>{ if(d.exists){ const v=d.data(); if(v&&v.id) m[d.id]=v; } }); DATI.commesse=m; if(primoC){ primoC=false; fatto(); } richiediRender(); },
+        e=>{ if(primoC){ primoC=false; fatto(); render(); } if(e&&e.code==="revoked"){ SOLA_LETTURA=true; } toast("Collegamento ai dati condivisi interrotto: ricarica la pagina"); });
+      db.collection("segnalazioni").onSnapshot(s=>{ const m={}; s.docs.forEach(d=>{ if(d.exists) m[d.id]=d.data(); }); DATI.segnalazioni=m; if(primoS){ primoS=false; fatto(); } richiediRender(); },()=>{ if(primoS){ primoS=false; fatto(); render(); } });
+      render(); return;
+    }
+    MODO="locale";
+  }
+  if(!haDatiLocali){ DATI.commesse.esempio=creaEsempio(); salvaDatiLocali(); }
+  render();
+}
+avvia();
 </script>
