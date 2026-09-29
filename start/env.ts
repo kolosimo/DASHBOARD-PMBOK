@@ -32,7 +32,7 @@ const env = await Env.create(new URL('../', import.meta.url), {
 
   // Sessione
   SESSION_DRIVER: Env.schema.enum(['cookie', 'memory', 'database'] as const),
-  // Scadenza della sessione per inattività (es. "8h", "30m"). Default 8h.
+  // Scadenza della sessione per inattività (es. "8h", "30m"). Default 10h.
   SESSION_INATTIVITA: Env.schema.string.optional(),
 
   // Database PostgreSQL
@@ -52,21 +52,22 @@ const env = await Env.create(new URL('../', import.meta.url), {
   OIDC_SCOPES: Env.schema.string.optional(),
   ADMIN_EMAILS: Env.schema.string.optional(),
 
+  // HTTPS diretto da Node (produzione): certificato PFX, passphrase e porta HTTP
+  // da reindirizzare su HTTPS. Letti da bin/server.ts; vuoti = solo HTTP.
+  HTTPS_PFX_PATH: Env.schema.string.optional(),
+  HTTPS_PFX_PASSPHRASE: Env.schema.secret.optional(),
+  HTTPS_REINDIRIZZA_DA_PORTA: Env.schema.string.optional(),
+
   // Job pianificati (snapshot settimanali). Disattivati nei test.
   SCHEDULER_ATTIVO: Env.schema.boolean.optional(),
 })
 
-// Con AUTH_MODE=locale non servono variabili OIDC e il login di sviluppo non
-// esiste: i controlli di avvio riguardano solo oidc e dev.
-const modalita = env.get('AUTH_MODE')
-if (modalita !== 'locale') {
-  controllaConfigurazioneAvvio({
-    NODE_ENV: env.get('NODE_ENV'),
-    AUTH_MODE: modalita,
-    OIDC_ISSUER: env.get('OIDC_ISSUER'),
-    OIDC_CLIENT_ID: env.get('OIDC_CLIENT_ID'),
-    OIDC_REDIRECT_URI: env.get('OIDC_REDIRECT_URI'),
-  })
-}
+controllaConfigurazioneAvvio({
+  NODE_ENV: env.get('NODE_ENV'),
+  AUTH_MODE: env.get('AUTH_MODE'),
+  OIDC_ISSUER: env.get('OIDC_ISSUER'),
+  OIDC_CLIENT_ID: env.get('OIDC_CLIENT_ID'),
+  OIDC_REDIRECT_URI: env.get('OIDC_REDIRECT_URI'),
+})
 
 export default env

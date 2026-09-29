@@ -3,7 +3,8 @@
  * Funzioni pure: si possono testare senza avviare il server.
  */
 
-export type ModalitaAuth = 'oidc' | 'dev'
+/** oidc = Microsoft 365; locale = email e password gestite dall'admin; dev = sviluppo */
+export type ModalitaAuth = 'oidc' | 'locale' | 'dev'
 
 export class ConfigurazioneNonValida extends Error {
   constructor(messaggio: string) {
@@ -18,6 +19,7 @@ export class ConfigurazioneNonValida extends Error {
  * - `NODE_ENV=production` con `AUTH_MODE=dev`: vietato, perché il login di
  *   sviluppo permette di entrare come chiunque senza password.
  * - `AUTH_MODE=oidc` senza issuer, client id o redirect: vietato.
+ * - `AUTH_MODE=locale`: nessuna variabile OIDC richiesta.
  */
 export function controllaConfigurazioneAvvio(valori: {
   NODE_ENV: string

@@ -23,6 +23,7 @@
     "e2e": "playwright test",
     "screenshot": "playwright test -c playwright.screenshot.config.ts",
     "vendorizza": "node scripts/vendorizza.mjs",
+    "pacchetto": "node deploy/pacchetto.mjs",
     "db:migra": "node ace migration:run",
     "db:seed": "node ace db:seed",
     "db:ricrea": "node ace migration:fresh --seed",
