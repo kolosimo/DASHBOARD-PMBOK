@@ -150,6 +150,42 @@ export async function statiAllIstante(
   )
 }
 
+export interface PosizioneNelFlusso {
+  attuale: { id: number; nome: string; colonnaNome: string }
+  /** Stato precedente (per tornare indietro con un motivo), null se è il primo */
+  precedente: { id: number; nome: string } | null
+  /** Stato successivo, null se è l'ultimo */
+  successivo: { id: number; nome: string } | null
+  inFinale: boolean
+  /** Numero dello stato nella sequenza (1 = iniziale) e totale degli stati */
+  numero: number
+  totale: number
+}
+
+/** Dove si trova uno stato nel flusso della commessa: per la scheda elaborato */
+export async function posizioneNelFlusso(
+  commessaId: number,
+  statoId: number
+): Promise<PosizioneNelFlusso | null> {
+  const conf = await configurazioneFlusso(commessaId)
+  const stato = conf.statoPerId.get(statoId)
+  if (!stato) return null
+  const prima = conf.stati[stato.posizione - 1]
+  const dopo = conf.stati[stato.posizione + 1]
+  return {
+    attuale: {
+      id: stato.id,
+      nome: stato.nome,
+      colonnaNome: conf.colonne.find((c) => c.id === stato.colonnaId)?.nome ?? '',
+    },
+    precedente: prima ? { id: prima.id, nome: prima.nome } : null,
+    successivo: dopo ? { id: dopo.id, nome: dopo.nome } : null,
+    inFinale: stato.posizione >= conf.posizioneFinale,
+    numero: stato.posizione + 1,
+    totale: conf.stati.length,
+  }
+}
+
 export interface TransizioneStorico {
   id: number
   daStatoNome: string | null
@@ -200,10 +236,9 @@ export async function riepilogoFlusso(commessaId: number, oggi: DataIso): Promis
   const conf = await configurazioneFlusso(commessaId)
 
   // Elaborati con stato e disciplina; le ore registrate (AC) dal modulo ore
-  const [righe, acPerElaborato] = await Promise.all([
-    righeKanban(commessaId),
-    minutiPerElaborato(commessaId),
-  ])
+  // In sequenza: nei test tutte le query condividono una sola connessione
+  const righe = await righeKanban(commessaId)
+  const acPerElaborato = await minutiPerElaborato(commessaId)
 
   const schedePerColonna = new Map<number, SchedaKanban[]>()
   for (const r of righe) {
