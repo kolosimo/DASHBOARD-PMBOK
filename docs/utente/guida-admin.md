@@ -1,8 +1,7 @@
 # Guida per l'amministratore
 
 > **Versione per il pilota (Fase 2).** Descrive le schermate come sono nel codice
-> attuale. Le parti segnate **[DA VERIFICARE SULLO SCHERMO]** riguardano funzioni in
-> completamento in questa fase (account locali, registro di audit). Le sigle sono
+> attuale. Le sigle sono
 > spiegate nel [glossario](glossario.md). Per l'organizzazione del pilota vedi il
 > [piano del pilota](../pilota/piano-del-pilota.md).
 
@@ -41,14 +40,23 @@ Il pilota parte **vuoto**: nessuna commessa, solo configurazione e utenti.
 
 ### Come nasce un utente
 
-**Nel pilota: account locali.** **[DA VERIFICARE SULLO SCHERMO]**
+**Nel pilota: account locali.**
 
-- L'amministratore crea l'utente da **Amministrazione → Utenti e ruoli** con nome,
-  nome utente (o email), ruolo globale e una **password temporanea**.
-- La password temporanea si consegna di persona o per telefono; al primo accesso
-  l'utente deve sceglierne una nuova.
-- Se un utente dimentica la password, l'amministratore ne imposta una temporanea
-  nuova. Nessuno può leggere le password salvate.
+- Il **primo amministratore** lo crea l'IT sul server:
+  `node ace utenti:crea-admin --email nome.cognome@climosfera.it --nome "Nome Cognome"`
+  (lo script di installazione lo chiede). Il comando mostra una password temporanea.
+- Gli altri utenti li crea l'amministratore da **Amministrazione → Utenti e ruoli**:
+  **Email**, **Nome e cognome**, **Ruolo** (per i PM del pilota: `pm`), poi
+  **Crea utente**. L'app genera una **password temporanea** e la mostra **una sola
+  volta**: copiala e consegnala di persona o per telefono.
+- Al primo accesso l'utente deve sceglierne una nuova (almeno 12 caratteri). Dopo,
+  può cambiarla da **Cambia password** in alto a destra.
+- Se un utente dimentica la password, nella sua riga di **Utenti e ruoli** si genera
+  una nuova password temporanea; dopo troppi tentativi sbagliati l'account si blocca
+  per qualche minuto e si può **sbloccare** dalla stessa riga. Nessuno può leggere le
+  password salvate.
+- Gli utenti con ruolo globale **pm** aprono da soli le proprie commesse
+  (**Nuova commessa** in *Le mie commesse*).
 
 **Con Microsoft 365 (dopo il pilota)**: l'utente **nasce al primo accesso**.
 
@@ -190,8 +198,8 @@ dello storico viene segnata come rettificata.
 
 ## 7. Registro di audit
 
-**[DA VERIFICARE SULLO SCHERMO]** — pagina di consultazione in completamento in questa
-fase.
+Si consulta da **Amministrazione → Registro attività** (`/admin/registro`), con filtri
+per periodo (**dal**, **al**), utente ed entità e con la paginazione.
 
 Ogni modifica (impostazioni, stati, vincoli, piani, ore, baseline, sforamenti WIP) viene
 registrata con autore, data e valori prima e dopo. Il registro non si può modificare né

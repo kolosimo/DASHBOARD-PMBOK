@@ -160,6 +160,8 @@ persona visibili al PM (Amministrazione → Impostazioni) finché non lo è.
 
 - Le commesse del pilota **restano** nel Cruscotto e si continua a usarle.
 - Le correzioni emerse si pianificano con l'orchestratore dello sviluppo.
-- Il login con Microsoft 365 si attiva al go-live; gli account locali del pilota si
-  disattivano o si collegano all'account aziendale. **[DA VERIFICARE]** con
-  l'amministratore come avviene il passaggio.
+- Il login con Microsoft 365 si attiva al go-live: l'IT imposta `AUTH_MODE=oidc` e le
+  variabili `OIDC_*` nel file `.env` del server e riavvia il servizio. Gli utenti del
+  pilota **restano gli stessi**: al primo accesso con Microsoft 365 vengono collegati per
+  **email** (per questo gli account locali vanno creati con l'email aziendale). Le
+  password locali da quel momento non servono più.

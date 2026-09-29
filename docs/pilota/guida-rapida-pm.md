@@ -2,8 +2,7 @@
 
 Due pagine per partire. La guida completa è in [guida-pm.md](../utente/guida-pm.md);
 le sigle (PPC, SPI, CPI…) sono spiegate nel [glossario](../utente/glossario.md).
-Le parti segnate **[DA VERIFICARE SULLO SCHERMO]** descrivono schermate che al momento
-della stesura erano ancora in preparazione: se vedi qualcosa di diverso, annotalo nel
+Se vedi qualcosa di diverso da quanto descritto, annotalo nel
 [modulo di feedback](piano-del-pilota.md#6-modulo-di-feedback).
 
 ## 1. Primo accesso
@@ -11,12 +10,17 @@ della stesura erano ancora in preparazione: se vedi qualcosa di diverso, annotal
 1. Apri l'indirizzo che ti ha dato l'amministratore (per esempio
    `https://cruscotto.climosfera.local`) con **Edge** o **Chrome**; sul Mac va bene
    anche **Safari**.
-2. Nella pagina **Accedi** scrivi il **nome utente** e la **password temporanea** che
-   ti ha dato l'amministratore. **[DA VERIFICARE SULLO SCHERMO]**
-3. Al primo accesso l'app ti chiede di **scegliere una nuova password**: scrivila due
-   volte e conferma. Da quel momento vale solo la tua. **[DA VERIFICARE SULLO SCHERMO]**
-4. Se dimentichi la password, chiedi all'amministratore di reimpostarla: nessuno,
-   nemmeno l'amministratore, può leggerla.
+2. Nella pagina di accesso scrivi la tua **Email** e la **Password** temporanea che
+   ti ha dato l'amministratore, poi premi **Accedi**.
+3. Al primo accesso l'app apre **Cambia password**: scrivi la nuova password in
+   **Nuova password (almeno 12 caratteri)** e in **Ripeti la nuova password**, poi
+   premi **Salva la nuova password**. Da quel momento vale solo la tua. Una frase di
+   più parole è facile da ricordare e difficile da indovinare.
+4. Per cambiarla in seguito usa **Cambia password** in alto a destra, accanto a
+   **Esci**.
+5. Se dimentichi la password, chiedi all'amministratore di reimpostarla: nessuno,
+   nemmeno l'amministratore, può leggerla. Dopo troppi tentativi sbagliati l'account
+   si blocca per qualche minuto; l'amministratore può sbloccarlo.
 
 Il pulsante **Accedi con Microsoft 365** nel pilota non serve: verrà attivato dopo.
 
@@ -31,12 +35,13 @@ Così il Cruscotto si apre dalla barra delle applicazioni o dal Dock, in una fin
 - **Safari (Mac):** menu **File** → **Aggiungi al Dock**.
 
 I nomi delle voci cambiano un po' tra una versione e l'altra del browser.
-**[DA VERIFICARE SULLO SCHERMO]**
 
 ## 3. Preparare la commessa (una volta sola)
 
-1. **La commessa la apre l'amministratore** (Amministrazione → Commesse) indicando
-   te come PM. Tu la trovi in **Le mie commesse**: clicca sul **codice**.
+1. **La commessa la apri tu**: in **Le mie commesse** premi **Nuova commessa**,
+   scrivi **Codice** (per esempio `CL-2026-040`), **Nome**, **Cliente** e, se le sai,
+   le date, poi premi **Crea commessa**. Ne diventi il PM e si apre la scheda
+   **Anagrafica**. (Può aprirla anche l'amministratore, indicando te come PM.)
 2. Vai alla scheda **Anagrafica** e controlla **Dati della commessa**: inserisci
    **Inizio** e **Fine prevista** (servono alla baseline) e premi **Salva**.
 3. **Team:** in fondo al riquadro scegli la persona in **Aggiungi persona**, il
@@ -112,8 +117,9 @@ Senza baseline approvata PV e SPI restano **n.d.**
    **stato** sul Kanban: tenete aggiornato il Kanban.
 
 **Commessa (Obeya)**: la pagina per la riunione del lunedì con SPI, CPI, PPC, vincoli,
-milestone e l'elenco **Da affrontare in riunione** generato dai dati.
-**[DA VERIFICARE SULLO SCHERMO]** (pagina in completamento in questa fase).
+milestone e l'elenco **Da affrontare in riunione** generato dai dati. Finché la
+commessa è nuova, la pagina elenca i **passi mancanti** (elaborati, milestone,
+baseline, primo piano, prime ore) con il link alla scheda giusta.
 
 ## Se qualcosa non va
 

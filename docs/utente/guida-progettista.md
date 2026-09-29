@@ -1,8 +1,7 @@
 # Guida per il progettista
 
 > **Versione per il pilota (Fase 2).** Descrive le schermate come sono nel codice
-> attuale. Le parti segnate **[DA VERIFICARE SULLO SCHERMO]** riguardano l'accesso con
-> account locale, ancora in completamento. Le sigle sono spiegate nel
+> attuale. Le sigle sono spiegate nel
 > [glossario](glossario.md).
 
 Questa guida vale per chi nel team di una commessa ha il ruolo di **progettista** o
@@ -20,9 +19,9 @@ Nel Cruscotto il progettista fa tre cose:
 ## Entrare
 
 1. Apri il Cruscotto dal browser (Edge o Chrome; sul Mac anche Safari).
-2. **Nel pilota** accedi con il **nome utente** e la **password temporanea** che ti ha
-   dato l'amministratore; al primo accesso scegli una password nuova.
-   **[DA VERIFICARE SULLO SCHERMO]** Dopo il pilota si entrerà con **Accedi con
+2. **Nel pilota** accedi con **Email** e **Password** temporanea che ti ha dato
+   l'amministratore; al primo accesso la pagina **Cambia password** chiede una password
+   nuova di almeno 12 caratteri. Dopo il pilota si entrerà con **Accedi con
    Microsoft 365** (lo stesso account di Outlook e Teams).
 3. Si apre **Le mie commesse**: le commesse di cui fai parte, con il tuo ruolo.
    Se una commessa manca, chiedi al PM di aggiungerti al team.

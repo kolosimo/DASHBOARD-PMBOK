@@ -1,9 +1,8 @@
 # Guida per il PM
 
 > **Versione per il pilota (Fase 2).** Descrive le schermate come sono nel codice
-> attuale. Le parti segnate **[DA VERIFICARE SULLO SCHERMO]** riguardano pagine ancora
-> in completamento (pagina Commessa, accesso con account locale): se vedi qualcosa di
-> diverso, annotalo nel [modulo di feedback del pilota](../pilota/piano-del-pilota.md#6-modulo-di-feedback).
+> attuale: se vedi qualcosa di diverso, annotalo nel
+> [modulo di feedback del pilota](../pilota/piano-del-pilota.md#6-modulo-di-feedback).
 > Per partire in fretta: [guida rapida per il PM](../pilota/guida-rapida-pm.md).
 > Le sigle sono spiegate nel [glossario](glossario.md).
 
@@ -24,7 +23,8 @@ Il PM della commessa (indicato come PM nei dati della commessa o nel team con ru
   l'informativa ai dipendenti e la verifica art. 4).
 
 Il ruolo "PM" da solo non dà diritti sulle commesse di altri PM: si hanno i permessi
-di PM solo sulle commesse di cui si è PM. Una commessa nuova la apre
+di PM solo sulle commesse di cui si è PM. Una commessa nuova la apre il **PM** stesso
+(pulsante **Nuova commessa** in *Le mie commesse*: ne diventa il PM) oppure
 l'**amministratore**, indicando il PM; da lì in poi la completa il PM.
 
 > **Cosa il Cruscotto non fa, per scelta.** Non mostra classifiche né punteggi per
@@ -34,13 +34,15 @@ l'**amministratore**, indicando il PM; da lì in poi la completa il PM.
 ## Entrare e trovare la commessa
 
 1. Apri il Cruscotto dal browser (Edge o Chrome; sul Mac anche Safari).
-2. **Nel pilota** accedi con il **nome utente** e la **password** che ti ha dato
-   l'amministratore; al primo accesso scegli una password nuova.
-   **[DA VERIFICARE SULLO SCHERMO]** Dopo il pilota si potrà entrare con
+2. **Nel pilota** accedi con **Email** e **Password** che ti ha dato
+   l'amministratore; al primo accesso la pagina **Cambia password** chiede una password
+   nuova di almeno 12 caratteri (**Salva la nuova password**). Per cambiarla in seguito
+   c'è **Cambia password** in alto a destra. Dopo il pilota si potrà entrare con
    **Accedi con Microsoft 365** (lo stesso account di Outlook e Teams).
 3. Si apre **Le mie commesse**: l'elenco delle commesse di cui fai parte, con il tuo
    ruolo, il numero di elaborati e la prossima milestone. All'inizio del pilota
-   l'elenco è **vuoto** finché l'amministratore non apre la tua commessa.
+   l'elenco è **vuoto**: apri la tua commessa con **Nuova commessa** (codice, nome,
+   cliente, date) e premi **Crea commessa**; si apre la scheda *Anagrafica*.
 4. Clicca sul **codice** della commessa. In alto compaiono le schede: *Commessa*,
    *Piano settimanale*, *Lookahead e vincoli*, *Kanban*, *Ore*, *Avanzamento EVM*,
    *Anagrafica*.
@@ -234,7 +236,8 @@ sua fine). Se qualcuno corregge ore dopo, la riga è segnata come rettificata.
 
 ## 8. La pagina Commessa (Obeya) per la riunione
 
-**[DA VERIFICARE SULLO SCHERMO]** — pagina in completamento in questa fase.
+Su una commessa appena aperta la pagina elenca i **passi mancanti** (elaborati,
+milestone, baseline, primo piano, prime ore) con il link alla scheda dove farli.
 
 La scheda **Commessa** riunisce in una vista: SPI, CPI, stima a completamento, PPC
 della settimana, vincoli aperti, milestone, curva S, andamento del PPC e l'elenco

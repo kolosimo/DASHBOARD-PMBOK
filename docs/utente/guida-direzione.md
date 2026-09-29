@@ -1,8 +1,6 @@
 # Guida per la direzione
 
-> **Versione per il pilota (Fase 2).** Le pagine **Portafoglio** e **Commessa** sono in
-> completamento in questa fase: le parti segnate **[DA VERIFICARE SULLO SCHERMO]**
-> descrivono come sono previste. Le sigle sono spiegate nel [glossario](glossario.md).
+> **Versione per il pilota (Fase 2).** Le sigle sono spiegate nel [glossario](glossario.md).
 >
 > **Durante il pilota** (2 PM, 2 settimane, vedi il
 > [piano del pilota](../pilota/piano-del-pilota.md)) il Cruscotto contiene solo le 1–2
@@ -25,16 +23,14 @@ i PM.
 
 ## Entrare
 
-1. Apri il Cruscotto dal browser. **Nel pilota** si entra con nome utente e password
-   dati dall'amministratore (al primo accesso si sceglie una password nuova)
-   **[DA VERIFICARE SULLO SCHERMO]**; dopo il pilota con **Accedi con Microsoft 365**.
+1. Apri il Cruscotto dal browser. **Nel pilota** si entra con **Email** e **Password**
+   dati dall'amministratore (al primo accesso la pagina **Cambia password** chiede una
+   password nuova di almeno 12 caratteri); dopo il pilota con **Accedi con Microsoft 365**.
 2. **Le mie commesse** mostra l'elenco di tutte le commesse dello studio con PM, numero
    di elaborati, prossima milestone e stato (attiva o altro).
 3. Dalla voce **Portafoglio** in alto si apre la vista d'insieme.
 
 ## Il portafoglio
-
-**[DA VERIFICARE SULLO SCHERMO]** — pagina in completamento in questa fase.
 
 Una riga per commessa attiva, con:
 
@@ -67,7 +63,7 @@ tarate con i PM durante il pilota:
    di una milestone sono il segnale più precoce di ritardo.
 4. **Apri la commessa** (clic sul codice) per la pagina **Commessa** con curva S,
    andamento del PPC e l'elenco "Da affrontare in riunione".
-   **[DA VERIFICARE SULLO SCHERMO]** Le schede di dettaglio (EVM, Kanban, piano
+   Le schede di dettaglio (EVM, Kanban, piano
    settimanale) si possono aprire in sola lettura; la scheda Ore mostra solo i totali.
 5. Per chiarimenti parla con il PM della commessa: i numeri servono a fare le domande
    giuste, non a dare giudizi.
