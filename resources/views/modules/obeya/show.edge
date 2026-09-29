@@ -1,10 +1,16 @@
-@component('layouts/app', { titolo: 'Commessa' })
-  @!component('components/segnaposto', {
-    eyebrow: 'Obeya di commessa',
-    titolo: 'Vista unica per la riunione settimanale',
-    descrizione:
-      'Tempi, costi, affidabilità del piano e ostacoli: KPI, milestone, avvisi generati dai dati, PPC e curva S.',
-    fase: 'Fase 2',
-    agente: 'agente B1',
-  })
+@component('layouts/app', { titolo: 'Commessa ' + commessa.codice })
+  <div class="head">
+    <div>
+      <div class="eyebrow">
+        {{ commessa.codice }} · Obeya di commessa · {{ formato.settimana(obeya.settimana) }}
+      </div>
+      <h2>{{ commessa.nome }}</h2>
+      <p>
+        La vista unica per la riunione settimanale del team: tempi, costi, affidabilità del piano e ostacoli. Solo totali di commessa, nessun dato per persona.
+      </p>
+    </div>
+    <div class="muted num">{{ formato.dataEstesa(obeya.oggi) }}</div>
+  </div>
+
+  @include('modules/obeya/_contenuto')
 @end

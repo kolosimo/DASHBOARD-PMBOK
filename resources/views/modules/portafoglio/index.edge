@@ -1,10 +1,139 @@
 @component('layouts/app', { titolo: 'Portafoglio', voceAttiva })
-  @!component('components/segnaposto', {
-    eyebrow: 'Portafoglio PM',
-    titolo: 'Le mie commesse attive',
-    descrizione:
-      'SPI, CPI, PPC delle ultime 4 settimane, vincoli aperti e prossima milestone per ogni commessa. La direzione vede solo i totali.',
-    fase: 'Fase 2',
-    agente: 'agente B1',
-  })
+  <div class="head">
+    <div>
+      <div class="eyebrow">
+        {{ vistaDirezione ? 'Portafoglio dello studio' : 'Portafoglio PM' }} · settimana {{ formato.settimana(settimana) }}
+      </div>
+      <h2>{{ vistaDirezione ? 'Tutte le commesse aperte' : 'Le mie commesse aperte' }}</h2>
+      <p>
+        Da qui si vede subito quale commessa ha bisogno di attenzione; si apre la commessa cliccando sul codice. Solo indicatori per commessa: nessun dato per persona.
+      </p>
+    </div>
+  </div>
+
+  @if(totali)
+    <div class="kpis" data-testid="totali-portafoglio">
+      @!component('components/kpi', {
+        etichetta: 'Commesse aperte',
+        valore: formato.numero(totali.commesse),
+        sotto: 'attive o sospese'
+      })
+      @!component('components/kpi', {
+        etichetta: glossario.BAC.sigla + ' · totale',
+        valore: formato.ore(totali.bacMinuti),
+        sotto: 'AC ' + formato.ore(totali.acMinuti)
+      })
+      @!component('components/kpi', {
+        etichetta: glossario.SPI.sigla + ' · portafoglio',
+        valore: formato.indice(totali.spi),
+        semaforo: { classe: formato.classe(totali.spi, soglie.spi), testo: formato.statoSemaforo(totali.spi, soglie.spi) },
+        sotto: 'commesse con baseline'
+      })
+      @!component('components/kpi', {
+        etichetta: glossario.CPI.sigla + ' · portafoglio',
+        valore: formato.indice(totali.cpi),
+        semaforo: { classe: formato.classe(totali.cpi, soglie.cpi), testo: formato.statoSemaforo(totali.cpi, soglie.cpi) },
+        sotto: 'Σ EV / Σ AC'
+      })
+      @!component('components/kpi', {
+        etichetta: glossario.PPC.sigla + ' · ultime ' + settimanePpc + ' sett.',
+        valore: formato.percento(totali.ppc4Settimane),
+        semaforo: { classe: formato.classe(totali.ppc4Settimane, soglie.ppc), testo: formato.statoSemaforo(totali.ppc4Settimane, soglie.ppc) },
+        sotto: 'pesato sugli impegni'
+      })
+      @!component('components/kpi', {
+        etichetta: 'Vincoli aperti',
+        valore: formato.numero(totali.vincoliAperti),
+        sotto: 'su tutte le commesse'
+      })
+    </div>
+  @end
+
+  @component('components/pannello', { tabella: true })
+    <table data-testid="portafoglio">
+      <thead>
+        <tr>
+          <th>Commessa</th>
+          <th>Descrizione</th>
+          <th class="r">SPI</th>
+          <th class="r">CPI</th>
+          <th class="r">PPC {{ settimanePpc }} sett.</th>
+          <th class="r">Vincoli aperti</th>
+          <th>Prossima milestone</th>
+        </tr>
+      </thead>
+      <tbody>
+        @each(r in righe)
+          <tr data-testid="riga-portafoglio" data-codice="{{ r.codice }}">
+            <td>
+              <a class="code" href="/commesse/{{ r.commessaId }}">{{ r.codice }}</a>
+              @if(r.stato === 'sospesa')
+                @!component('components/pill', { classe: 'n', testo: 'sospesa' })
+              @end
+            </td>
+            <td>{{ r.nome }}</td>
+            <td class="r">
+              @!component('components/pill', { classe: formato.classe(r.spi, soglie.spi), testo: formato.indice(r.spi) })
+              @if(!r.baselinePresente)
+                <div class="muted">senza baseline</div>
+              @end
+            </td>
+            <td class="r">
+              @!component('components/pill', { classe: formato.classe(r.cpi, soglie.cpi), testo: formato.indice(r.cpi) })
+              @if(r.acMinuti === 0)
+                <div class="muted">nessuna ora</div>
+              @end
+            </td>
+            <td class="r">
+              @!component('components/pill', { classe: formato.classe(r.ppc4Settimane, soglie.ppc), testo: formato.percento(r.ppc4Settimane) })
+              @if(r.impegniPromessi4Settimane)
+                <div class="muted num">{{ r.impegniFatti4Settimane }} di {{ r.impegniPromessi4Settimane }} impegni</div>
+              @else
+                <div class="muted">nessun piano concluso</div>
+              @end
+            </td>
+            <td class="r num">{{ formato.numero(r.vincoliAperti) }}</td>
+            <td>
+              @if(r.prossimaMilestone)
+                {{ r.prossimaMilestone.titolo }} ·
+                <span class="num">{{ formato.dataBreve(r.prossimaMilestone.data) }}</span>
+              @else
+                <span class="muted">n.d.</span>
+              @end
+            </td>
+          </tr>
+        @else
+          <tr>
+            <td colspan="7" class="muted" data-testid="portafoglio-vuoto">
+              @if(vistaDirezione)
+                Nessuna commessa aperta.
+                @if(utente.ruolo === 'admin')
+                  <a href="/admin/commesse">Crea la prima commessa</a> dall'amministrazione.
+                @end
+              @else
+                Non sei ancora PM o membro di una commessa aperta. Chiedi all'amministratore di creare la commessa e di assegnarti come PM.
+              @end
+            </td>
+          </tr>
+        @end
+      </tbody>
+    </table>
+  @end
+
+  @component('components/pannello', { titolo: 'Come leggere gli indicatori', nota: 'soglie dalle impostazioni' })
+    <div class="grid2">
+      <div>
+        <b>SPI</b> (EV / PV): sotto 1 la commessa produce meno di quanto pianificato; n.d. finché non c'è una baseline approvata.
+        <b>CPI</b> (EV / AC): sotto 1 servono più ore del previsto per il lavoro fatto; n.d. finché non ci sono ore registrate.
+      </div>
+      <div>
+        <b>PPC</b>: impegni mantenuti sul totale promesso nelle ultime {{ settimanePpc }} settimane concluse, pesato sul numero di impegni. Misura l'affidabilità del piano del team, non la bravura dei singoli.
+      </div>
+    </div>
+    <p class="num">
+      @!component('components/pill', { classe: 'g', testo: 'in linea: SPI ≥ ' + formato.indice(soglie.spi.verde) + ', CPI ≥ ' + formato.indice(soglie.cpi.verde) + ', PPC ≥ ' + formato.percento(soglie.ppc.verde) })
+      @!component('components/pill', { classe: 'w', testo: 'attenzione' })
+      @!component('components/pill', { classe: 'c', testo: 'critico: SPI < ' + formato.indice(soglie.spi.giallo) + ', CPI < ' + formato.indice(soglie.cpi.giallo) + ', PPC < ' + formato.percento(soglie.ppc.giallo) })
+    </p>
+  @end
 @end

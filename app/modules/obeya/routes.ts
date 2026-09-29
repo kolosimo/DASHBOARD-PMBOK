@@ -4,7 +4,11 @@ import { middleware } from '#start/kernel'
 const ObeyaController = () => import('./obeya_controller.js')
 
 router
-  .get('/commesse/:id', [ObeyaController, 'show'])
+  .group(() => {
+    router.get('/commesse/:id', [ObeyaController, 'show']).as('obeya.show')
+    router
+      .get('/commesse/:id/obeya/contenuto', [ObeyaController, 'contenuto'])
+      .as('obeya.contenuto')
+  })
   .where('id', router.matchers.number())
-  .as('obeya.show')
   .use(middleware.auth())

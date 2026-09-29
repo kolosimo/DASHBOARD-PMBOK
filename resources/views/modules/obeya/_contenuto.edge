@@ -1,0 +1,213 @@
+{{--
+  Contenuto aggiornabile dell'Obeya (KPI, milestone, avvisi, grafici).
+  Si ricarica da solo con gli eventi della commessa (SSE) o con il polling di riserva.
+  Variabili: commessa, obeya (app/modules/obeya/queries.ts), puoModificare, puoGestireLps
+--}}
+<div
+  id="obeya-contenuto"
+  hx-get="/commesse/{{ commessa.id }}/obeya/contenuto"
+  hx-trigger="evento-commessa from:body, polling-commessa from:body"
+  hx-swap="outerHTML"
+  data-testid="obeya"
+>
+  @let(m = obeya.mancano)
+  @if(m.elaborati || m.milestone || m.baseline || m.pianoSettimana || m.ore)
+    @component('components/pannello', {
+      titolo: obeya.commessaVuota ? 'Per partire' : 'Cosa manca',
+      nota: obeya.commessaVuota ? 'la commessa non ha ancora dati di avanzamento' : 'finché mancano, alcuni indicatori restano n.d.'
+    })
+      <ol class="alerts" data-testid="passi-mancanti">
+        @if(m.elaborati)
+          <li data-testid="passo-elaborati">
+            @!component('components/pill', { classe: 'n', testo: 'da fare' })
+            <span>
+              @if(puoModificare)
+                <a href="/commesse/{{ commessa.id }}/anagrafica">Aggiungi gli elaborati</a>
+              @else
+                Aggiungere gli elaborati
+              @end
+              con budget in ore (anche incollandoli da Excel): senza elaborati non ci sono BAC né valore guadagnato.
+            </span>
+          </li>
+        @end
+        @if(m.milestone)
+          <li data-testid="passo-milestone">
+            @!component('components/pill', { classe: 'n', testo: 'da fare' })
+            <span>
+              @if(puoModificare)
+                <a href="/commesse/{{ commessa.id }}/anagrafica">Inserisci le milestone</a>
+              @else
+                Inserire le milestone
+              @end
+              contrattuali: compaiono nel master schedule qui sotto.
+            </span>
+          </li>
+        @end
+        @if(m.baseline)
+          <li data-testid="passo-baseline">
+            @!component('components/pill', { classe: 'n', testo: 'da fare' })
+            <span>
+              @if(puoModificare)
+                <a href="/commesse/{{ commessa.id }}/evm/baseline">Crea la baseline</a>
+              @else
+                Creare la baseline
+              @end
+              con le date previste degli elaborati e approvala: senza baseline SPI e curva S restano n.d.
+            </span>
+          </li>
+        @end
+        @if(m.pianoSettimana)
+          <li data-testid="passo-piano">
+            @!component('components/pill', { classe: 'n', testo: 'da fare' })
+            <span>
+              @if(puoGestireLps)
+                <a href="/commesse/{{ commessa.id }}/lps/settimana">{{ obeya.primoPiano ? 'Prepara il primo piano settimanale' : 'Prepara il piano della settimana' }}</a>
+              @else
+                Preparare il piano settimanale
+              @end
+              ({{ formato.settimana(obeya.settimana) }}): partendo dal lookahead, il team promette gli impegni della settimana e a fine settimana si calcola il PPC.
+            </span>
+          </li>
+        @end
+        @if(m.ore)
+          <li data-testid="passo-ore">
+            @!component('components/pill', { classe: 'n', testo: 'da fare' })
+            <span>
+              Registrare le ore sugli elaborati da
+              <a href="/ore">Le mie ore</a>: servono per AC, CPI e stima a completamento.
+            </span>
+          </li>
+        @end
+      </ol>
+    @end
+  @end
+
+  <div class="kpis" data-testid="kpi-obeya">
+    @!component('components/kpi', {
+      etichetta: glossario.SPI.sigla + ' · ' + glossario.SPI.nome,
+      valore: formato.indice(obeya.evm.spi),
+      semaforo: { classe: formato.classe(obeya.evm.spi, obeya.soglie.spi), testo: formato.statoSemaforo(obeya.evm.spi, obeya.soglie.spi) },
+      sotto: m.baseline ? 'serve una baseline approvata' : 'EV ' + formato.ore(obeya.evm.evMinuti) + ' su PV ' + formato.ore(obeya.evm.pvMinuti)
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.CPI.sigla + ' · ' + glossario.CPI.nome,
+      valore: formato.indice(obeya.evm.cpi),
+      semaforo: { classe: formato.classe(obeya.evm.cpi, obeya.soglie.cpi), testo: formato.statoSemaforo(obeya.evm.cpi, obeya.soglie.cpi) },
+      sotto: m.ore ? 'nessuna ora registrata' : 'EV ' + formato.ore(obeya.evm.evMinuti) + ' su AC ' + formato.ore(obeya.evm.acMinuti)
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.EAC.sigla + ' · ' + glossario.EAC.nome,
+      valore: formato.ore(obeya.evm.eacMinuti),
+      sotto: 'budget ' + formato.ore(obeya.evm.bacMinuti) + ' · scarto ' + formato.ore(obeya.evm.vacMinuti)
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.ETC.sigla + ' · ' + glossario.ETC.nome,
+      valore: formato.ore(obeya.evm.etcMinuti),
+      sotto: 'ore ancora necessarie'
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.PPC.sigla + ' · settimana ' + formato.settimana(obeya.settimana),
+      valore: formato.percento(obeya.lps.ppc),
+      semaforo: { classe: formato.classe(obeya.lps.ppc, obeya.soglie.ppc), testo: formato.statoSemaforo(obeya.lps.ppc, obeya.soglie.ppc) },
+      sotto: obeya.lps.statoPiano ? obeya.lps.fatti + ' di ' + obeya.lps.promessi + ' impegni mantenuti' : 'nessun piano per questa settimana'
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.PCR.sigla + ' · ' + glossario.PCR.nome,
+      valore: formato.percento(obeya.lps.pcr),
+      semaforo: { classe: formato.classe(obeya.lps.pcr, obeya.soglie.pcr), testo: formato.statoSemaforo(obeya.lps.pcr, obeya.soglie.pcr) },
+      sotto: 'vincoli in scadenza nella settimana'
+    })
+    @!component('components/kpi', {
+      etichetta: 'Vincoli aperti',
+      valore: formato.numero(obeya.lps.vincoliAperti),
+      sotto: 'da analizzare o aperti'
+    })
+  </div>
+
+  @component('components/pannello', { titolo: 'Master schedule', nota: 'milestone della commessa' })
+    @if(obeya.milestone.length)
+      <div class="ms" data-testid="master-schedule">
+        @each(ms in obeya.milestone)
+          <div class="{{ ms.fatta ? 'done' : (ms.prossima ? 'next' : '') }}" data-testid="milestone">
+            <b>{{ ms.titolo }}</b>
+            <span class="num">
+              @if(ms.fatta)
+                completata il {{ formato.data(ms.dataEffettiva) }}
+              @else
+                prevista il {{ formato.data(ms.dataPrevista) }}
+              @end
+              @if(ms.contrattuale)
+                · contrattuale
+              @end
+            </span>
+            @if(ms.inRitardo)
+              @!component('components/pill', { classe: 'c', testo: 'data superata' })
+            @end
+          </div>
+        @end
+      </div>
+    @else
+      <p class="muted" data-testid="master-schedule-vuoto">
+        Nessuna milestone.
+        @if(puoModificare)
+          <a href="/commesse/{{ commessa.id }}/anagrafica">Inserisci le milestone</a> nell'anagrafica della commessa.
+        @end
+      </p>
+    @end
+  @end
+
+  <div class="grid2">
+    @component('components/pannello', { titolo: 'Da affrontare in riunione', nota: 'generato dai dati' })
+      <ul class="alerts" data-testid="avvisi">
+        @each(a in obeya.avvisi)
+          <li data-testid="avviso" data-gravita="{{ a.gravita }}">
+            @!component('components/pill', { classe: a.gravita === 'critico' ? 'c' : 'w', testo: a.gravita })
+            <span>{{ a.messaggio }}</span>
+          </li>
+        @else
+          <li data-testid="nessun-avviso">
+            <span>
+              @if(obeya.commessaVuota)
+                Nessun avviso: gli avvisi compaiono quando ci sono elaborati, baseline, vincoli e ore.
+              @else
+                Nessun avviso.
+              @end
+            </span>
+          </li>
+        @end
+      </ul>
+    @end
+
+    @component('components/pannello', { titolo: 'Affidabilità del piano (PPC)' })
+      @slot('azioni')
+        <a class="btn ghost" href="/commesse/{{ commessa.id }}/lps/settimana">Apri piano →</a>
+      @end
+      @if(obeya.graficoPpc)
+        <div data-testid="grafico-ppc">{{{ obeya.graficoPpc }}}</div>
+      @else
+        <p class="muted" data-testid="grafico-ppc-vuoto">
+          n.d.: nessun piano settimanale.
+          @if(puoGestireLps)
+            <a href="/commesse/{{ commessa.id }}/lps/settimana">Prepara il primo piano settimanale</a>.
+          @end
+        </p>
+      @end
+    @end
+  </div>
+
+  @component('components/pannello', { titolo: 'Curva S in ore' })
+    @slot('azioni')
+      <a class="btn ghost" href="/commesse/{{ commessa.id }}/evm">Dettaglio EVM →</a>
+    @end
+    @if(obeya.curvaS)
+      <div data-testid="curva-s">{{{ obeya.curvaS }}}</div>
+    @else
+      <p class="muted" data-testid="curva-s-vuota">
+        n.d.: la curva S richiede una baseline approvata.
+        @if(puoModificare)
+          <a href="/commesse/{{ commessa.id }}/evm/baseline">Crea la baseline</a>.
+        @end
+      </p>
+    @end
+  @end
+</div>
