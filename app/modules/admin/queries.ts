@@ -4,7 +4,6 @@
  * cause_non_completamento, impostazioni, utenti (ruolo e attivo).
  */
 import db from '@adonisjs/lucid/services/db'
-import type { TransactionClientContract } from '@adonisjs/lucid/types/database'
 import Impostazione from '#models/impostazione'
 import Utente from '#models/utente'
 import Disciplina from '#models/disciplina'
@@ -49,19 +48,6 @@ export async function elencoColonne() {
 /** Cause di non completamento in ordine */
 export async function elencoCause() {
   return CausaNonCompletamento.query().orderBy('ordine', 'asc').orderBy('codice', 'asc')
-}
-
-/**
- * Stato iniziale di un elaborato appena creato: lo stato con l'ordine più
- * basso (nei dati di esempio "Non iniziato", peso 0). Null se non ci sono stati.
- */
-export async function statoIniziale(client?: TransactionClientContract): Promise<number | null> {
-  const riga = await (client ?? db)
-    .from('stati_elaborato')
-    .orderBy('ordine', 'asc')
-    .select('id')
-    .first()
-  return riga?.id ?? null
 }
 
 /** Id delle commesse non chiuse (per avvisare le pagine aperte di un cambio di configurazione) */
