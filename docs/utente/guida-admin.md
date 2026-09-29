@@ -1,10 +1,10 @@
-# Guida per l'amministratore (bozza)
+# Guida per l'amministratore
 
-> **Bozza di Fase 1.** Oggi la pagina **Amministrazione** contiene solo le
-> **impostazioni** (soglie e parametri). La gestione di utenti, stati e pesi, colonne e
-> cause è in costruzione (agente A1, Fase 1): le parti segnate **[DA AGGIORNARE]**
-> verranno riscritte con le schermate vere. Le sigle sono spiegate nel
-> [glossario](glossario.md).
+> **Versione per il pilota (Fase 2).** Descrive le schermate come sono nel codice
+> attuale. Le parti segnate **[DA VERIFICARE SULLO SCHERMO]** riguardano funzioni in
+> completamento in questa fase (account locali, registro di audit). Le sigle sono
+> spiegate nel [glossario](glossario.md). Per l'organizzazione del pilota vedi il
+> [piano del pilota](../pilota/piano-del-pilota.md).
 
 L'amministratore configura il Cruscotto per tutto lo studio. Può vedere tutte le
 commesse; sulle singole commesse lavora come un PM solo se serve. La voce
@@ -16,11 +16,41 @@ valore prima e dopo). Se due amministratori modificano la stessa voce insieme, c
 per secondo vede un **avviso di conflitto** con il valore aggiornato e deve ripetere la
 modifica.
 
+La pagina **Amministrazione** ha un sottomenu: *Impostazioni e soglie*, *Commesse*,
+*Utenti e ruoli*, *Discipline*, *Stati e pesi*, *Colonne Kanban e WIP*, *Cause di non
+completamento*.
+
+## 0. Preparare il pilota
+
+Il pilota parte **vuoto**: nessuna commessa, solo configurazione e utenti.
+
+1. **Configurazione.** Controlla le sezioni 2–5 di questa guida: stati e pesi, colonne
+   e limiti WIP, cause, discipline, impostazioni. I valori di partenza sono quelli
+   confermati al Gate 0; non serve cambiarli prima di iniziare.
+2. **Utenti.** Crea gli account locali dei 2 PM (ruolo **pm**) e delle persone dei loro
+   team (ruolo **progettista**); vedi la sezione 1.
+3. **Commesse.** In *Commesse* apri le commesse del pilota: codice, nome, cliente,
+   **PM**, inizio e fine prevista → **Crea commessa**. Il PM indicato entra nel team
+   con ruolo "pm" e da lì completa lui team, milestone ed elaborati.
+4. **Server.** Il server deve restare acceso anche di notte: ogni giorno alle 06:10
+   l'app scatta le fotografie settimanali di Last Planner ed EVM. Se il server era
+   spento, le recupera al giro successivo.
+5. Consegna ai partecipanti l'**informativa** (sezione 5, "Ore per persona").
+
 ## 1. Utenti e ruoli
 
 ### Come nasce un utente
 
-Non si creano utenti a mano: **l'utente nasce al primo accesso** con Microsoft 365.
+**Nel pilota: account locali.** **[DA VERIFICARE SULLO SCHERMO]**
+
+- L'amministratore crea l'utente da **Amministrazione → Utenti e ruoli** con nome,
+  nome utente (o email), ruolo globale e una **password temporanea**.
+- La password temporanea si consegna di persona o per telefono; al primo accesso
+  l'utente deve sceglierne una nuova.
+- Se un utente dimentica la password, l'amministratore ne imposta una temporanea
+  nuova. Nessuno può leggere le password salvate.
+
+**Con Microsoft 365 (dopo il pilota)**: l'utente **nasce al primo accesso**.
 
 - Al primo accesso l'utente viene creato con ruolo **progettista**.
 - Gli indirizzi email elencati nell'impostazione del server `ADMIN_EMAILS` diventano
@@ -48,14 +78,16 @@ commesse di altri: contano il PM indicato nella commessa e il ruolo di commessa.
 
 ### Cambiare ruolo o disattivare
 
-**[DA AGGIORNARE]** — schermata in costruzione (agente A1, Fase 1).
-
-Da **Amministrazione → Utenti** si cambierà il ruolo globale e si potrà attivare o
-disattivare un utente.
+Da **Amministrazione → Utenti e ruoli**: per ogni utente scegli il **ruolo globale**,
+spunta o togli **attivo** e premi **Salva**. Non puoi togliere a te stesso il ruolo di
+amministratore. Il ruolo dentro una commessa si decide nel team della commessa
+(scheda Anagrafica).
 
 ## 2. Stati degli elaborati e pesi
 
-**[DA AGGIORNARE]** — schermata in costruzione (agente A1, Fase 1).
+Da **Amministrazione → Stati e pesi** si cambiano, per ogni stato, il **nome**, il
+**peso EV** e la **colonna Kanban**, con **Salva** sulla riga. Gli stati non si
+aggiungono né si tolgono.
 
 Gli stati di un elaborato e il loro **peso** determinano il valore guadagnato (EV).
 Valori confermati al Gate 0 (28/09/2026) come punto di partenza:
@@ -73,7 +105,9 @@ Cose da sapere prima di cambiarli:
 
 - I pesi sono **cumulativi**: un elaborato "Verificato" vale l'85% del suo budget, non
   il 15%.
-- Devono **crescere** da uno stato al successivo, partire da 0% e finire a 100%.
+- Salendo di stato **non possono diminuire**: l'app rifiuta un peso minore di quello
+  dello stato precedente o maggiore di quello del successivo. Il primo stato vale 0% e
+  l'ultimo 100%.
 - Ogni baseline approvata **congela** i pesi in vigore quel giorno: cambiare i pesi
   vale solo per le baseline approvate dopo. La storia delle commesse non cambia.
 - Esempio dell'effetto: un elaborato da 40 h in "Emissione interna" vale 28 h di EV con
@@ -81,15 +115,15 @@ Cose da sapere prima di cambiarli:
 
 ## 3. Colonne del Kanban e limiti WIP
 
-**[DA AGGIORNARE]** — schermata in costruzione (agente A1, Fase 1).
-
-Colonne di partenza: **Da fare**, **In corso** (limite WIP 4), **In verifica** (limite
+Da **Amministrazione → Colonne Kanban e WIP**. Colonne di partenza: **Da fare**, **In corso** (limite WIP 4), **In verifica** (limite
 WIP 3), **Emesso**. L'amministratore imposta i limiti di partenza; il PM li può
 cambiare per la sua commessa.
 
 ## 4. Cause di mancato completamento e discipline
 
-**[DA AGGIORNARE]** — schermata in costruzione (agente A1, Fase 1).
+Da **Amministrazione → Cause di non completamento** e **→ Discipline** si aggiungono
+voci nuove (codice e nome) e si modificano quelle esistenti. Una voce non più usata
+si **disattiva**: resta sugli elaborati e nello storico, ma non si può più scegliere.
 
 Le 8 cause tra cui si sceglie per ogni impegno "non fatto": Input mancante da altri,
 Criteri o requisiti cambiati, Approvazione cliente/ente attesa, Risorsa non disponibile,
@@ -103,9 +137,9 @@ Questa parte **esiste già**: **Amministrazione → Impostazioni**.
 
 Ogni riquadro mostra la descrizione, il nome tecnico, la versione e l'etichetta
 **"valore di esempio"** finché nessuno lo ha modificato. Si cambia il valore e si preme
-**Salva**; dopo il salvataggio compare "salvata".
+**Salva**; dopo il salvataggio compare "Impostazione salvata".
 
-| Impostazione | Valore di esempio | Effetto |
+| Impostazione | Valore di partenza | Effetto |
 |---|---|---|
 | Semaforo SPI | verde da 0,95, giallo da 0,85 | colore di SPI in tutte le pagine |
 | Semaforo CPI | verde da 0,95, giallo da 0,85 | colore di CPI |
@@ -120,30 +154,44 @@ Ogni riquadro mostra la descrizione, il nome tecnico, la versione e l'etichetta
 
 Come si leggono le soglie: un valore **uguale o sopra "verde da"** è verde; uguale o
 sopra "giallo da" è giallo; sotto è rosso. Un valore non calcolabile è sempre grigio
-"n.d.". Esempio: con le soglie di esempio lo SPI 0,78 di CL-2026-031 è rosso; se si
+"n.d.". Esempio: con le soglie di partenza uno SPI di 0,78 è rosso; se si
 abbassasse "giallo da" a 0,75 diventerebbe giallo. Le soglie valgono per tutte le
 pagine (portafoglio, commessa, EVM, piano settimanale): non ci sono soglie diverse da
 una pagina all'altra.
 
 Scrivi i numeri **sempre con la virgola** (0,95). **Non usare il punto**: il punto
 viene letto come separatore delle migliaia, quindi "0.95" diventerebbe 95.
-Un valore non valido (per esempio una lettera) viene rifiutato con il messaggio
-"Valore non valido: controlla i numeri inseriti.". Controlla anche che "giallo da" sia
-più basso di "verde da": oggi l'app non lo verifica.
+Un valore non valido (per esempio una lettera, o una soglia fuori dall'intervallo
+0–2) viene rifiutato con il messaggio "Valore non valido: controlla i numeri
+inseriti.". Se "verde da" è più basso di "giallo da" l'app rifiuta il salvataggio con
+"La soglia del verde deve essere uguale o maggiore di quella del giallo.".
+
+Durante il pilota annota con i PM i casi in cui un colore non corrisponde alla
+situazione reale: a fine pilota si confermano o si correggono le soglie.
 
 ### Ore per persona: attenzione
 
 L'impostazione "ore per persona visibili al PM" è **attiva** per decisione dell'utente
-al Gate 0 (28/09/2026). **Prima dell'avvio in produzione** servono l'informativa ai
-dipendenti e la verifica con il consulente del lavoro (art. 4 Statuto dei lavoratori).
+al Gate 0 (28/09/2026). I partecipanti al pilota ricevono l'informativa **prima di
+iniziare**; **prima di estendere il Cruscotto oltre il pilota** serve anche la verifica
+con il consulente del lavoro (art. 4 Statuto dei lavoratori, decisione D4). Se la
+verifica non è chiusa, si può disattivare l'impostazione finché non lo è.
 Anche con l'impostazione attiva:
 
 - la direzione non vede **mai** le ore per persona;
 - nessuna pagina mostra classifiche o indicatori di rendimento per persona.
 
-## 6. Registro di audit
+## 6. Correzione delle ore
 
-**[DA AGGIORNARE]** — pagina di consultazione in costruzione (agente B3, Fase 2).
+La voce **Correzione ore** in alto (solo amministratori) apre il timesheet di una
+persona anche nelle settimane già bloccate. Ogni correzione chiede il **motivo** e
+finisce nel registro di audit. Se la settimana ha già la sua fotografia EVM, la riga
+dello storico viene segnata come rettificata.
+
+## 7. Registro di audit
+
+**[DA VERIFICARE SULLO SCHERMO]** — pagina di consultazione in completamento in questa
+fase.
 
 Ogni modifica (impostazioni, stati, vincoli, piani, ore, baseline, sforamenti WIP) viene
 registrata con autore, data e valori prima e dopo. Il registro non si può modificare né
