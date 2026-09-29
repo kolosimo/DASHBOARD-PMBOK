@@ -1,6 +1,7 @@
 {{--
   Risposta al salvataggio di una cella (HTMX, hx-swap="none"): solo
   sostituzioni fuori banda, così il campo che ha il focus non viene toccato.
+  Il totale di riga si aggiorna con innerHTML: la cella tiene il suo data-testid.
   Variabili: cella? { elaboratoId, data, testo, versione }, salvata?, errore?,
   conflitto?, avviso?, minutiGiorno?, minutiRiga?, minutiSettimana?,
   minutiElaborato?, massimo?, oreCella, urlCella, correzione
@@ -58,7 +59,7 @@
 @end
 @if(minutiRiga !== undefined && cella)
   <template>
-    <td class="r num" id="tr-{{ cella.elaboratoId }}" data-testid="totale-riga" hx-swap-oob="true">
+    <td class="r num" id="tr-{{ cella.elaboratoId }}" hx-swap-oob="innerHTML">
       <b>{{ minutiRiga ? formato.oreEsatte(minutiRiga) : '' }}</b>
     </td>
   </template>
