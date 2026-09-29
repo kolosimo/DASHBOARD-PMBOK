@@ -3,10 +3,9 @@
  * Formule in #domain/evm. La curva S storica si legge da snapshot_evm e non
  * si ricalcola; solo la settimana corrente è calcolata al momento.
  *
- * Letture dirette di tabelle di altri moduli (solo lettura, nessuna query
- * esposta dai proprietari in Fase 1): `elaborati`, `stati_elaborato`,
- * `registrazioni_ore` (AC) e `transizioni_elaborato` (stato a fine settimana
- * per lo snapshot). Vedi docs/sviluppo/handoff/A5.md.
+ * Letture di dati di altri moduli: AC per elaborato da `minutiPerElaborato`
+ * (modulo ore), stato a fine settimana da `statiAllIstante` (modulo flusso);
+ * `elaborati` e `stati_elaborato` (tabelle condivise) si leggono direttamente.
  */
 import { DateTime } from 'luxon'
 import db from '@adonisjs/lucid/services/db'
@@ -22,6 +21,8 @@ import type {
   StatoBaseline,
 } from '#domain/types'
 import { FUSO, aggiungiSettimane, lunediDellaSettimana, oggiRoma } from '#shared/calendario'
+import { statiAllIstante } from '#modules/flusso/queries'
+import { minutiPerElaborato } from '#modules/ore/queries'
 import {
   ordinePianificatoAlla,
   pvDellaSettimana,
@@ -313,36 +314,29 @@ export async function righeElaborati(
   statoAlIstante: string | null,
   client: Client = db
 ): Promise<RigaElaboratoDb[]> {
-  const statoSql = statoAlIstante
-    ? `CASE WHEN e.stato_dal < :istante THEN e.stato_id ELSE (
-         SELECT t.a_stato_id FROM transizioni_elaborato t
-         WHERE t.elaborato_id = e.id AND t.avvenuta_il < :istante
-         ORDER BY t.avvenuta_il DESC, t.id DESC LIMIT 1
-       ) END`
-    : 'e.stato_id'
-  const risultato = await client.rawQuery(
-    `SELECT e.id, e.codice, e.titolo, e.budget_minuti, ${statoSql} AS stato_id,
-            CAST(COALESCE(o.minuti, 0) AS integer) AS ac_minuti
-       FROM elaborati e
-       LEFT JOIN (
-         SELECT r.elaborato_id, SUM(r.minuti) AS minuti
-           FROM registrazioni_ore r
-           JOIN elaborati e2 ON e2.id = r.elaborato_id
-          WHERE e2.commessa_id = :commessaId AND r.data <= :dataAc
-          GROUP BY r.elaborato_id
-       ) o ON o.elaborato_id = e.id
-      WHERE e.commessa_id = :commessaId
-      ORDER BY e.codice`,
-    { commessaId, dataAc, istante: statoAlIstante ?? null }
-  )
-  return (risultato.rows as Record<string, unknown>[]).map((r) => ({
-    elaboratoId: Number(r.id),
-    codice: String(r.codice),
-    titolo: String(r.titolo),
-    budgetAttualeMinuti: Number(r.budget_minuti),
-    statoId: r.stato_id === null ? null : Number(r.stato_id),
-    acMinuti: Number(r.ac_minuti),
-  }))
+  // Stato storico dal modulo flusso, AC dal modulo ore. In sequenza: il client
+  // può essere una transazione (una sola connessione).
+  const elaborati = await client
+    .from('elaborati')
+    .where('commessa_id', commessaId)
+    .orderBy('codice', 'asc')
+    .select('id', 'codice', 'titolo', 'budget_minuti', 'stato_id')
+  const statiStorici = statoAlIstante
+    ? await statiAllIstante(commessaId, statoAlIstante, client)
+    : null
+  const ac = await minutiPerElaborato(commessaId, { finoAl: dataAc, client })
+  return elaborati.map((r) => {
+    const id = Number(r.id)
+    const statoId = statiStorici ? (statiStorici.get(id) ?? null) : Number(r.stato_id)
+    return {
+      elaboratoId: id,
+      codice: String(r.codice),
+      titolo: String(r.titolo),
+      budgetAttualeMinuti: Number(r.budget_minuti),
+      statoId,
+      acMinuti: ac.get(id) ?? 0,
+    }
+  })
 }
 
 /** Risultato del calcolo EVM di una commessa a una data */
@@ -648,4 +642,27 @@ export function datePreviste(riga: RigaEditor): DataPrevista[] {
   return riga.date
     .filter((c) => c.data !== null)
     .map((c) => ({ ordine: c.ordine, data: c.data as DataIso }))
+}
+
+// ---------------------------------------------------------------------------
+// Letture per gli altri moduli
+// ---------------------------------------------------------------------------
+
+/**
+ * true se l'elaborato fa parte della baseline approvata (quella attiva) della
+ * sua commessa. Il modulo anagrafiche la usa per bloccarne l'eliminazione:
+ * cambierebbe il BAC congelato.
+ */
+export async function elaboratoInBaselineApprovata(
+  elaboratoId: number,
+  client: Client = db
+): Promise<boolean> {
+  const riga = await client
+    .from('baseline_date_stato as d')
+    .join('baseline as b', 'b.id', 'd.baseline_id')
+    .where('d.elaborato_id', elaboratoId)
+    .where('b.stato', 'approvata')
+    .select('d.id')
+    .first()
+  return Boolean(riga)
 }

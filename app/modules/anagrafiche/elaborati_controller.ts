@@ -6,8 +6,10 @@ import { istantaneaPerAudit, registraAudit } from '#shared/audit'
 import { pubblica } from '#shared/eventi'
 import { CLASSI_SERVIZIO } from '#domain/types'
 import type { ClasseServizio } from '#domain/types'
-import { disciplinePerScelta, statoIniziale } from '#modules/admin/queries'
-import ElaboratoAnagrafica from './modelli.js'
+import Elaborato from '#models/elaborato'
+import { disciplinePerScelta } from '#modules/admin/queries'
+import CambioStatoService from '#modules/flusso/cambio_stato_service'
+import { elaboratoInBaselineApprovata } from '#modules/evm/queries'
 import { codiciElaborati, elencoMembri, elencoMilestone, utentiAttivi } from './queries.js'
 import { Campi, eViolazioneChiaveEsterna, eViolazioneUnicita } from './validazione.js'
 import type { Errori } from './validazione.js'
@@ -51,8 +53,7 @@ export default class ElaboratiController {
       ctx.response.status(422)
       return this.rendiForm(ctx, commessa, null, campi.errori, ctx.request.all())
     }
-    const statoId = await statoIniziale()
-    if (statoId === null) {
+    if (!(await CambioStatoService.statoInizialeSeConfigurato())) {
       ctx.response.status(422)
       return this.rendiForm(
         ctx,
@@ -64,10 +65,12 @@ export default class ElaboratiController {
     }
     try {
       await db.transaction(async (trx) => {
-        const el = await ElaboratoAnagrafica.create(
-          { ...valori, commessaId: commessa.id, statoId },
+        const iniziale = await CambioStatoService.statoIniziale(trx)
+        const el = await Elaborato.create(
+          { ...valori, commessaId: commessa.id, ...iniziale },
           { client: trx }
         )
+        await CambioStatoService.registraCreazione(el.id, utente.id, trx)
         await registraAudit(
           {
             utenteId: utente.id,
@@ -114,7 +117,7 @@ export default class ElaboratiController {
       return this.rendiForm(ctx, commessa, el, campi.errori, ctx.request.all())
     }
     try {
-      await aggiornaConVersione(ElaboratoAnagrafica, el.id, versione, valori, {
+      await aggiornaConVersione(Elaborato, el.id, versione, valori, {
         audit: {
           utenteId: utente.id,
           azione: 'elaborato.aggiornato',
@@ -165,13 +168,7 @@ export default class ElaboratiController {
       )
     }
 
-    const inBaseline = await db
-      .from('baseline_date_stato as bd')
-      .join('baseline as b', 'b.id', 'bd.baseline_id')
-      .where('bd.elaborato_id', el.id)
-      .where('b.stato', 'approvata')
-      .first()
-    if (inBaseline) {
+    if (await elaboratoInBaselineApprovata(el.id)) {
       ctx.response.status(422)
       return this.rendiForm(
         ctx,
@@ -188,7 +185,7 @@ export default class ElaboratiController {
     try {
       await db.transaction(async (trx) => {
         const riga = await aggiornaConVersione(
-          ElaboratoAnagrafica,
+          Elaborato,
           el.id,
           versione,
           {},
@@ -263,8 +260,8 @@ export default class ElaboratiController {
     const utente = ctx.auth.getUserOrFail()
     const testo = String(ctx.request.input('testo', '') ?? '')
     const esito = await this.analizza(commessa, testo)
-    const statoId = await statoIniziale()
-    if (esito.righe.length === 0 || esito.errate.length > 0 || statoId === null) {
+    const configurato = await CambioStatoService.statoInizialeSeConfigurato()
+    if (esito.righe.length === 0 || esito.errate.length > 0 || !configurato) {
       ctx.response.status(422)
       return ctx.view.render('modules/anagrafiche/import', {
         commessa,
@@ -275,8 +272,9 @@ export default class ElaboratiController {
     }
     try {
       await db.transaction(async (trx) => {
+        const iniziale = await CambioStatoService.statoIniziale(trx)
         for (const r of esito.valide) {
-          const el = await ElaboratoAnagrafica.create(
+          const el = await Elaborato.create(
             {
               commessaId: commessa.id,
               codice: r.codice,
@@ -284,10 +282,11 @@ export default class ElaboratiController {
               disciplinaId: r.disciplinaId!,
               budgetMinuti: r.budgetMinuti!,
               classeServizio: 'standard',
-              statoId,
+              ...iniziale,
             },
             { client: trx }
           )
+          await CambioStatoService.registraCreazione(el.id, utente.id, trx)
           await registraAudit(
             {
               utenteId: utente.id,
@@ -327,7 +326,7 @@ export default class ElaboratiController {
   }
 
   private async elaborato(ctx: HttpContext, commessa: Commessa) {
-    const el = await ElaboratoAnagrafica.query()
+    const el = await Elaborato.query()
       .where('id', Number(ctx.params.elaboratoId))
       .where('commessa_id', commessa.id)
       .first()
@@ -336,7 +335,7 @@ export default class ElaboratiController {
   }
 
   /** Legge e valida il form dell'elaborato */
-  private async leggi(ctx: HttpContext, commessa: Commessa, el: ElaboratoAnagrafica | null) {
+  private async leggi(ctx: HttpContext, commessa: Commessa, el: Elaborato | null) {
     const campi = new Campi(ctx.request.all())
     const codice = campi.testo('codice', 'Codice', { obbligatorio: true, max: 40 })
     const titolo = campi.testo('titolo', 'Titolo', { obbligatorio: true, max: 300 })
@@ -408,7 +407,7 @@ export default class ElaboratiController {
   private async rendiForm(
     ctx: HttpContext,
     commessa: Commessa,
-    elaborato: ElaboratoAnagrafica | null,
+    elaborato: Elaborato | null,
     errori: Errori,
     valori: Record<string, unknown>
   ) {

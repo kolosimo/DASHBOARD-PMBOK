@@ -1,10 +1,31 @@
-@component('layouts/app', { titolo: 'Scheda elaborato' })
-  @!component('components/segnaposto', {
-    eyebrow: 'Elaborato',
-    titolo: 'Scheda elaborato',
-    descrizione:
-      'Storico degli stati, ore registrate, valore guadagnato e impegni collegati.',
-    fase: 'Fase 2',
-    agente: 'agente B4',
-  })
+@component('layouts/app', { titolo: scheda.codice + ' · Scheda elaborato' })
+  <div class="head">
+    <div>
+      <div class="eyebrow">Scheda elaborato · {{ commessa.codice }}</div>
+      <h2>
+        <span class="code">{{ scheda.codice }}</span>
+        {{ scheda.titolo }}
+      </h2>
+      <p>
+        Stato nel flusso, storico dei passaggi, ore registrate, valore guadagnato e impegni del Last Planner dell'elaborato.
+      </p>
+    </div>
+    <div>
+      <nav aria-label="Collegamenti dell'elaborato" data-testid="collegamenti">
+        <a class="btn" href="/commesse/{{ commessa.id }}/flusso" data-testid="link-kanban">Kanban</a>
+        <a class="btn" href="/commesse/{{ commessa.id }}/evm" data-testid="link-evm">EVM</a>
+        @if(puoModificare)
+          <a
+            class="btn"
+            href="/commesse/{{ commessa.id }}/elaborati/{{ scheda.elaboratoId }}/modifica"
+            data-testid="link-anagrafica"
+          >Modifica anagrafica</a>
+        @else
+          <a class="btn" href="/commesse/{{ commessa.id }}/anagrafica" data-testid="link-anagrafica">Anagrafica</a>
+        @end
+      </nav>
+    </div>
+  </div>
+
+  @include('modules/elaborato_dettaglio/_scheda')
 @end

@@ -1,4 +1,16 @@
 @component('layouts/app', { titolo: 'Avanzamento EVM' })
+  <style>
+    /* Griglia KPI della sola pagina EVM: 9 riquadri in 3 colonne (3 righe piene),
+       una colonna sugli schermi stretti. Il CSS condiviso resta invariato. */
+    .kpis.kpis-evm {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    @media (max-width: 560px) {
+      .kpis.kpis-evm {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  </style>
   <div class="head">
     <div>
       <div class="eyebrow">Earned Value in ore · {{ formato.settimana(riepilogo.settimana) }}</div>

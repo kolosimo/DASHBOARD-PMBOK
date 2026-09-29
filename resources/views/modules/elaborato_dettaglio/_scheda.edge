@@ -1,0 +1,402 @@
+{{--
+  Contenuto della scheda elaborato: si ricarica da solo con gli eventi della
+  commessa e dopo ogni cambio di stato fatto da qui (HTMX).
+  Variabili: commessa, scheda, puoSpostare, puoModificare, persone (null se
+  non visibili), soglie, giorniFermo, classe; facoltative: messaggio, errore,
+  conflitto (409), confermaWip (sforamento da confermare).
+--}}
+<div
+  id="scheda-elaborato"
+  data-testid="scheda-elaborato"
+  hx-get="/commesse/{{ commessa.id }}/elaborati/{{ scheda.elaboratoId }}/frammento"
+  hx-trigger="evento-commessa from:body, polling-commessa from:body"
+  hx-swap="outerHTML"
+>
+  <style>
+    /* Solo per questa scheda: 6 indicatori in 3 colonne, nessuna cella vuota */
+    .kpis.kpis-scheda {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    @media (max-width: 560px) {
+      .kpis.kpis-scheda {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+    /* Tabelle strette nelle due colonne: niente larghezza minima globale;
+       se il contenuto non ci sta il pannello scorre in orizzontale */
+    #scheda-elaborato .grid2 > .panel {
+      min-width: 0;
+    }
+    #scheda-elaborato table {
+      min-width: 0;
+    }
+    #scheda-elaborato .scheda-stato {
+      margin-top: 16px;
+    }
+    .scheda-stato form {
+      display: inline-flex;
+      gap: 8px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      margin: 0 12px 8px 0;
+    }
+  </style>
+
+  @if(conflitto)
+    @!component('components/conflitto', { messaggio: conflitto })
+  @end
+  @if(errore)
+    <div class="messaggio errore" role="alert" data-testid="errore-scheda">
+      <p>{{ errore }}</p>
+    </div>
+  @end
+  @if(messaggio)
+    <div class="messaggio" role="status" data-testid="messaggio-scheda">
+      <p>{{ messaggio }}</p>
+    </div>
+  @end
+
+  {{-- Indicatori dell'elaborato --}}
+  <div class="kpis kpis-scheda" data-testid="kpi-elaborato">
+    @!component('components/kpi', {
+      etichetta: 'Stato',
+      valore: scheda.statoNome,
+      sotto: scheda.flusso
+        ? 'stato ' + scheda.flusso.numero + ' di ' + scheda.flusso.totale + ' · colonna ' + scheda.flusso.attuale.colonnaNome
+        : 'stato non configurato'
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.WIA.nome,
+      valore: scheda.etaGiorni === null ? formato.numero(null) : formato.numero(scheda.etaGiorni) + ' gg',
+      sotto: scheda.etaGiorni === null
+        ? 'elaborato emesso'
+        : (scheda.etaGiorni >= giorniFermo ? 'fermo: ' : '') + 'dal ' + formato.data(scheda.statoDal)
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.AC.sigla + ' · ore registrate',
+      valore: formato.oreEsatte(scheda.acMinuti),
+      sotto: 'su ' + formato.oreEsatte(scheda.budgetMinuti) + ' di budget (' + formato.percento(scheda.consumoBudget) + ')'
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.EV.sigla + ' · ' + glossario.EV.nome,
+      valore: formato.oreEsatte(scheda.evm ? scheda.evm.evMinuti : null),
+      sotto: scheda.evm && scheda.evm.fuoriBaseline ? 'fuori baseline' : 'dallo stato attuale'
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.SPI.sigla + ' · ' + glossario.SPI.nome,
+      valore: formato.indice(scheda.evm ? scheda.evm.spi : null),
+      semaforo: {
+        classe: formato.classe(scheda.evm ? scheda.evm.spi : null, soglie.spi),
+        testo: formato.statoSemaforo(scheda.evm ? scheda.evm.spi : null, soglie.spi)
+      }
+    })
+    @!component('components/kpi', {
+      etichetta: glossario.CPI.sigla + ' · ' + glossario.CPI.nome,
+      valore: formato.indice(scheda.evm ? scheda.evm.cpi : null),
+      semaforo: {
+        classe: formato.classe(scheda.evm ? scheda.evm.cpi : null, soglie.cpi),
+        testo: formato.statoSemaforo(scheda.evm ? scheda.evm.cpi : null, soglie.cpi)
+      }
+    })
+  </div>
+
+  <div class="grid2">
+    {{-- Dati e cambio di stato --}}
+    @component('components/pannello', { titolo: 'Dati dell’elaborato' })
+      <table data-testid="dati-elaborato">
+        <tbody>
+          <tr><th>Codice</th><td class="code">{{ scheda.codice }}</td></tr>
+          <tr><th>Titolo</th><td>{{ scheda.titolo }}</td></tr>
+          <tr><th>Disciplina</th><td>{{ scheda.disciplina }}</td></tr>
+          <tr>
+            <th>Classe di servizio</th>
+            <td>
+              <span title="{{ classe.spiegazione }}">{{ classe.testo }}</span>
+              @if(scheda.dataFissa)
+                · entro il {{ formato.data(scheda.dataFissa) }}
+              @end
+            </td>
+          </tr>
+          <tr><th>Responsabile</th><td>{{ formato.testo(scheda.responsabileNome) }}</td></tr>
+          <tr>
+            <th>Milestone</th>
+            <td>
+              @if(scheda.milestone)
+                {{ scheda.milestone.titolo }} ({{ formato.data(scheda.milestone.dataPrevista) }})
+              @else
+                {{ formato.testo(null) }}
+              @end
+            </td>
+          </tr>
+          <tr><th>Budget</th><td class="num">{{ formato.oreEsatte(scheda.budgetMinuti) }}</td></tr>
+        </tbody>
+      </table>
+
+      <div class="scheda-stato" data-testid="cambio-stato">
+        <h3>Stato: {{ scheda.statoNome }}</h3>
+        @if(confermaWip)
+          <div class="messaggio conflitto" role="alert" data-testid="conferma-wip">
+            @!component('components/pill', { classe: 'w', testo: 'limite WIP' })
+            <div>
+              <p>→ {{ confermaWip.aStatoNome }}. {{ confermaWip.messaggio }}</p>
+              <form
+                class="campi"
+                method="POST"
+                action="/commesse/{{ commessa.id }}/elaborati/{{ scheda.elaboratoId }}/stato"
+                hx-post="/commesse/{{ commessa.id }}/elaborati/{{ scheda.elaboratoId }}/stato"
+                hx-target="#scheda-elaborato"
+                hx-swap="outerHTML"
+              >
+                {{ csrfField() }}
+                <input type="hidden" name="version" value="{{ scheda.version }}" />
+                <input type="hidden" name="a_stato_id" value="{{ confermaWip.aStatoId }}" />
+                <input type="hidden" name="conferma_wip" value="1" />
+                <label>
+                  Motivo dello sforamento
+                  <input type="text" name="motivo" required maxlength="1000" value="{{ confermaWip.motivo || '' }}" />
+                </label>
+                <button class="btn primary" type="submit">Conferma il passaggio</button>
+                <a class="btn ghost" href="/commesse/{{ commessa.id }}/elaborati/{{ scheda.elaboratoId }}">Annulla</a>
+              </form>
+            </div>
+          </div>
+        @elseif(puoSpostare && scheda.flusso)
+          @if(scheda.flusso.successivo)
+            <form
+              method="POST"
+              action="/commesse/{{ commessa.id }}/elaborati/{{ scheda.elaboratoId }}/stato"
+              hx-post="/commesse/{{ commessa.id }}/elaborati/{{ scheda.elaboratoId }}/stato"
+              hx-target="#scheda-elaborato"
+              hx-swap="outerHTML"
+              data-testid="form-avanza"
+            >
+              {{ csrfField() }}
+              <input type="hidden" name="version" value="{{ scheda.version }}" />
+              <input type="hidden" name="a_stato_id" value="{{ scheda.flusso.successivo.id }}" />
+              <button class="btn primary" type="submit">Porta a “{{ scheda.flusso.successivo.nome }}” →</button>
+            </form>
+          @end
+          @if(scheda.flusso.precedente)
+            <form
+              method="POST"
+              action="/commesse/{{ commessa.id }}/elaborati/{{ scheda.elaboratoId }}/stato"
+              hx-post="/commesse/{{ commessa.id }}/elaborati/{{ scheda.elaboratoId }}/stato"
+              hx-target="#scheda-elaborato"
+              hx-swap="outerHTML"
+              data-testid="form-indietro"
+            >
+              {{ csrfField() }}
+              <input type="hidden" name="version" value="{{ scheda.version }}" />
+              <input type="hidden" name="a_stato_id" value="{{ scheda.flusso.precedente.id }}" />
+              <label>
+                Motivo del ritorno
+                <input type="text" name="motivo" required maxlength="1000" placeholder="per esempio una rilavorazione" />
+              </label>
+              <button class="btn" type="submit">← Riporta a “{{ scheda.flusso.precedente.nome }}”</button>
+            </form>
+          @end
+          <p class="muted">Si avanza di uno stato alla volta, come nel Kanban; per tornare indietro serve un motivo.</p>
+        @else
+          <p class="muted" data-testid="sola-lettura">Il cambio di stato è riservato al PM e ai progettisti della commessa.</p>
+        @end
+      </div>
+    @end
+
+    {{-- Storico delle transizioni --}}
+    @component('components/pannello', { titolo: 'Storico degli stati', tabella: true })
+      <table data-testid="storico-transizioni">
+        <thead>
+          <tr>
+            <th>Quando</th>
+            <th>Da</th>
+            <th>A</th>
+            <th>Chi</th>
+            <th>Motivo</th>
+          </tr>
+        </thead>
+        <tbody>
+          @each(t in scheda.transizioni)
+            <tr>
+              <td class="num">{{ formato.dataOra(t.avvenutaIl) }}</td>
+              <td>{{ t.daStatoNome || 'creazione' }}</td>
+              <td>
+                {{ t.aStatoNome }}
+                @if(t.indietro)
+                  @!component('components/pill', { classe: 'w', testo: 'indietro' })
+                @end
+                @if(t.wipSforato)
+                  @!component('components/pill', { classe: 'w', testo: 'oltre WIP' })
+                @end
+              </td>
+              <td>{{ formato.testo(t.utenteNome) }}</td>
+              <td>{{ t.motivo || '' }}</td>
+            </tr>
+          @else
+            <tr><td colspan="5" class="muted">Nessun passaggio registrato.</td></tr>
+          @end
+        </tbody>
+      </table>
+    @end
+  </div>
+
+  <div class="grid2">
+    {{-- Ore --}}
+    @component('components/pannello', { titolo: 'Ore registrate', nota: 'tutte le persone', tabella: true })
+      <table data-testid="ore-settimanali">
+        <thead>
+          <tr>
+            <th>Settimana</th>
+            <th class="r">Ore</th>
+          </tr>
+        </thead>
+        <tbody>
+          @each(o in scheda.oreSettimanali)
+            <tr>
+              <td>{{ formato.settimana(o.settimana) }} · dal {{ formato.data(o.settimana) }}</td>
+              <td class="r num">{{ formato.oreEsatte(o.minuti) }}</td>
+            </tr>
+          @else
+            <tr><td colspan="2" class="muted">Nessuna ora registrata.</td></tr>
+          @end
+        </tbody>
+        <tfoot>
+          <tr>
+            <th>Totale</th>
+            <th class="r num">{{ formato.oreEsatte(scheda.acMinuti) }}</th>
+          </tr>
+        </tfoot>
+      </table>
+      @if(persone !== null)
+        <table data-testid="ore-per-persona">
+          <thead>
+            <tr>
+              <th>Persona (in ordine alfabetico)</th>
+              <th class="r">Ore</th>
+            </tr>
+          </thead>
+          <tbody>
+            @each(p in persone)
+              <tr>
+                <td>{{ p.nome }}</td>
+                <td class="r num">{{ formato.oreEsatte(p.minutiTotali) }}</td>
+              </tr>
+            @else
+              <tr><td colspan="2" class="muted">Nessuna ora registrata.</td></tr>
+            @end
+          </tbody>
+        </table>
+      @end
+    @end
+
+    {{-- EVM --}}
+    @component('components/pannello', { titolo: 'Valore guadagnato', nota: 'calcolo di oggi', tabella: true })
+      @if(scheda.evm)
+        <table data-testid="evm-elaborato">
+          <tbody>
+            <tr>
+              <th>Budget in baseline</th>
+              <td class="r num">
+                {{ scheda.evm.fuoriBaseline ? 'fuori baseline' : formato.oreEsatte(scheda.evm.budgetMinuti) }}
+              </td>
+            </tr>
+            <tr><th>Peso dello stato attuale</th><td class="r num">{{ formato.numero(scheda.evm.pesoStatoPercento) }}%</td></tr>
+            <tr><th>Stato previsto a oggi</th><td class="r">{{ formato.testo(scheda.evm.statoPianificatoNome) }}</td></tr>
+            <tr><th>{{ glossario.PV.sigla }} · {{ glossario.PV.nome }}</th><td class="r num">{{ formato.oreEsatte(scheda.evm.pvMinuti) }}</td></tr>
+            <tr><th>{{ glossario.EV.sigla }} · {{ glossario.EV.nome }}</th><td class="r num">{{ formato.oreEsatte(scheda.evm.evMinuti) }}</td></tr>
+            <tr><th>{{ glossario.AC.sigla }} · {{ glossario.AC.nome }}</th><td class="r num">{{ formato.oreEsatte(scheda.evm.acMinuti) }}</td></tr>
+          </tbody>
+        </table>
+      @else
+        <p class="muted">Valore guadagnato non disponibile.</p>
+      @end
+    @end
+  </div>
+
+  {{-- Last Planner --}}
+  <div class="grid2">
+    @component('components/pannello', { titolo: 'Vincoli collegati', nota: 'dalle attività del lookahead', tabella: true })
+      <table data-testid="vincoli-elaborato">
+        <thead>
+          <tr>
+            <th>Vincolo</th>
+            <th>Descrizione</th>
+            <th>Stato</th>
+            <th>Serve entro</th>
+          </tr>
+        </thead>
+        <tbody>
+          @each(v in scheda.lps.vincoli)
+            <tr>
+              <td class="code">{{ v.codice }}</td>
+              <td>{{ v.descrizione }}</td>
+              <td>
+                @!component('components/pill', { classe: v.aperto ? 'w' : 'n', testo: v.stato.replace('_', ' '), semplice: true })
+              </td>
+              <td class="num">{{ formato.data(v.dataNecessaria) }}</td>
+            </tr>
+          @else
+            <tr><td colspan="4" class="muted">Nessun vincolo sulle attività di questo elaborato.</td></tr>
+          @end
+        </tbody>
+      </table>
+    @end
+
+    @component('components/pannello', { titolo: 'Impegni settimanali', nota: 'piano settimanale', tabella: true })
+      <table data-testid="impegni-elaborato">
+        <thead>
+          <tr>
+            <th>Settimana</th>
+            <th>Impegno</th>
+            <th>Last planner</th>
+            <th>Esito</th>
+          </tr>
+        </thead>
+        <tbody>
+          @each(i in scheda.lps.impegni)
+            <tr>
+              <td>{{ formato.settimana(i.settimana) }}</td>
+              <td>{{ i.descrizione }}</td>
+              <td>{{ formato.testo(i.lastPlannerNome) }}</td>
+              <td>
+                @if(i.fatto === true)
+                  fatto
+                @elseif(i.fatto === false)
+                  non fatto{{ i.causaNome ? ' · ' + i.causaNome : '' }}
+                @else
+                  aperto
+                @end
+              </td>
+            </tr>
+          @else
+            <tr><td colspan="4" class="muted">Nessun impegno su questo elaborato.</td></tr>
+          @end
+        </tbody>
+      </table>
+    @end
+  </div>
+
+  @if(scheda.lps.attivita.length)
+    @component('components/pannello', { titolo: 'Attività del lookahead', tabella: true })
+      <table data-testid="attivita-elaborato">
+        <thead>
+          <tr>
+            <th>Attività</th>
+            <th>Titolo</th>
+            <th>Settimane</th>
+            <th>Pronta</th>
+          </tr>
+        </thead>
+        <tbody>
+          @each(a in scheda.lps.attivita)
+            <tr>
+              <td class="code">{{ a.codice }}</td>
+              <td>{{ a.titolo }}</td>
+              <td>{{ formato.settimana(a.settimanaInizio) }}–{{ formato.settimana(a.settimanaFine) }}</td>
+              <td>{{ a.pronta ? 'sì' : 'no (' + a.vincoliAperti + ' vincoli aperti)' }}</td>
+            </tr>
+          @end
+        </tbody>
+      </table>
+    @end
+  @end
+</div>
