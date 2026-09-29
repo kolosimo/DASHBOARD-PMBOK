@@ -33,6 +33,21 @@ export default class Utente extends BaseModel {
   @column.dateTime()
   declare ultimoAccesso: DateTime | null
 
+  /** Hash scrypt della password (account locali): mai serializzato né in audit */
+  @column({ serializeAs: null })
+  declare passwordHash: string | null
+
+  /** Al prossimo accesso l'utente deve scegliere una nuova password */
+  @column()
+  declare deveCambiarePassword: boolean
+
+  @column({ serializeAs: null })
+  declare tentativiFalliti: number
+
+  /** Accesso locale bloccato fino a questo istante (troppi tentativi falliti) */
+  @column.dateTime()
+  declare bloccatoFino: DateTime | null
+
   @column()
   declare version: number
 
@@ -47,6 +62,16 @@ export default class Utente extends BaseModel {
 
   @hasMany(() => RegistrazioneOre)
   declare registrazioniOre: HasMany<typeof RegistrazioneOre>
+
+  /** true se l'accesso locale è bloccato in questo momento */
+  get bloccato() {
+    return this.bloccatoFino !== null && this.bloccatoFino > DateTime.now()
+  }
+
+  /** true se ha una password locale impostata */
+  get haPassword() {
+    return Boolean(this.passwordHash)
+  }
 
   get isAdmin() {
     return this.ruolo === 'admin'
