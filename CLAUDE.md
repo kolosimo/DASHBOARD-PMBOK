@@ -1,4 +1,8 @@
-# Cruscotto commesse Climosfera: guida per Claude
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Cruscotto commesse Climosfera
 
 App web multi-utente per le commesse di Climosfera (PMBOK + Lean): Last Planner,
 Kanban degli elaborati, ore, EVM in ore, Obeya e portafoglio. Un solo linguaggio
@@ -36,9 +40,33 @@ Node **24** (`engines >=24`, richiesto da AdonisJS 7). Nel container: `export PA
 | `node ace utenti:crea-admin --email … --nome "…"` | primo amministratore con password temporanea (account locali) |
 | `node ace certificato:scadenza` | giorni alla scadenza del certificato PFX (uscita 1 sotto la soglia) |
 
+Test mirati:
+- un file: `node ace test functional --files tests/functional/ore/ore.spec.ts`;
+- un test per titolo: `node ace test unit --tests "<titolo esatto del test>"`;
+- un solo scenario e2e: `npx playwright test e2e/pilota.smoke.ts`;
+- i passi di `verifica` uno per uno: `npm run typecheck`, `npm run lint` (`npm run format` per sistemare).
+
 Per agente: `DB_DATABASE=cruscotto_test_<agente> PORT=<porta> npm run verifica`
-(E2E: `E2E_DB_DATABASE`, `E2E_PORT`). Login di sviluppo: `/dev/login?come=pm1`
-(utenti: admin, direzione, pm1, pm2, mec1, mec2, ele1, ele2, idr1, qualita).
+(E2E: `E2E_DB_DATABASE`, `E2E_PORT`). Il cluster PostgreSQL locale sta in `/tmp` e si
+perde al riavvio del container: se i test falliscono con `ECONNREFUSED`, esegui
+`npm run db:locale -- init`.
+
+## Architettura in breve
+
+- **Una richiesta:**
+  1. `start/routes.ts` importa i `routes.ts` dei moduli.
+  2. Il controller carica la commessa con `commessaCorrente()` (`app/shared/commessa_corrente.ts`, che autorizza `vedeCommessa`) e controlla le altre abilità di `app/abilities/main.ts`.
+  3. Legge da `queries.ts` e calcola con le funzioni pure di `app/domain/*`.
+  4. Scrive con `aggiornaConVersione` (`app/shared/optimistic.ts`, 409 con il frammento aggiornato) e `registraAudit`.
+  5. Chiama `pubblica()` (`app/shared/eventi.ts`), che manda l'evento SSE via Transmit sul canale della commessa.
+  6. `resources/js/app.js` fa ricaricare i frammenti HTMX interessati.
+- **Pagine:** generate dal server con Edge + HTMX + Alpine (vendorizzati in `public/vendor`). Nessuna SPA. I grafici (curva S, PPC, Pareto, CFD) sono SVG prodotti da funzioni TS pure dentro i moduli.
+- **Storico congelato:** i moduli registrano job in-process con `registraJob()` (`app/shared/scheduler.ts`); `start/scheduler.ts` li avvia solo nel processo web. I job scrivono `snapshot_lps`, `snapshot_lookahead` e `snapshot_evm`. Curva S e storico PPC si leggono dagli snapshot e non si ricalcolano. La baseline approvata congela pesi, BAC e PV settimanale.
+- **Login (`AUTH_MODE`):**
+  - `oidc`: Entra ID con `openid-client` lato server;
+  - `locale`: email + password scrypt, cambio obbligatorio al primo accesso, blocco dopo 5 tentativi; è la modalità del pilota;
+  - `dev`: `/dev/login?come=pm1`, con utenti admin, direzione, pm1, pm2, mec1, mec2, ele1, ele2, idr1, qualita. È rifiutato in produzione dai controlli di `app/shared/avvio.ts`.
+- **Deploy:** `deploy/pacchetto.mjs` crea lo zip. `deploy/windows/*.ps1` e WinSW (`cruscotto.xml`) lo installano su Windows Server 2019 con PostgreSQL 17 e Node 24 in zip. HTTPS è gestito direttamente da Node con un PFX (`HTTPS_PFX_PATH`). I comandi ace di produzione stanno in `commands/`.
 
 ## Come si lavora per moduli
 
@@ -71,6 +99,9 @@ Per agente: `DB_DATABASE=cruscotto_test_<agente> PORT=<porta> npm run verifica`
 | `app/domain/evm.ts` · `lps.ts` · `flusso.ts` · `avvisi.ts` (corpi) | A5 · A2 · A3 · B1 |
 | `app/modules/<modulo>/**`, `resources/views/modules/<modulo>/**`, `tests/functional/<modulo>/**` | agente del modulo |
 | `tests/unit/domain/**`, `docs/formule/casi-di-prova.md` | T1 |
+| `app/modules/accesso/**` (account locali), `commands/utenti_crea_admin.ts` | B6 |
+| `app/modules/audit/**` | B3 |
+| `deploy/**`, `database/seeders/produzione/**`, altri `commands/*`, parte HTTPS di `bin/server.ts` | B5 |
 
 Tabella completa: `docs/sviluppo/proprieta-file.md`.
 
