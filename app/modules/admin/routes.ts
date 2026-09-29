@@ -20,6 +20,15 @@ router
     router.post('/commesse', [CommesseController, 'crea']).as('admin.commesse.crea')
 
     router.get('/utenti', [UtentiController, 'index']).as('admin.utenti')
+    router.post('/utenti', [UtentiController, 'crea']).as('admin.utenti.crea')
+    router
+      .post('/utenti/:utenteId/password', [UtentiController, 'reimpostaPassword'])
+      .where('utenteId', numero)
+      .as('admin.utenti.password')
+    router
+      .post('/utenti/:utenteId/sblocca', [UtentiController, 'sblocca'])
+      .where('utenteId', numero)
+      .as('admin.utenti.sblocca')
     router
       .post('/utenti/:utenteId', [UtentiController, 'aggiorna'])
       .where('utenteId', numero)

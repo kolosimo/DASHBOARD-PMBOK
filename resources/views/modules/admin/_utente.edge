@@ -1,6 +1,7 @@
 {{--
   Riga di un utente (sostituita da HTMX dopo il salvataggio).
-  Variabili: u, ruoli, io (id dell'amministratore), errori, salvata?, conflitto?
+  Variabili: u, ruoli, io (id dell'amministratore), errori, accessoLocale,
+  salvata?, conflitto?, passwordTemporanea? (mostrata una sola volta)
 --}}
 <div class="impostazione" id="utente-{{ u.id }}" data-testid="utente-{{ u.id }}">
   @if(conflitto)
@@ -9,6 +10,17 @@
   @each((testo, campo) in errori)
     <div class="messaggio errore" role="alert">
       <p>{{ testo }}</p>
+    </div>
+  @end
+  @if(passwordTemporanea)
+    <div class="messaggio ok" role="status" data-testid="password-temporanea">
+      <p>
+        Password temporanea per {{ u.email }}:
+        <code style="font-family:var(--mono);font-size:15px;user-select:all">{{ passwordTemporanea }}</code>
+      </p>
+      <p>
+        Copiala ora e consegnala di persona: non verrà più mostrata. Al primo accesso l'utente dovrà sceglierne una nuova.
+      </p>
     </div>
   @end
 
@@ -32,6 +44,18 @@
     @elseif(!u.attivo)
       @!component('components/pill', { classe: 'n', testo: 'disattivato' })
     @end
+    @if(accessoLocale)
+      @if(u.bloccato)
+        @!component('components/pill', {
+          classe: 'n',
+          testo: 'bloccato fino a ' + formato.dataOra(u.bloccatoFino),
+        })
+      @elseif(u.haPassword && u.deveCambiarePassword)
+        @!component('components/pill', { classe: 'n', semplice: true, testo: 'password temporanea' })
+      @elseif(!u.haPassword)
+        @!component('components/pill', { classe: 'n', semplice: true, testo: 'senza password' })
+      @end
+    @end
   </div>
   <form
     class="campi"
@@ -53,10 +77,39 @@
     </label>
     <label style="flex-direction:row;align-items:center;gap:6px">
       <input type="checkbox" name="attivo" value="on" {{ u.attivo ? 'checked' : '' }} />
-      
+
       attivo
 
     </label>
     <button class="btn primary" type="submit">Salva</button>
   </form>
+  @if(accessoLocale)
+    <div class="campi">
+      <form
+        method="POST"
+        action="/admin/utenti/{{ u.id }}/password"
+        hx-post="/admin/utenti/{{ u.id }}/password"
+        hx-target="#utente-{{ u.id }}"
+        hx-swap="outerHTML"
+        hx-confirm="Generare una nuova password temporanea per {{ u.nome }}? Quella attuale smetterà di funzionare."
+      >
+        {{ csrfField() }}
+        <input type="hidden" name="version" value="{{ u.version }}" />
+        <button class="btn" type="submit" data-testid="reimposta-{{ u.id }}">Reimposta password</button>
+      </form>
+      @if(u.bloccato)
+        <form
+          method="POST"
+          action="/admin/utenti/{{ u.id }}/sblocca"
+          hx-post="/admin/utenti/{{ u.id }}/sblocca"
+          hx-target="#utente-{{ u.id }}"
+          hx-swap="outerHTML"
+        >
+          {{ csrfField() }}
+          <input type="hidden" name="version" value="{{ u.version }}" />
+          <button class="btn" type="submit" data-testid="sblocca-{{ u.id }}">Sblocca</button>
+        </form>
+      @end
+    </div>
+  @end
 </div>

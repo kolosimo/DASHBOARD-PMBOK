@@ -1,15 +1,66 @@
+{{--
+  Utenti e ruoli, creazione di un utente con password temporanea.
+  Variabili: utenti, ruoli, io, riga, nuovo { valori, errori, creato? }, accessoLocale,
+  messaggio, sezioni, sezione
+--}}
 @component('layouts/app', { titolo: 'Utenti e ruoli', voceAttiva })
   @let(intestazione = 'Utenti e ruoli')
-  @let(descrizione =
-    'Gli utenti si creano da soli al primo accesso con l’account Microsoft 365 aziendale. Qui si sceglie il ruolo globale (admin, direzione, pm, progettista) e si disattiva chi non deve più entrare. Il ruolo dentro una commessa si decide nel team della commessa.')
+  @if(accessoLocale)
+    @let(descrizione =
+      'Con l’accesso tramite password (pilota) gli utenti li crea l’amministratore: l’app genera una password temporanea, da consegnare di persona, che l’utente cambia al primo accesso. Qui si sceglie anche il ruolo globale (admin, direzione, pm, progettista), si reimposta una password dimenticata e si sblocca chi ha sbagliato troppe volte. Il ruolo dentro una commessa si decide nel team della commessa.')
+  @else
+    @let(descrizione =
+      'Gli utenti si creano da soli al primo accesso con l’account Microsoft 365 aziendale. Qui si sceglie il ruolo globale (admin, direzione, pm, progettista) e si disattiva chi non deve più entrare. Il ruolo dentro una commessa si decide nel team della commessa.')
+  @end
   @include('modules/admin/_testata')
+
+  @if(accessoLocale)
+    @if(nuovo.creato)
+      <div class="messaggio ok" role="status" data-testid="utente-creato">
+        <p>
+          Utente creato: <b>{{ nuovo.creato.nome }}</b> ({{ nuovo.creato.email }}).
+          Password temporanea:
+          <code style="font-family:var(--mono);font-size:15px;user-select:all" data-testid="password-temporanea">{{ nuovo.creato.password }}</code>
+        </p>
+        <p>
+          Copiala ora e consegnala di persona: non verrà più mostrata. Al primo accesso l'utente dovrà sceglierne una nuova (almeno 12 caratteri).
+        </p>
+      </div>
+    @end
+    <form class="panel campi" method="POST" action="/admin/utenti" data-testid="nuovo-utente">
+      {{ csrfField() }}
+      <label style="flex:1 1 220px">
+        Email
+        <input type="email" name="email" value="{{ nuovo.valori.email || '' }}" maxlength="254" required />
+        @!component('modules/anagrafiche/_errore', { testo: nuovo.errori.email })
+      </label>
+      <label style="flex:1 1 220px">
+        Nome e cognome
+        <input type="text" name="nome" value="{{ nuovo.valori.nome || '' }}" maxlength="200" required />
+        @!component('modules/anagrafiche/_errore', { testo: nuovo.errori.nome })
+      </label>
+      <label>
+        Ruolo
+        <select name="ruolo">
+          @each(r in ruoli)
+            <option value="{{ r }}" {{ r === (nuovo.valori.ruolo || 'pm') ? 'selected' : '' }}>{{ r }}</option>
+          @end
+        </select>
+        @!component('modules/anagrafiche/_errore', { testo: nuovo.errori.ruolo })
+      </label>
+      <button class="btn primary" type="submit">Crea utente</button>
+    </form>
+  @end
+
   <div class="impostazioni">
     @each(u in utenti)
       @!component('modules/admin/_utente', {
         u,
         ruoli,
         io,
-        errori: riga && riga.id === u.id ? riga.errori : {},
+        accessoLocale,
+        errori: riga && riga.id === u.id && riga.errori ? riga.errori : {},
+        passwordTemporanea: riga && riga.id === u.id ? riga.passwordTemporanea : null,
       })
     @end
   </div>
