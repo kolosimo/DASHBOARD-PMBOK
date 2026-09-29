@@ -1,4 +1,4 @@
-# Contratti tra moduli (Fase 0)
+# Contratti tra moduli (Fase 0, aggiornati alla Fase 2)
 
 I contratti permettono agli agenti della Fase 1 di lavorare in parallelo senza
 aspettarsi. Firme e significato sono fissati; i corpi con `throw new Error('non implementato')`
@@ -27,10 +27,15 @@ Le formule esatte sono nei JSDoc e in `docs/formule/formule.md`.
 | flusso | `riepilogoFlusso(commessaId, oggi)` | **implementata** (Fase 1, A3) |
 | ore | `oreCommessa(commessaId, settimana)` | **implementata** (Fase 1, A4)⁵ |
 | evm | `riepilogoEvm(commessaId, dataStato)`, `serieCurvaS(commessaId, oggi?)` | **implementata** (Fase 1, A5)⁶ |
-| obeya | `avvisiCommessa(commessaId)` | firma |
-| portafoglio | `righePortafoglio(utente)` | firma |
+| obeya | `avvisiCommessa(commessaId)`, `datiObeya(...)` | **implementata** (Fase 2, B1) |
+| portafoglio | `righePortafoglio(utente)`, `totaliPortafoglio(righe)` | **implementata** (Fase 2, B1)⁷ |
 | admin | `elencoImpostazioni()` | **implementata** |
-| elaborato_dettaglio | `schedaElaborato(commessaId, elaboratoId)` | firma |
+| elaborato_dettaglio | `schedaElaborato(commessaId, elaboratoId, oggi)` (null se l'elaborato non è della commessa → 404) | **implementata** (Fase 2, B4)⁸ |
+| flusso | `statiAllIstante`, `posizioneNelFlusso`, `storicoElaborato`; servizio `CambioStatoService.registraCreazione`, `statoInizialeSeConfigurato` | **implementata** (Fase 2, B4) |
+| evm | `elaboratoInBaselineApprovata(elaboratoId)` | **implementata** (Fase 2, B4) |
+| ore | `minutiPerElaborato`, `orePerPersonaElaborato`, `oreSettimanaliElaborato` | **implementata** (Fase 2, B4) |
+| lps | `collegamentiElaborato(elaboratoId)` | **implementata** (Fase 2, B4) |
+| audit | `vociRegistro(filtri)`, `utentiPerFiltro()`, `entitaPresenti()` | **implementata** (Fase 2, B3) |
 
 5. `oreCommessa`: `perElaborato[].minutiTotali` e `totaleCommessaMinuti` sono il **cumulato
    fino alla domenica della settimana** indicata (utilizzabile dall'EVM come AC a quella
@@ -39,6 +44,18 @@ Le formule esatte sono nei JSDoc e in `docs/formule/formule.md`.
    `baselineId`, `baselineNumero` e altri dati della baseline; `PuntoCurvaSEvm` estende
    `PuntoCurvaS` con `rettificato` e `acRettificatoMinuti` (snapshot rettificati dopo lo
    scatto). `serieCurvaS` ha il parametro facoltativo `oggi` (default: oggi a Roma).
+
+7. Il PPC delle ultime 4 settimane del portafoglio legge ancora direttamente
+   `piani_settimanali` e `impegni` (sola lettura, una query): da sostituire con una
+   lettura del modulo LPS per più commesse (richiesta aperta ad A2).
+8. Terzo parametro `oggi` (data di Roma) aggiunto rispetto alla firma di Fase 0.
+
+Scritture di Fase 2 fuori dal proprio modulo, concordate:
+- colonne `utenti.password_hash`, `deve_cambiare_password`, `tentativi_falliti`,
+  `bloccato_fino`: le scrive **solo il modulo accesso** (`account_locali.ts`), anche
+  quando l'azione parte dal pannello admin (creazione, reimpostazione, sblocco);
+- `commesse` e `membri_commessa` alla creazione di una commessa: `app/modules/admin/crea_commessa.ts`,
+  usato da `/admin/commesse` e da `/commesse/nuova` (PM).
 
 Regola: un modulo **legge** i dati degli altri solo tramite queste funzioni e **scrive**
 solo sulle proprie tabelle (`docs/sviluppo/proprieta-file.md`).

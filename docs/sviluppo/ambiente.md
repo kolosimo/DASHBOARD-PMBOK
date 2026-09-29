@@ -6,7 +6,7 @@
 |---|---|---|
 | Node.js | **24 LTS** (provato con 24.21.0) | AdonisJS 7 richiede Node ≥ 24 (`engines` in package.json) |
 | npm | 11 (incluso in Node 24) | |
-| PostgreSQL | 16 (sviluppo); in produzione EDB su Windows Server 2022 | |
+| PostgreSQL | 16 (sviluppo); in produzione 17 (EDB) su Windows Server 2019 Standard 1809 | |
 | Chromium | quello di Playwright 1.56.1 (revisione 1194) | solo per `npm run e2e` e `npm run screenshot` |
 
 ## Container di sviluppo (Linux, Claude Code)
@@ -87,8 +87,8 @@ npm run dev                                        # http://localhost:3333/acces
 
 Gli script npm sono in Node (niente bash). Su Windows installare Node 24 LTS e PostgreSQL 16
 (installer EDB), poi `PG_BIN="C:\Program Files\PostgreSQL\16\bin"` per `npm run db:locale`,
-oppure creare utente e DB con pgAdmin. Il deploy su Windows Server (WinSW, TLS, backup) è
-compito dell'agente B5 (Fase 2).
+oppure creare utente e DB con pgAdmin. Il deploy su Windows Server 2019 (WinSW, HTTPS con
+PFX, backup) è in `deploy/windows/` e `docs/installazione/guida-it-windows-server-2019.md`.
 
 ## Variabili d'ambiente
 

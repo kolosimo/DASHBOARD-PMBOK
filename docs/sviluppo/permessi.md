@@ -20,6 +20,7 @@ Ruoli di commessa: `pm`, `progettista`, `verificatore`, `osservatore`.
 | `registraOre(proprietarioId)` | solo per sé | solo per sé | solo per sé | solo per sé | solo per sé |
 | `vedeOrePerPersona(commessa)` | sì, se attivata⁴ | **mai** | sì, se attivata⁴ | no | no |
 | `admin()` | sì | no | no | no | no |
+| `creaCommessa()` | sì | no | ruolo globale `pm`⁵ | no | no |
 
 1. PM della commessa: `commesse.pm_id = utente` oppure membro con ruolo di commessa `pm`.
    Il ruolo globale `pm` da solo **non** dà diritti su commesse di altri.
@@ -30,6 +31,8 @@ Ruoli di commessa: `pm`, `progettista`, `verificatore`, `osservatore`.
 4. Impostazione `ore.per_persona_visibili`, **attiva** di default per decisione dell'utente al
    Gate 0 (28/09/2026). Prima del go-live servono informativa ai dipendenti e verifica art. 4
    Statuto dei lavoratori (D4). Restano vietate classifiche e KPI di performance per persona. Le ore proprie sono sempre visibili al diretto interessato.
+5. Abilità globale (Fase 2, pilota): la aprono admin e utenti con ruolo globale `pm`. Il PM
+   che apre la commessa ne diventa il PM (anche se il form indicasse un altro `pm_id`).
 
 ## Rotte (Fase 0)
 
@@ -75,6 +78,18 @@ redirect indietro previsto da Bouncer; alle richieste HTMX aggiunge un toast
 | Rotta | Chi | Esito per chi non può |
 |---|---|---|
 | `GET /admin/registro` (registro attività, filtri `dal`, `al`, `utente`, `entita`, `pagina`) | `admin` | 403 |
+| `GET /commesse/:id/obeya/contenuto` (frammento dell'Obeya) | `vedeCommessa` | 403 |
+| `GET /commesse/:id/elaborati/:elaboratoId`, `.../frammento` (scheda elaborato) | `vedeCommessa`; 404 se l'elaborato è di un'altra commessa | 403 |
+| `POST /commesse/:id/elaborati/:elaboratoId/stato` (cambio di stato dalla scheda) | `spostaElaborati` | 403 |
+| Ore per persona nella scheda elaborato | `vedeOrePerPersona` | sezione assente |
+| `GET`/`POST /commesse/nuova` (apertura di una commessa dalla home) | `creaCommessa` | 403 |
+| `POST /accesso` (login con email e password) | pubblica (solo ospiti); 404 se l'accesso a password non è attivo; limite di tentativi per IP e blocco dell'account | chi è già dentro: redirezione alla home |
+| `GET`/`POST /accesso/cambia-password` | utente collegato con account locale (o con cambio obbligatorio in sospeso) | redirezione a `/accesso` |
+| `POST /admin/utenti` (crea con password temporanea), `/admin/utenti/:utenteId/password` (reimposta), `/admin/utenti/:utenteId/sblocca` | `admin` | 403 |
+
+Le colonne delle password di `utenti` (`password_hash`, `deve_cambiare_password`,
+`tentativi_falliti`, `bloccato_fino`) le scrive solo il modulo accesso, anche quando
+l'azione parte dal pannello admin.
 
 ## Dati di un'altra commessa
 

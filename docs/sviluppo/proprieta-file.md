@@ -30,6 +30,11 @@ con la modifica proposta.
 | `app/modules/evm/**` | A5 | |
 | `app/modules/obeya/**`, `app/modules/portafoglio/**` | B1 (Fase 2) | |
 | `app/modules/elaborato_dettaglio/**` | B4 (Fase 2) | |
+| `app/modules/audit/**` | B3 (Fase 2) | registro attività (sola lettura) |
+| `app/modules/accesso/account_locali.ts`, `admin_iniziale.ts`, `password.ts`, `limitatore.ts`, `modalita.ts`, `resources/views/modules/accesso/**`, `commands/utenti_crea_admin.ts` | B6 (Fase 2) | account locali del pilota; la vista di accesso è passata da `pages/` al modulo |
+| `app/modules/admin/crea_commessa.ts`, `app/modules/home/nuova_commessa_controller.ts` | orchestratore (Fase 2) | creazione di una commessa da admin e PM |
+| `database/seeders/produzione/**`, `commands/db_inizializza_produzione.ts`, `commands/certificato_scadenza.ts`, `deploy/pacchetto.mjs`, `bin/server.ts` (parte HTTPS) | B5 (Fase 2) | installazione su Windows Server 2019 |
+| `docs/pilota/**` | T3 (Fase 2) | guide del pilota |
 | `resources/views/modules/<modulo>/**`, `tests/functional/<modulo>/**` | agente del modulo | |
 | `tests/unit/domain/**`, `docs/formule/casi-di-prova.md` | T1 | gli agenti di modulo non li modificano |
 | `tests/helpers/*`, `tests/bootstrap.ts`, `tests/unit/*.spec.ts` e `tests/functional/*.spec.ts` di Fase 0 | orchestratore | |
@@ -48,6 +53,7 @@ con la modifica proposta.
 | `commesse`, `membri_commessa`, `milestone`, `elaborati` (tranne `stato_id`/`stato_dal`), `limiti_wip_commessa` | A1 |
 | `discipline`, `stati_elaborato`, `colonne_kanban`, `cause_non_completamento`, `impostazioni`, `utenti` (ruolo, attivo) | A1 (admin) |
 | `utenti` (creazione al primo accesso, ultimo accesso) | accesso (orchestratore) |
+| `utenti` (`password_hash`, `deve_cambiare_password`, `tentativi_falliti`, `bloccato_fino`; creazione degli account locali) | accesso (B6), anche dal pannello admin |
 | `elaborati.stato_id`, `elaborati.stato_dal`, `transizioni_elaborato` | A3 |
 | `attivita_lookahead`, `vincoli`, `vincoli_attivita`, `piani_settimanali`, `impegni`, `snapshot_lookahead`, `snapshot_lps` | A2 |
 | `registrazioni_ore` | A4 |

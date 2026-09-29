@@ -3,7 +3,7 @@
 App web multi-utente per le commesse di Climosfera (PMBOK + Lean): Last Planner,
 Kanban degli elaborati, ore, EVM in ore, Obeya e portafoglio. Un solo linguaggio
 (TypeScript), un solo server aziendale (Windows Server), PostgreSQL, login
-Microsoft 365. Piano: `docs/sviluppo/piano.md`. Decisioni: `docs/00-sintesi-e-decisioni.md`.
+Microsoft 365 (nel pilota di Fase 2: account locali, `AUTH_MODE=locale`). Piano: `docs/sviluppo/piano.md`. Decisioni: `docs/00-sintesi-e-decisioni.md`.
 
 **Tutto il testo per l'utente è in italiano** (interfaccia, messaggi, commit, documenti).
 
@@ -31,6 +31,10 @@ Node **24** (`engines >=24`, richiesto da AdonisJS 7). Nel container: `export PA
 | `npm run e2e` | smoke Playwright (DB `cruscotto_e2e` ricreato ogni volta) |
 | `npm run screenshot` | pagine × ruoli, tema chiaro e scuro, in `screenshots/` (ignorata da git) |
 | `npm run vendorizza` | ricopia HTMX, Alpine e font IBM Plex in `public/` dopo un cambio di versione |
+| `npm run pacchetto` | zip di installazione per Windows Server in `tmp/pacchetto/` |
+| `node ace db:inizializza-produzione` | migrazioni + configurazione iniziale (idempotente; rifiuta un DB con i dati di esempio) |
+| `node ace utenti:crea-admin --email … --nome "…"` | primo amministratore con password temporanea (account locali) |
+| `node ace certificato:scadenza` | giorni alla scadenza del certificato PFX (uscita 1 sotto la soglia) |
 
 Per agente: `DB_DATABASE=cruscotto_test_<agente> PORT=<porta> npm run verifica`
 (E2E: `E2E_DB_DATABASE`, `E2E_PORT`). Login di sviluppo: `/dev/login?come=pm1`
