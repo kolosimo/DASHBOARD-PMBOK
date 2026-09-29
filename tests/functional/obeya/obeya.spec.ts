@@ -69,6 +69,7 @@ test.group('Obeya · avvisi e KPI', (group) => {
     assert.isTrue(d.milestone[0].fatta)
     assert.isTrue(d.milestone[2].prossima)
     assert.isFalse(d.commessaVuota)
+    assert.isFalse(d.primoPiano)
     assert.isFalse(d.mancano.baseline)
   })
 
@@ -111,6 +112,7 @@ test.group('Obeya · stato vuoto', (group) => {
     const c = await commessaNuova()
     const d = await datiObeya(c.id, OGGI)
     assert.isTrue(d.commessaVuota)
+    assert.isTrue(d.primoPiano)
     assert.deepInclude(d.mancano, {
       elaborati: true,
       baseline: true,

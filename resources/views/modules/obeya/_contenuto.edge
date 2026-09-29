@@ -61,7 +61,7 @@
             @!component('components/pill', { classe: 'n', testo: 'da fare' })
             <span>
               @if(puoGestireLps)
-                <a href="/commesse/{{ commessa.id }}/lps/settimana">Prepara il primo piano settimanale</a>
+                <a href="/commesse/{{ commessa.id }}/lps/settimana">{{ obeya.primoPiano ? 'Prepara il primo piano settimanale' : 'Prepara il piano della settimana' }}</a>
               @else
                 Preparare il piano settimanale
               @end

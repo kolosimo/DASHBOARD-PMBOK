@@ -76,6 +76,8 @@ export interface DatiObeya {
   mancano: PassiMancanti
   /** Nessun dato di avanzamento: la commessa è appena stata creata */
   commessaVuota: boolean
+  /** Nessun piano settimanale, né questa settimana né nelle precedenti */
+  primoPiano: boolean
 }
 
 /** Dati per `generaAvvisi` a partire dai riepiloghi dei moduli */
@@ -247,6 +249,7 @@ export async function datiObeya(
         })
       : '',
     mancano,
+    primoPiano: lps.statoPiano === null && !pianiPassati,
     commessaVuota: mancano.elaborati && mancano.baseline && mancano.pianoSettimana && mancano.ore,
   }
 }
