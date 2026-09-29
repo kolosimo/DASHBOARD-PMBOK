@@ -171,7 +171,10 @@ export function statoMilestone(
 }
 
 /** Tutto ciò che serve alla vista Obeya, alla data `oggi` (Roma) */
-export async function datiObeya(commessaId: number, oggi: DataIso = oggiRoma()): Promise<DatiObeya> {
+export async function datiObeya(
+  commessaId: number,
+  oggi: DataIso = oggiRoma()
+): Promise<DatiObeya> {
   const settimana = lunediDellaSettimana(oggi)
   const [evm, serie, lps, flusso, vincoli, milestone, { imp, soglie: soglieAv }] =
     await Promise.all([
@@ -244,7 +247,6 @@ export async function datiObeya(commessaId: number, oggi: DataIso = oggiRoma()):
         })
       : '',
     mancano,
-    commessaVuota:
-      mancano.elaborati && mancano.baseline && mancano.pianoSettimana && mancano.ore,
+    commessaVuota: mancano.elaborati && mancano.baseline && mancano.pianoSettimana && mancano.ore,
   }
 }

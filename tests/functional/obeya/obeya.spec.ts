@@ -75,9 +75,21 @@ test.group('Obeya · avvisi e KPI', (group) => {
   test('statoMilestone: fatta, prossima e data superata', ({ assert }) => {
     const ms = statoMilestone(
       [
-        { id: 1, titolo: 'A', dataPrevista: '2026-09-01', dataEffettiva: '2026-09-02', contrattuale: true },
+        {
+          id: 1,
+          titolo: 'A',
+          dataPrevista: '2026-09-01',
+          dataEffettiva: '2026-09-02',
+          contrattuale: true,
+        },
         { id: 2, titolo: 'B', dataPrevista: '2026-09-20', dataEffettiva: null, contrattuale: true },
-        { id: 3, titolo: 'C', dataPrevista: '2026-10-20', dataEffettiva: null, contrattuale: false },
+        {
+          id: 3,
+          titolo: 'C',
+          dataPrevista: '2026-10-20',
+          dataEffettiva: null,
+          contrattuale: false,
+        },
       ],
       OGGI
     )
