@@ -5,13 +5,9 @@
 --}}
 @component('layouts/app', { titolo: 'Utenti e ruoli', voceAttiva })
   @let(intestazione = 'Utenti e ruoli')
-  @if(accessoLocale)
-    @let(descrizione =
-      'Con l’accesso tramite password (pilota) gli utenti li crea l’amministratore: l’app genera una password temporanea, da consegnare di persona, che l’utente cambia al primo accesso. Qui si sceglie anche il ruolo globale (admin, direzione, pm, progettista), si reimposta una password dimenticata e si sblocca chi ha sbagliato troppe volte. Il ruolo dentro una commessa si decide nel team della commessa.')
-  @else
-    @let(descrizione =
-      'Gli utenti si creano da soli al primo accesso con l’account Microsoft 365 aziendale. Qui si sceglie il ruolo globale (admin, direzione, pm, progettista) e si disattiva chi non deve più entrare. Il ruolo dentro una commessa si decide nel team della commessa.')
-  @end
+  @let(descrizione = accessoLocale
+    ? 'Con l’accesso tramite password (pilota) gli utenti li crea l’amministratore: l’app genera una password temporanea, da consegnare di persona, che l’utente cambia al primo accesso. Qui si sceglie anche il ruolo globale (admin, direzione, pm, progettista), si reimposta una password dimenticata e si sblocca chi ha sbagliato troppe volte. Il ruolo dentro una commessa si decide nel team della commessa.'
+    : 'Gli utenti si creano da soli al primo accesso con l’account Microsoft 365 aziendale. Qui si sceglie il ruolo globale (admin, direzione, pm, progettista) e si disattiva chi non deve più entrare. Il ruolo dentro una commessa si decide nel team della commessa.')
   @include('modules/admin/_testata')
 
   @if(accessoLocale)
