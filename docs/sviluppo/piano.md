@@ -203,7 +203,7 @@ Restano aperte D1 (server) e D3 (tenant Entra) con l'IT. Non bloccano la Fase 1.
 | A1 Anagrafiche + admin | CRUD commesse/team/milestone/elaborati, import CSV/incolla da Excel, pannello di configurazione |
 | A2 Last Planner | lookahead a 6 settimane, vincoli molti-a-molti, piano bozza→promesso→chiuso (causa obbligatoria per ogni "no"), PPC/PCR/Pareto, job di snapshot |
 | A3 Flusso/Kanban | avanzamento di uno stato alla volta, WIP, Work Item Age reale, throughput/cycle time, CFD; `CambioStatoService` è l'unico che scrive lo stato |
-| A4 Ore | timesheet settimanale solo per sé (403 per gli altri), blocco dopo la scadenza, vista aggregata per il PM; ore per persona visibili a PM e admin (attive di default, Gate 0), disattivabili; mai alla direzione |
+| A4 Ore | timesheet settimanale solo per sé (403 per gli altri), blocco dopo la scadenza, vista aggregata per il PM; ore per persona disattivate di default |
 | A5 EVM | editor e approvazione della baseline con PV settimanale congelato, calcolo live, `snapshot_evm`, curva S dagli snapshot, nessuna divisione per zero |
 | T1 Verificatore formule | test **scritti prima** del codice, con casi calcolati a mano: normali, limite, divisione per zero, W53, ora legale. Gli agenti di modulo non possono modificarli |
 | T2 Revisore | per ogni branch controlla: permessi, 409, audit, italiano, nessuna classifica per persona, N+1, dipendenze |
@@ -215,7 +215,48 @@ Restano aperte D1 (server) e D3 (tenant Entra) con l'IT. Non bloccano la Fase 1.
   - criteri: tutto verde, screenshot per ogni vista e ruolo;
   - l'utente: controlla a mano i casi di prova delle formule; facoltativamente prova il login M365 in locale.
 
+### Fase 1: esito (29/09)
+
+**Integrazione:** tutti e sei i branch sono fusi e pushati.
+
+**Test:**
+- funzionali: 194/194;
+- unit: 110/120. I 10 che mancano sono `generaAvvisi` (B1).
+- e2e: 3/3.
+
+**Screenshot:** estesi alle pagine anagrafica, lookahead, piano, EVM e ore.
+
+**Correzioni dell'orchestratore:** soglie limitate a 0–2 (prima "0.950" veniva letto come 950).
+
+**Gate 1:** approvato dall'utente, che ha confermato casi di prova e scelte di interpretazione.
+
+**Residui passati alla Fase 2:**
+- `generaAvvisi` (B1);
+- API `registraCreazione`/`statoIniziale` del flusso, da chiamare in A1 alla creazione e all'import;
+- `statiAllIstante` per l'EVM;
+- `elaboratoInBaselineApprovata` in evm/queries (A1 lo userà);
+- `minutiPerElaborato` in ore/queries;
+- eliminare i modelli locali `ElaboratoAnagrafica` e `AttivitaLps`;
+- griglia KPI dell'EVM con un riquadro vuoto;
+- convenzione dei prefissi per le migrazioni additive (oggi tre file con lo stesso prefisso).
+
 ### Fase 2: integrazione (7 agenti)
+
+**Esecuzione:** un workflow con la stessa struttura della Fase 1:
+1. agenti su worktree, ognuno sul proprio branch `agente/B*`;
+2. revisione T2 per ciascun branch, con correzioni se ci sono blocchi;
+3. integratore in serie B4 → B1 → B3 → B2 → B5 → QA → T3, con `npm run verifica` dopo ogni merge.
+
+**Requisito di uscita:** `verifica` deve essere **tutta verde**, compresi i 120 test unit.
+
+Dettagli per agente:
+- **B4** si occupa anche dei residui tra moduli elencati sopra (API di flusso, EVM e ore; rimozione dei modelli duplicati), con la stessa regola di proprietà dei file.
+- **B1** implementa `generaAvvisi` con i codici fissati da T1.
+- **B5** prepara l'installazione per **Windows Server 2019**:
+  - PostgreSQL 17 EDB, Node 24 zip in `C:\app\node`, WinSW 2.12.0 NET461;
+  - HTTPS diretto da Node con PFX AES256-SHA256; porta 443 aperta, 5432 solo locale;
+  - script `installa`, `aggiorna`, `servizio`, `backup`, `ripristino`, `pacchetto`;
+  - checklist per l'IT.
 
 | Agente | Compito |
 |---|---|
@@ -246,6 +287,27 @@ Restano aperte D1 (server) e D3 (tenant Entra) con l'IT. Non bloccano la Fase 1.
 
 - **Gate 3 (go-live)**: ripristino provato con l'IT, test di carico superato, D4 (consulente del lavoro) e D6 (data di passaggio da GoodDay) chiusi, pilota di 2 settimane su 1–2 commesse.
 
+## Server confermato (D1, 28/09): Windows Server 2019 Standard 1809
+
+Verificato il 28/09. Da applicare alla fine della Fase 1 in `00` D1, in `08` e nelle istruzioni per B5.
+
+**Scelte per questo server:**
+
+| Componente | Scelta | Motivo |
+|---|---|---|
+| PostgreSQL | **17** (ultima minor) | EDB lo testa su WS2019; PG 18 no. Supporto community fino a nov. 2029 |
+| Node 24 LTS | distribuzione **zip**, non MSI | L'MSI v24.17 ha un problema aperto su WS2019 (nodejs/node#64078). Node 24 supporta Server 2016+ (Tier 1) |
+| Servizio Windows | **WinSW v2.12.0 NET461** | La v3 è ancora pre-release |
+| HTTPS | diretto da Node, **senza IIS** | Node usa il proprio OpenSSL, quindi TLS 1.3 e HTTP/2 funzionano. Schannel di WS2019 non ha TLS 1.3 |
+
+**Ciclo di vita:** WS2019 ha il supporto esteso fino al 09/01/2029. Va pianificata la migrazione a Server 2022/2025 prima di quella data.
+
+**Da chiedere all'IT:**
+- aggiornamenti cumulativi del sistema;
+- VC++ Redistributable 2015-2022 x64;
+- certificato in PFX cifrato **AES256-SHA256** (con cifratura legacy l'OpenSSL 3 di Node rischia di non leggerlo; punto NV), con catena completa e SAN che contenga l'FQDN usato via VPN;
+- porta 443 aperta sul firewall; 5432 solo su localhost.
+
 ## Dipendenze dall'IT dell'utente
 
 | Quando | Cosa |
@@ -263,7 +325,7 @@ Restano aperte D1 (server) e D3 (tenant Entra) con l'IT. Non bloccano la Fase 1.
 | Conflitti tra agenti | schema e contratti fissati in Fase 0, proprietà dei file, merge in serie |
 | Storia EVM riscritta | snapshot e pesi congelati nella baseline, test T1 |
 | Differenze Linux/Windows | script portabili, nessuna dipendenza nativa, staging Windows al Gate 2 |
-| Art. 4 Statuto dei lavoratori | solo KPI per commessa o team, ore per persona solo per PM e admin (disattivabili), mai classifiche; informativa prima del go-live; test B3 |
+| Art. 4 Statuto dei lavoratori | solo KPI per commessa o team, ore per persona disattivate, test B3 |
 | Crescita dei requisiti | solo l'MVP; BIM escluso per decisione dell'utente |
 
 ## Verifica end-to-end
