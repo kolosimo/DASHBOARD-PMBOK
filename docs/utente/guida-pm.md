@@ -1,26 +1,31 @@
-# Guida per il PM (bozza)
+# Guida per il PM
 
-> **Bozza di Fase 1.** Descrive come funzionerà il Cruscotto secondo il piano e il
-> prototipo. Le parti segnate **[DA AGGIORNARE]** riguardano schermate che oggi sono
-> ancora un segnaposto ("in costruzione"): verranno riscritte con le schermate vere
-> quando i moduli saranno pronti.
+> **Versione per il pilota (Fase 2).** Descrive le schermate come sono nel codice
+> attuale. Le parti segnate **[DA VERIFICARE SULLO SCHERMO]** riguardano pagine ancora
+> in completamento (pagina Commessa, accesso con account locale): se vedi qualcosa di
+> diverso, annotalo nel [modulo di feedback del pilota](../pilota/piano-del-pilota.md#6-modulo-di-feedback).
+> Per partire in fretta: [guida rapida per il PM](../pilota/guida-rapida-pm.md).
 > Le sigle sono spiegate nel [glossario](glossario.md).
 
 ## Cosa fa il PM nel Cruscotto
 
-Il PM della commessa (indicato come PM nell'anagrafica o nel team con ruolo "pm"):
+Il PM della commessa (indicato come PM nei dati della commessa o nel team con ruolo
+"pm"):
 
+- completa l'**anagrafica**: date, team, milestone, elaborati;
+- prepara e approva la **baseline** dell'EVM;
 - prepara e aggiorna il **lookahead** e il **registro vincoli**;
 - guida il **piano settimanale** con il team e lo chiude a fine settimana;
 - tiene d'occhio il **Kanban** degli elaborati e i limiti WIP;
 - legge l'**avanzamento in ore (EVM)** e prepara la riunione con la pagina **Commessa**
   (Obeya);
 - vede le ore registrate sulla commessa, **anche per persona** (impostazione attiva
-  per decisione del 28/09/2026; prima dell'avvio in produzione serve l'informativa ai
-  dipendenti).
+  per decisione del 28/09/2026; prima dell'estensione oltre il pilota servono
+  l'informativa ai dipendenti e la verifica art. 4).
 
 Il ruolo "PM" da solo non dà diritti sulle commesse di altri PM: si hanno i permessi
-di PM solo sulle commesse di cui si è PM.
+di PM solo sulle commesse di cui si è PM. Una commessa nuova la apre
+l'**amministratore**, indicando il PM; da lì in poi la completa il PM.
 
 > **Cosa il Cruscotto non fa, per scelta.** Non mostra classifiche né punteggi per
 > persona. Il PPC misura l'affidabilità del piano del team, non la bravura dei singoli.
@@ -28,13 +33,20 @@ di PM solo sulle commesse di cui si è PM.
 
 ## Entrare e trovare la commessa
 
-1. Apri il Cruscotto dal browser (Edge o Chrome; sul Mac anche Safari) e premi
-   **Accedi con Microsoft 365**.
-2. Si apre **Le mie commesse**: l'elenco delle commesse di cui fai parte, con il tuo
-   ruolo, il numero di elaborati e la prossima milestone.
-3. Clicca sul **codice** della commessa (per esempio CL-2026-031). In alto compaiono le
-   schede: *Commessa*, *Piano settimanale*, *Lookahead e vincoli*, *Kanban*, *Ore*,
-   *Avanzamento EVM*, *Anagrafica*.
+1. Apri il Cruscotto dal browser (Edge o Chrome; sul Mac anche Safari).
+2. **Nel pilota** accedi con il **nome utente** e la **password** che ti ha dato
+   l'amministratore; al primo accesso scegli una password nuova.
+   **[DA VERIFICARE SULLO SCHERMO]** Dopo il pilota si potrà entrare con
+   **Accedi con Microsoft 365** (lo stesso account di Outlook e Teams).
+3. Si apre **Le mie commesse**: l'elenco delle commesse di cui fai parte, con il tuo
+   ruolo, il numero di elaborati e la prossima milestone. All'inizio del pilota
+   l'elenco è **vuoto** finché l'amministratore non apre la tua commessa.
+4. Clicca sul **codice** della commessa. In alto compaiono le schede: *Commessa*,
+   *Piano settimanale*, *Lookahead e vincoli*, *Kanban*, *Ore*, *Avanzamento EVM*,
+   *Anagrafica*.
+
+Per aprire il Cruscotto come un'app (dalla barra delle applicazioni o dal Dock) vedi
+la [guida rapida](../pilota/guida-rapida-pm.md#2-installare-lapp-facoltativo-consigliato).
 
 ## La settimana tipo
 
@@ -42,96 +54,157 @@ di PM solo sulle commesse di cui si è PM.
 |---|---|---|
 | Lunedì mattina | Riunione di team: stato della commessa, avvisi, vincoli in scadenza | Commessa (Obeya) |
 | Lunedì | Si prepara e si **promette** il piano della settimana | Piano settimanale |
-| Durante la settimana | Si rimuovono i vincoli; gli elaborati avanzano sul Kanban; ognuno registra le ore | Lookahead e vincoli, Kanban, Ore |
-| Venerdì | Si segna fatto / non fatto e si **chiude** il piano | Piano settimanale |
-| Venerdì | Si aggiorna il lookahead delle prossime 6 settimane | Lookahead e vincoli |
+| Durante la settimana | Si rimuovono i vincoli; gli elaborati avanzano sul Kanban; ognuno registra le ore | Lookahead e vincoli, Kanban, Le mie ore |
+| Venerdì | Si segna sì / no su ogni impegno e si **chiude** il piano | Piano settimanale |
+| Venerdì | Si aggiorna il lookahead delle prossime settimane | Lookahead e vincoli |
 | Quando serve | Si legge l'avanzamento in ore e si decide se intervenire | Avanzamento EVM |
 
-### 1. Lookahead e vincoli
+## 1. Anagrafica della commessa (all'avvio)
 
-**[DA AGGIORNARE]** — schermata in costruzione (agente A2, Fase 1).
+Scheda **Anagrafica**. Ogni riquadro ha il suo pulsante di salvataggio e si aggiorna
+senza ricaricare la pagina.
+
+**Dati della commessa.** Codice, nome, cliente, PM, stato (attiva, sospesa, chiusa),
+**Inizio**, **Fine prevista**, note. Inizio e fine servono alla baseline: compilali
+subito.
+
+**Team.** In fondo al riquadro scegli la persona in **Aggiungi persona**, il
+**Ruolo** e premi **Aggiungi**. Ruoli: **pm**, **progettista**, **verificatore**,
+**osservatore** (solo lettura). Il ruolo si cambia con **Salva ruolo**, la persona si
+toglie con **Togli**. Nell'elenco compaiono solo le persone che hanno già un
+account: se ne manca una, chiedila all'amministratore. Se il team supera il numero
+consigliato per la riunione, l'app lo segnala: valuta sottogruppi per disciplina.
+
+**Milestone.** Titolo, data target, data effettiva, contrattuale sì/no, ordine.
+
+**Elaborati.** Due modi:
+- **Importa da Excel**: copia da Excel quattro colonne (**codice, titolo, disciplina,
+  budget in ore**) e incollale; va bene anche un CSV con il punto e virgola. Una riga
+  d'intestazione viene ignorata; la disciplina si scrive con il codice (MEC) o il
+  nome; il budget accetta la virgola (12,5). Premi **Anteprima**: se anche una sola
+  riga ha errori non si importa nulla, correggi il testo e rifai l'anteprima. Poi
+  **Importa**. Gli elaborati importati partono dal primo stato con classe di servizio
+  standard.
+- **Nuovo elaborato**: codice, titolo, disciplina, budget, classe di servizio
+  (standard, data fissa, urgente, intangibile), data fissa, responsabile, milestone.
+
+Dopo l'import apri ogni elaborato (clic sul codice) per assegnare **responsabile** e
+**milestone**. Lo **stato** non si cambia qui: si cambia dal Kanban.
+
+**Limiti WIP.** Nell'ultimo riquadro puoi cambiare i limiti delle colonne per la tua
+commessa (i valori di partenza li decide l'amministratore).
+
+## 2. La baseline
+
+Prima di leggere SPI e PV serve una **baseline approvata**: budget degli elaborati,
+date previste per ogni stato e pesi.
+
+1. Scheda **Avanzamento EVM** → **Prepara la baseline** → **Crea la bozza con date
+   automatiche**. Le date di ogni stato si distribuiscono tra inizio e fine prevista
+   della commessa.
+2. Per ogni elaborato correggi le date che non tornano. **Distribuisci tra inizio e
+   fine** riempie gli stati intermedi in modo uniforme tra la prima e l'ultima data;
+   poi premi **Salva** sulla riga. Le date devono essere in ordine.
+3. Se un elaborato è stato aggiunto dopo la creazione della bozza compare "senza
+   date": usa **Aggiungi con date automatiche**.
+4. Premi **Approva e congela** e conferma. Da quel momento pesi, budget, BAC e valore
+   pianificato di ogni settimana non cambiano più, anche se l'amministratore modifica
+   i pesi.
+5. Per una variante concordata premi **Nuova baseline**: il **motivo** è
+   obbligatorio; la bozza parte dalle date della baseline attiva, che resta valida
+   finché non approvi la nuova. **Scarta la bozza** la elimina.
+
+Avvisi che puoi vedere nella pagina EVM:
+- **fuori baseline**: elaborato aggiunto dopo l'approvazione; le sue ore entrano in
+  AC ma non ha valore pianificato né guadagnato. Serve una nuova baseline.
+- **budget cambiato**: il budget attuale è diverso da quello della baseline; l'EVM
+  usa quello della baseline.
+
+## 3. Lookahead e vincoli
 
 Nella scheda **Lookahead e vincoli** trovi:
 
-- la tabella delle attività delle **prossime 6 settimane** (una colonna per settimana)
-  con lo stato di ciascuna: pronta oppure bloccata da vincoli;
-- il **registro vincoli**: codice, descrizione, categoria, attività bloccate, chi lo
-  rimuove, data entro cui serve, stato;
-- il **PCR** della settimana (vincoli rimossi in tempo).
+- la tabella delle attività delle **prossime 6 settimane** (una colonna per
+  settimana) con lo stato di ciascuna: **pronta** oppure **vincolata**; con le frecce
+  e **Da oggi** ti sposti nelle settimane;
+- il **registro vincoli**: ID, vincolo, categoria, attività bloccate, chi lo rimuove,
+  serve entro, identificato il, stato; filtro **aperti** / **tutti**.
 
 Cosa fare:
 
-1. Per ogni attività delle prossime settimane chiediti: "cosa manca per poterla fare?".
-   Ogni risposta è un **vincolo**: registralo con chi lo deve rimuovere e **entro
-   quando** serve.
-2. Un vincolo può bloccare più attività: collegalo a tutte.
-3. Quando l'ostacolo è risolto segna il vincolo come **rimosso**; se non serve più,
-   **annullato** (esce dal conteggio del PCR).
-4. Un'attività diventa **pronta** quando tutti i suoi vincoli sono rimossi: solo allora
-   può entrare nel piano settimanale.
+1. **Nuova attività**: codice, titolo, tipo (attività o milestone), last planner,
+   disciplina, elaborato (facoltativo), **dalla settimana** / **alla settimana**.
+2. Per ogni attività chiediti: "cosa manca per poterla fare?". Ogni risposta è un
+   **vincolo**: **Nuovo vincolo** con descrizione, categoria, stato (da analizzare o
+   aperto), chi lo rimuove (del team, oppure un esterno come "Architetto"), **serve
+   entro** e le **attività bloccate**. Il codice V-n si assegna da solo.
+3. Un vincolo può bloccare più attività: spuntale tutte.
+4. Quando l'ostacolo è risolto premi **Segna rimosso**; se non serve più,
+   **Annulla** (esce dal conteggio del PCR); per ripensarci, **Riapri**.
+5. Un'attività diventa **pronta** quando nessun vincolo collegato è aperto o da
+   analizzare: solo allora conviene prometterla nel piano settimanale.
 
-Esempio con i dati di esempio: V-12 "Layout arredi P1 dall'architetto" blocca L1
-(pianta P1 riscaldamento) e serve entro il 29/09/2026. Se lo rimuovi entro domenica
-04/10, conta come rimosso in tempo nel PCR della settimana W40.
+Ogni lunedì mattina l'app salva da sola una "fotografia" del lookahead: due settimane
+dopo serve a calcolare **TMR** e **TA**. Non devi fare nulla; nelle prime due
+settimane di una commessa questi indicatori sono **n.d.**
 
-Ogni settimana l'app salva da sola una "fotografia" del lookahead: due settimane dopo
-serve a calcolare **TMR** e **TA** (quanto di ciò che era previsto è davvero entrato nel
-piano). Non devi fare nulla.
+## 4. Piano settimanale (lunedì)
 
-### 2. Piano settimanale (lunedì)
+1. Apri **Piano settimanale** e premi **Prepara il piano (bozza)**.
+2. Con il team aggiungi gli **impegni**: attività del lookahead (quelle vincolate sono
+   indicate tra parentesi), testo dell'impegno (vuoto = titolo dell'attività),
+   elaborato e **last planner** → **Aggiungi impegno**. In bozza un impegno si può
+   eliminare.
+3. Quando tutti sono d'accordo premi **Prometti il piano**. Da quel momento gli
+   impegni non si eliminano più e quelli aggiunti dopo sono marcati "aggiunto dopo la
+   promessa · fuori dal PPC".
 
-**[DA AGGIORNARE]** — schermata in costruzione (agente A2, Fase 1).
-
-1. Apri **Piano settimanale**: il piano nuovo è in stato **bozza**.
-2. Con il team inserisci gli **impegni**: attività (solo quelle pronte), elaborato,
-   persona che si impegna (il "last planner").
-3. Quando tutti sono d'accordo premi **Prometti**. Da quel momento il piano è
-   **promesso**: gli impegni aggiunti dopo sono segnati come "aggiunti dopo la
-   promessa" e **non contano** nel PPC.
+In alto trovi PPC, PCR, TMR, TA e vincoli aperti della settimana. Con le frecce vedi
+le settimane precedenti e successive.
 
 Regola d'oro: si promette solo ciò che si è ragionevolmente sicuri di finire. Un PPC
 alto con impegni onesti vale più di tanti impegni non mantenuti.
 
-### 3. Chiusura della settimana (venerdì)
+## 5. Chiusura della settimana (venerdì)
 
-**[DA AGGIORNARE]** — schermata in costruzione (agente A2, Fase 1).
-
-1. Per ogni impegno si segna **fatto** o **non fatto**. Ciascuno può segnare i propri
+1. Per ogni impegno si segna **Sì** (fatto) o **No**. Ciascuno può segnare i propri
    impegni; il PM può segnarli tutti.
-2. Per ogni "non fatto" la **causa è obbligatoria** (per esempio "Input mancante da
+2. Per ogni **No** la **causa è obbligatoria** (per esempio "Input mancante da
    altri", "Approvazione cliente/ente attesa", "Stima troppo ottimista"). Per i casi
-   importanti si può compilare anche l'analisi dei "5 perché".
-3. Premi **Chiudi il piano**. Gli impegni non segnati contano come non fatti.
-4. Il **PPC** si aggiorna subito. Il **Pareto delle cause** mostra quali cause tornano
-   più spesso: sono il punto da cui partire per migliorare.
+   importanti c'è l'**Analisi dei 5 perché** (facoltativa).
+3. Premi **Chiudi il piano**: serve un sì o un no su ogni impegno e la causa per ogni
+   no, altrimenti l'app non chiude.
+4. Il **PPC** si aggiorna subito. Il grafico **PPC nelle ultime settimane** e il
+   **Pareto delle cause** mostrano l'andamento e le cause che tornano più spesso: la
+   prima causa è il primo punto da affrontare nella riunione.
 
-Esempio: in W39 sono stati fatti 5 impegni su 7 promessi → PPC 71%.
+Esempio: 5 impegni fatti su 7 promessi → PPC 71%.
 
-### 4. Kanban degli elaborati
+## 6. Kanban degli elaborati
 
-**[DA AGGIORNARE]** — schermata in costruzione (agente A3, Fase 1).
-
-- Ogni scheda è un elaborato; le colonne sono **Da fare**, **In corso** (limite 4),
-  **In verifica** (limite 3), **Emesso**.
-- Un elaborato **avanza di uno stato alla volta** (Non iniziato → Impostato → Calcoli e
-  dimensionamento → Emissione interna → Verificato → Emesso al cliente). Per tornare
-  indietro serve scrivere il motivo.
-- Se una colonna supera il limite WIP, l'app chiede conferma e registra lo sforamento.
-  Meglio finire un elaborato in corso che aprirne uno nuovo.
-- Su ogni scheda c'è l'**età nello stato** (Work Item Age). Oltre 10 giorni (soglia di
-  esempio) l'elaborato è segnalato come fermo: chiedi al responsabile cosa lo blocca.
+- Ogni scheda è un elaborato; le colonne di partenza sono **Da fare**, **In corso**
+  (limite 4), **In verifica** (limite 3), **Emesso**.
+- Un elaborato **avanza di uno stato alla volta** (Non iniziato → Impostato → Calcoli
+  e dimensionamento → Emissione interna → Verificato → Emesso al cliente) con i
+  pulsanti freccia sulla scheda o trascinandola. Per tornare indietro l'app chiede il
+  **motivo**.
+- Se la colonna di arrivo supera il limite WIP, l'app chiede conferma e registra lo
+  sforamento. Meglio finire un elaborato in corso che aprirne uno nuovo.
+- Su ogni scheda ci sono l'**età nello stato** e le ore registrate sul budget. Oltre
+  la soglia impostata (10 giorni) l'elaborato è segnalato come fermo: chiedi al
+  responsabile cosa lo blocca.
 - In basso trovi throughput (elaborati emessi a settimana), cycle time e il diagramma
   di flusso cumulativo (CFD).
 
-Come PM puoi cambiare i limiti WIP della tua commessa.
+Possono spostare le schede il PM, i progettisti e i verificatori della commessa;
+osservatori e direzione vedono la board in sola lettura.
 
-### 5. Leggere l'avanzamento in ore (EVM)
+## 7. Leggere l'avanzamento in ore (EVM)
 
-**[DA AGGIORNARE]** — schermata in costruzione (agente A5, Fase 1).
+La scheda **Avanzamento EVM** mostra, in ore (valori di esempio dei dati
+dimostrativi):
 
-La scheda **Avanzamento EVM** mostra, in ore:
-
-| Riquadro | Domanda a cui risponde | CL-2026-031 al 24/09/2026 |
+| Riquadro | Domanda a cui risponde | Esempio |
 |---|---|---|
 | BAC | Quante ore ha a budget la commessa? | 424 h |
 | PV | Quanto lavoro doveva essere fatto a oggi? | 312 h |
@@ -146,70 +219,59 @@ La scheda **Avanzamento EVM** mostra, in ore:
 Come leggerla, in tre passi:
 
 1. **Guarda SPI e CPI e il loro semaforo.** Verde da 0,95, giallo da 0,85, sotto è
-   rosso (soglie di esempio). Se vedi **n.d.** mancano i dati: per esempio nessuno ha
-   ancora registrato ore (CPI) o la baseline non è ancora iniziata (SPI).
-2. **Guarda la curva S.** Se la linea EV sta sotto la PV sei in ritardo; se la linea AC
-   sta sopra la EV stai spendendo più ore del lavoro prodotto.
-3. **Scendi al registro elaborati** per capire dove nasce lo scarto: l'EV di ogni
+   rosso (soglie di partenza, da tarare nel pilota). Se vedi **n.d.** mancano i dati:
+   per esempio nessuno ha ancora registrato ore (CPI) o non c'è una baseline
+   approvata (SPI).
+2. **Guarda la curva S.** Se la linea EV sta sotto la PV sei in ritardo; se la linea
+   AC sta sopra la EV stai spendendo più ore del lavoro prodotto.
+3. **Scendi al registro per elaborato** per capire dove nasce lo scarto: l'EV di ogni
    elaborato dipende solo dal suo **stato** (budget × peso), non da una percentuale
    dichiarata.
 
-Nell'esempio: SPI 0,78 e CPI 0,76 → la commessa è in ritardo e sta consumando più
-ore del previsto. Il budget di 424 h verrà probabilmente superato di circa 137 h se
-non cambia nulla.
+Lo **storico settimanale** mostra i valori congelati a fine settimana: una settimana
+viene fissata solo quando scade il termine per correggere le ore (7 giorni dopo la
+sua fine). Se qualcuno corregge ore dopo, la riga è segnata come rettificata.
 
-#### La baseline
+## 8. La pagina Commessa (Obeya) per la riunione
 
-**[DA AGGIORNARE]** — editor della baseline in costruzione (agente A5, Fase 1).
+**[DA VERIFICARE SULLO SCHERMO]** — pagina in completamento in questa fase.
 
-Prima di leggere SPI e PV serve una **baseline approvata**: budget degli elaborati, date
-previste per ogni stato e pesi. Quando la approvi, l'app congela i pesi e il valore
-pianificato di ogni settimana: da quel momento la storia non cambia più, anche se
-l'amministratore modifica i pesi. Una nuova baseline si approva solo per varianti
-concordate.
+La scheda **Commessa** riunisce in una vista: SPI, CPI, stima a completamento, PPC
+della settimana, vincoli aperti, milestone, curva S, andamento del PPC e l'elenco
+**Da affrontare in riunione** generato dai dati, per esempio:
 
-### 6. La pagina Commessa (Obeya) per la riunione
-
-**[DA AGGIORNARE]** — pagina in costruzione (agente B1, Fase 2).
-
-La scheda **Commessa** riunisce in una vista: SPI, CPI, stima a completamento, PPC della
-settimana, vincoli aperti, milestone, curva S, andamento del PPC e l'elenco **Da
-affrontare in riunione** generato dai dati, per esempio:
-
-- "SPI 0,78: in ritardo di 70 h di lavoro rispetto al piano";
+- "SPI 0,78: in ritardo rispetto al piano";
 - "Vincolo V-13 da rimuovere entro il 29/09";
 - "Kanban: 5 elaborati in corso con limite WIP 4";
-- "ELE-SC-201 fermo nello stesso stato da 15 giorni".
+- "Elaborato fermo nello stesso stato da 15 giorni".
 
-### 7. Ore della commessa
+## 9. Ore della commessa
 
-**[DA AGGIORNARE]** — schermata in costruzione (agente A4, Fase 1).
+Nella scheda **Ore** scegli la settimana e vedi: ore nella settimana, ore cumulate
+(AC) e budget, poi le **ore per elaborato** (settimana, a fine settimana, budget,
+budget residuo) e, con l'impostazione attiva, le **ore per persona** della tua
+commessa. Non ci sono classifiche.
 
-Nella scheda **Ore** vedi i totali per elaborato e per settimana e, con l'impostazione
-attiva, anche il dettaglio per persona della tua commessa. Non ci sono classifiche.
-Le ore le registra ognuno per sé (vedi la [guida per il progettista](guida-progettista.md)):
-il PM non può registrare ore al posto di altri.
-
-### 8. Anagrafica della commessa
-
-**[DA AGGIORNARE]** — schermata in costruzione (agente A1, Fase 1).
-
-Dati della commessa, team con ruoli (pm, progettista, verificatore, osservatore),
-milestone ed elaborati con budget in ore. Gli elaborati si potranno importare da Excel
-(copia e incolla).
+Le ore le registra ognuno per sé da **Le mie ore** (vedi la
+[guida per il progettista](guida-progettista.md)): il PM non può registrare ore al
+posto di altri. Le correzioni su settimane già bloccate le fa l'amministratore.
 
 ## Se due persone modificano la stessa cosa
 
 Se tu e un collega modificate lo stesso dato quasi insieme, chi salva per secondo vede
-un **avviso di conflitto** con il valore aggiornato: rileggi e, se serve, ripeti la tua
-modifica. Nessun dato viene sovrascritto di nascosto. Ogni modifica finisce nel
-registro di audit.
+l'avviso "Qualcun altro ha modificato questo dato mentre lo stavi modificando" con la
+versione aggiornata: rileggi e, se serve, ripeti la tua modifica. Nessun dato viene
+sovrascritto di nascosto. Ogni modifica finisce nel registro di audit.
 
 ## Domande frequenti
 
 - **Perché vedo "n.d."?** L'indicatore non si può calcolare: mancano i dati (vedi il
   [glossario](glossario.md)).
-- **Chi decide le soglie dei colori?** L'amministratore; oggi sono di esempio e si
+- **Non trovo una persona da aggiungere al team.** Non ha ancora un account: nel
+  pilota gli account li crea l'amministratore.
+- **Posso aprire io una commessa nuova?** No, la apre l'amministratore indicandoti
+  come PM; tutto il resto lo completi tu.
+- **Chi decide le soglie dei colori?** L'amministratore; quelle di partenza si
   tareranno con i PM durante il pilota.
 - **Posso cambiare il peso di uno stato solo per la mia commessa?** No: i pesi sono
   unici per lo studio e li gestisce l'amministratore; ogni baseline congela quelli in

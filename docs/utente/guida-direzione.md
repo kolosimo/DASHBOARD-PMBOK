@@ -1,8 +1,13 @@
-# Guida per la direzione (bozza)
+# Guida per la direzione
 
-> **Bozza di Fase 1.** La pagina **Portafoglio** è ancora in costruzione (agente B1,
-> Fase 2): le parti segnate **[DA AGGIORNARE]** verranno riscritte con la schermata vera.
-> Le sigle sono spiegate nel [glossario](glossario.md).
+> **Versione per il pilota (Fase 2).** Le pagine **Portafoglio** e **Commessa** sono in
+> completamento in questa fase: le parti segnate **[DA VERIFICARE SULLO SCHERMO]**
+> descrivono come sono previste. Le sigle sono spiegate nel [glossario](glossario.md).
+>
+> **Durante il pilota** (2 PM, 2 settimane, vedi il
+> [piano del pilota](../pilota/piano-del-pilota.md)) il Cruscotto contiene solo le 1–2
+> commesse reali di ciascun PM: il portafoglio sarà quasi vuoto e diversi indicatori
+> saranno **n.d.** finché non ci sono baseline e ore registrate.
 
 ## Cosa vede la direzione
 
@@ -20,14 +25,16 @@ i PM.
 
 ## Entrare
 
-1. Apri il Cruscotto dal browser e premi **Accedi con Microsoft 365**.
+1. Apri il Cruscotto dal browser. **Nel pilota** si entra con nome utente e password
+   dati dall'amministratore (al primo accesso si sceglie una password nuova)
+   **[DA VERIFICARE SULLO SCHERMO]**; dopo il pilota con **Accedi con Microsoft 365**.
 2. **Le mie commesse** mostra l'elenco di tutte le commesse dello studio con PM, numero
    di elaborati, prossima milestone e stato (attiva o altro).
 3. Dalla voce **Portafoglio** in alto si apre la vista d'insieme.
 
 ## Il portafoglio
 
-**[DA AGGIORNARE]** — pagina in costruzione (agente B1, Fase 2).
+**[DA VERIFICARE SULLO SCHERMO]** — pagina in completamento in questa fase.
 
 Una riga per commessa attiva, con:
 
@@ -40,8 +47,8 @@ Una riga per commessa attiva, con:
 | Prossima milestone | La prossima scadenza importante |
 
 Ogni indicatore ha un semaforo: **verde** (in linea), **giallo** (attenzione), **rosso**
-(critico), **grigio n.d.** (dati mancanti). Le soglie sono di esempio e verranno tarate
-con i PM durante il pilota:
+(critico), **grigio n.d.** (dati mancanti). Le soglie sono quelle di partenza e verranno
+tarate con i PM durante il pilota:
 
 | Indicatore | Verde | Giallo | Rosso |
 |---|---|---|---|
@@ -52,14 +59,16 @@ con i PM durante il pilota:
 ## Come leggerlo in cinque minuti
 
 1. **Cerca il rosso.** Una commessa con SPI e CPI rossi è in ritardo e sta consumando
-   più ore del previsto. Esempio: CL-2026-031 al 24/09/2026 ha SPI 0,78 e CPI 0,76; la
-   stima a completamento è 560,7 h contro 424 h di budget (circa 137 h in più).
+   più ore del previsto. Esempio (dati dimostrativi): SPI 0,78 e CPI 0,76, stima a
+   completamento 560,7 h contro 424 h di budget (circa 137 h in più).
 2. **Guarda il PPC.** Un PPC basso e stabile (sotto 55%) indica un piano poco
    affidabile: spesso la causa è a monte (input da altri, approvazioni), non nel team.
 3. **Guarda i vincoli aperti** e la prossima milestone: molti vincoli aperti a ridosso
    di una milestone sono il segnale più precoce di ritardo.
 4. **Apri la commessa** (clic sul codice) per la pagina **Commessa** con curva S,
-   andamento del PPC e l'elenco "Da affrontare in riunione". **[DA AGGIORNARE]**
+   andamento del PPC e l'elenco "Da affrontare in riunione".
+   **[DA VERIFICARE SULLO SCHERMO]** Le schede di dettaglio (EVM, Kanban, piano
+   settimanale) si possono aprire in sola lettura; la scheda Ore mostra solo i totali.
 5. Per chiarimenti parla con il PM della commessa: i numeri servono a fare le domande
    giuste, non a dare giudizi.
 

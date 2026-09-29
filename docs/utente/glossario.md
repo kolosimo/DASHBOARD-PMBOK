@@ -7,7 +7,9 @@ management; accanto trovi sempre il nome italiano che compare nelle schermate.
 Tutti gli esempi usano i **dati di esempio** dell'app: la commessa **CL-2026-031
 "Scuola primaria – impianti meccanici ed elettrici"**, alla data di giovedì
 **24/09/2026** (settimana W39, dal 21 al 27/09/2026). I calcoli completi sono in
-`docs/formule/formule.md` e `docs/formule/casi-di-prova.md`.
+`docs/formule/formule.md` e `docs/formule/casi-di-prova.md`. Nel **pilota** il
+Cruscotto parte vuoto e questa commessa non c'è: gli esempi servono solo a capire i
+calcoli.
 
 Due regole valgono per tutti gli indicatori:
 
