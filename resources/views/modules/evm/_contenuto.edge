@@ -20,7 +20,8 @@
     </div>
   @end
 
-  <div class="kpis" data-testid="kpi-evm">
+  {{-- 9 indicatori su una griglia 3 × 3: nessuna cella vuota nell'ultima riga --}}
+  <div class="kpis kpis-evm" data-testid="kpi-evm">
     @!component('components/kpi', {
       etichetta: glossario.BAC.sigla + ' · ' + glossario.BAC.nome,
       valore: formato.ore(riepilogo.bacMinuti),
@@ -120,7 +121,7 @@
       <tbody>
         @each(e in riepilogo.perElaborato)
           <tr>
-            <td class="code">{{ e.codice }}</td>
+            <td><a class="code" href="/commesse/{{ commessa.id }}/elaborati/{{ e.elaboratoId }}" data-testid="link-scheda-{{ e.codice }}">{{ e.codice }}</a></td>
             <td>
               {{ e.titolo }}
               @if(e.fuoriBaseline)
