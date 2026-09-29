@@ -1,0 +1,87 @@
+{{--
+  Apertura di una commessa (PM e admin).
+  Variabili: sceltaPm, utenti, errori, valori
+--}}
+@component('layouts/app', { titolo: 'Nuova commessa', voceAttiva })
+  <div class="head">
+    <div>
+      <div class="eyebrow"><a href="/">Le mie commesse</a></div>
+      <h2>Nuova commessa</h2>
+      <p>
+        @if(sceltaPm)
+          Scegli il PM della commessa: entra subito nel team con il ruolo PM.
+        @else
+          Ne diventi il PM. Team, milestone ed elaborati si aggiungono dopo, nella scheda Anagrafica.
+        @end
+      </p>
+    </div>
+  </div>
+
+  <form class="panel campi" method="POST" action="/commesse/nuova" data-testid="nuova-commessa">
+    {{ csrfField() }}
+    <label>
+      
+      Codice
+
+      <input
+        type="text"
+        name="codice"
+        value="{{ valori.codice || '' }}"
+        maxlength="30"
+        placeholder="CL-2026-040"
+        required
+        style="width:140px"
+      />
+      @!component('modules/anagrafiche/_errore', { testo: errori.codice })
+    </label>
+    <label style="flex:1 1 280px">
+      
+      Nome
+
+      <input type="text" name="nome" value="{{ valori.nome || '' }}" maxlength="300" required />
+      @!component('modules/anagrafiche/_errore', { testo: errori.nome })
+    </label>
+    <label style="flex:1 1 200px">
+      
+      Cliente
+
+      <input type="text" name="cliente" value="{{ valori.cliente || '' }}" maxlength="300" />
+      @!component('modules/anagrafiche/_errore', { testo: errori.cliente })
+    </label>
+    @if(sceltaPm)
+      <label>
+        
+        PM
+
+        <select name="pm_id">
+          <option value="">nessuno</option>
+          @each(u in utenti)
+            <option
+              value="{{ u.id }}"
+              {{ String(valori.pm_id) === String(u.id) ? 'selected' : '' }}
+            >
+              {{ u.nome }}
+            </option>
+          @end
+        </select>
+        @!component('modules/anagrafiche/_errore', { testo: errori.pm_id })
+      </label>
+    @end
+
+    <label>
+      
+      Inizio
+
+      <input type="date" name="data_inizio" value="{{ valori.data_inizio || '' }}" />
+      @!component('modules/anagrafiche/_errore', { testo: errori.data_inizio })
+    </label>
+    <label>
+      
+      Fine prevista
+
+      <input type="date" name="data_fine_prevista" value="{{ valori.data_fine_prevista || '' }}" />
+      @!component('modules/anagrafiche/_errore', { testo: errori.data_fine_prevista })
+    </label>
+    <button class="btn primary" type="submit">Crea commessa</button>
+  </form>
+@end

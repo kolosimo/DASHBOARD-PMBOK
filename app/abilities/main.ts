@@ -82,3 +82,12 @@ export const spostaElaborati = Bouncer.ability(async (utente: Utente, commessa: 
   const ruolo = await ruoloNellaCommessa(utente.id, commessa.id)
   return ruolo === 'pm' || ruolo === 'progettista' || ruolo === 'verificatore'
 })
+
+/**
+ * Aprire una commessa nuova: admin e utenti con ruolo globale "pm" (pilota di
+ * Fase 2: i PM inseriscono da sé le proprie commesse). Il PM che la apre ne
+ * diventa il PM; l'admin può indicarne un altro.
+ */
+export const creaCommessa = Bouncer.ability((utente: Utente) => {
+  return utente.attivo && (utente.ruolo === 'admin' || utente.ruolo === 'pm')
+})

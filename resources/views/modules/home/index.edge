@@ -16,6 +16,11 @@
         @end
       </p>
     </div>
+    @if(puoCreare)
+      <a class="btn primary" href="/commesse/nuova" data-testid="apri-nuova-commessa">
+        Nuova commessa
+      </a>
+    @end
   </div>
   @component('components/pannello', { tabella: true })
     <table data-testid="elenco-commesse">
@@ -66,7 +71,11 @@
         @else
           <tr>
             <td colspan="7" class="muted">
-              Non fai ancora parte di nessuna commessa. Chiedi al PM di aggiungerti al team.
+              @if(puoCreare)
+                Nessuna commessa. Aprine una con «Nuova commessa».
+              @else
+                Non fai ancora parte di nessuna commessa. Chiedi al PM di aggiungerti al team.
+              @end
             </td>
           </tr>
         @end

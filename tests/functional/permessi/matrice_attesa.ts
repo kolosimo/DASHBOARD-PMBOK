@@ -104,6 +104,9 @@ export const MATRICE: Record<string, Riga> = {
 
   // Pagine globali
   'home': AUTENTICATI,
+  // creaCommessa: admin e ruolo globale pm (pm2, qui osservatore, ha ruolo globale pm)
+  'commesse.nuova': riga('accesso', 'negato', 'ok', 'negato', 'negato', 'ok', 'ok'),
+  'commesse.crea': riga('accesso', 'negato', 'ok', 'negato', 'negato', 'ok', 'ok'),
   'portafoglio': AUTENTICATI,
   'ore.mie': AUTENTICATI,
   'ore.cella': AUTENTICATI, // registraOre solo per sé: il controllo è nel corpo

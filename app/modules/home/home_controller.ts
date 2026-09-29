@@ -1,10 +1,11 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import { creaCommessa } from '#abilities/main'
 import { commesseVisibili } from '#modules/anagrafiche/queries'
 import { oggiRoma, lunediDellaSettimana } from '#shared/calendario'
 
 /** Home dopo il login: le commesse visibili all'utente */
 export default class HomeController {
-  async index({ auth, view }: HttpContext) {
+  async index({ auth, view, bouncer }: HttpContext) {
     const utente = auth.getUserOrFail()
     const commesse = await commesseVisibili(utente)
     const oggi = oggiRoma()
@@ -13,6 +14,7 @@ export default class HomeController {
       oggi,
       settimana: lunediDellaSettimana(oggi),
       voceAttiva: 'home',
+      puoCreare: await bouncer.allows(creaCommessa),
     })
   }
 }
