@@ -7,6 +7,11 @@
 | eseguono i controlli di avvio: il server rifiuta di partire con
 | NODE_ENV=production e AUTH_MODE=dev.
 |
+| AUTH_MODE (un solo valore):
+|   oidc   = Microsoft 365 (Entra ID)
+|   locale = email e password gestite dall'admin dell'app (pilota)
+|   dev    = login di sviluppo senza password (vietato in produzione)
+|
 */
 
 import { Env } from '@adonisjs/core/env'
@@ -27,6 +32,8 @@ const env = await Env.create(new URL('../', import.meta.url), {
 
   // Sessione
   SESSION_DRIVER: Env.schema.enum(['cookie', 'memory', 'database'] as const),
+  // Scadenza della sessione per inattività (es. "8h", "30m"). Default 8h.
+  SESSION_INATTIVITA: Env.schema.string.optional(),
 
   // Database PostgreSQL
   DB_HOST: Env.schema.string({ format: 'host' }),
@@ -36,7 +43,7 @@ const env = await Env.create(new URL('../', import.meta.url), {
   DB_DATABASE: Env.schema.string(),
 
   // Login
-  AUTH_MODE: Env.schema.enum(['oidc', 'dev'] as const),
+  AUTH_MODE: Env.schema.enum(['oidc', 'locale', 'dev'] as const),
   OIDC_ISSUER: Env.schema.string.optional(),
   OIDC_CLIENT_ID: Env.schema.string.optional(),
   OIDC_CLIENT_SECRET: Env.schema.secret.optional(),
@@ -49,12 +56,17 @@ const env = await Env.create(new URL('../', import.meta.url), {
   SCHEDULER_ATTIVO: Env.schema.boolean.optional(),
 })
 
-controllaConfigurazioneAvvio({
-  NODE_ENV: env.get('NODE_ENV'),
-  AUTH_MODE: env.get('AUTH_MODE'),
-  OIDC_ISSUER: env.get('OIDC_ISSUER'),
-  OIDC_CLIENT_ID: env.get('OIDC_CLIENT_ID'),
-  OIDC_REDIRECT_URI: env.get('OIDC_REDIRECT_URI'),
-})
+// Con AUTH_MODE=locale non servono variabili OIDC e il login di sviluppo non
+// esiste: i controlli di avvio riguardano solo oidc e dev.
+const modalita = env.get('AUTH_MODE')
+if (modalita !== 'locale') {
+  controllaConfigurazioneAvvio({
+    NODE_ENV: env.get('NODE_ENV'),
+    AUTH_MODE: modalita,
+    OIDC_ISSUER: env.get('OIDC_ISSUER'),
+    OIDC_CLIENT_ID: env.get('OIDC_CLIENT_ID'),
+    OIDC_REDIRECT_URI: env.get('OIDC_REDIRECT_URI'),
+  })
+}
 
 export default env
