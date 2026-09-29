@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Servizio Windows del Cruscotto commesse (WinSW v2.12.0, build NET461).
+
+  Modello: installa.ps1 sostituisce i segnaposto {{...}} e salva il file come
+  C:\app\servizio\cruscotto.xml accanto a cruscotto.exe (WinSW rinominato).
+  Dopo una modifica a mano: .\servizio.ps1 -Azione restart
+-->
+<service>
+  <id>{{ID_SERVIZIO}}</id>
+  <name>Cruscotto commesse Climosfera</name>
+  <description>Cruscotto commesse Climosfera (Node 24, HTTPS sulla porta {{PORTA}}). Configurazione in {{CARTELLA_CONFIG}}\.env</description>
+
+  <executable>{{CARTELLA_NODE}}\node.exe</executable>
+  <arguments>bin\server.js</arguments>
+  <workingdirectory>{{CARTELLA_APP}}</workingdirectory>
+
+  <!-- Variabili d'ambiente: il resto della configurazione sta nel .env -->
+  <env name="NODE_ENV" value="production" />
+  <env name="ENV_PATH" value="{{CARTELLA_CONFIG}}" />
+
+  <!-- Parte dopo PostgreSQL e in modo ritardato all'avvio di Windows -->
+  <depend>{{SERVIZIO_POSTGRES}}</depend>
+  <startmode>Automatic</startmode>
+  <delayedAutoStart>true</delayedAutoStart>
+
+  <!-- Riavvio automatico se il processo termina in modo anomalo -->
+  <onfailure action="restart" delay="10 sec" />
+  <onfailure action="restart" delay="30 sec" />
+  <onfailure action="restart" delay="2 min" />
+  <resetfailure>1 hour</resetfailure>
+
+  <!-- Arresto: Ctrl+C a Node, poi chiusura forzata dopo 20 secondi -->
+  <stoptimeout>20 sec</stoptimeout>
+
+  <!-- Log a rotazione per dimensione: 10 MB per file, ultimi 10 file -->
+  <logpath>{{CARTELLA_SERVIZIO}}\log</logpath>
+  <log mode="roll-by-size">
+    <sizeThreshold>10240</sizeThreshold>
+    <keepFiles>10</keepFiles>
+  </log>
+</service>
