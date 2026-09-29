@@ -4,10 +4,6 @@ import Utente from '#models/utente'
 import { Browser } from '#tests/helpers/browser'
 import { conTransazione } from '#tests/helpers/db'
 
-// Finché start/routes.ts non importa il modulo, le rotte le registra il test
-// prima che il server di test chiuda il router (import idempotente).
-import '#modules/audit/routes'
-
 async function utente(slug: string) {
   return Utente.findByOrFail('email', `${slug}@climosfera.example`)
 }

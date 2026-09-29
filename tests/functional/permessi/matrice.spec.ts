@@ -26,10 +26,6 @@ import {
   type Ruolo,
 } from './matrice_attesa.js'
 
-// Rotte del modulo audit: finché start/routes.ts non le importa, le registra il
-// test prima che il server di test chiuda il router (import idempotente).
-import '#modules/audit/routes'
-
 interface RottaRegistrata {
   nome: string
   metodo: 'GET' | 'POST'

@@ -15,6 +15,7 @@ export const SEZIONI_ADMIN = [
   { id: 'stati', etichetta: 'Stati e pesi', percorso: '/admin/stati' },
   { id: 'colonne', etichetta: 'Colonne Kanban e WIP', percorso: '/admin/colonne' },
   { id: 'cause', etichetta: 'Cause di non completamento', percorso: '/admin/cause' },
+  { id: 'registro', etichetta: 'Registro attività', percorso: '/admin/registro' },
 ] as const
 
 export type SezioneAdmin = (typeof SEZIONI_ADMIN)[number]['id']
