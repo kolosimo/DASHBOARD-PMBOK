@@ -6,6 +6,8 @@
  * ordinata (0 = iniziale): con i dati di esempio coincide con `ordine`.
  */
 import db from '@adonisjs/lucid/services/db'
+import type { TransactionClientContract } from '@adonisjs/lucid/types/database'
+import { minutiPerElaborato } from '#modules/ore/queries'
 import type {
   ClasseServizio,
   DataIso,
@@ -90,21 +92,12 @@ export async function transizioniCommessa(
   return esito
 }
 
-/** Kanban della commessa con WIP, età e throughput, alla data `oggi` */
-export async function riepilogoFlusso(commessaId: number, oggi: DataIso): Promise<RiepilogoFlusso> {
-  const conf = await configurazioneFlusso(commessaId)
-
-  // Una query: elaborati con stato, disciplina e ore registrate (AC)
-  const righe = await db
+/** Elaborati della commessa con stato e disciplina, in ordine di board */
+function righeKanban(commessaId: number) {
+  return db
     .from('elaborati as e')
     .join('stati_elaborato as s', 's.id', 'e.stato_id')
     .join('discipline as d', 'd.id', 'e.disciplina_id')
-    .joinRaw(
-      `LEFT JOIN LATERAL (
-         SELECT COALESCE(SUM(r.minuti), 0) AS minuti
-         FROM registrazioni_ore r WHERE r.elaborato_id = e.id
-       ) AS ac ON TRUE`
-    )
     .where('e.commessa_id', commessaId)
     .select(
       'e.id',
@@ -118,12 +111,99 @@ export async function riepilogoFlusso(commessaId: number, oggi: DataIso): Promis
       'e.version',
       's.nome as stato_nome',
       's.ordine as stato_ordine',
-      'd.codice as disciplina',
-      'ac.minuti as ac_minuti'
+      'd.codice as disciplina'
     )
     .orderBy('s.ordine', 'asc')
     .orderBy('e.stato_dal', 'asc')
     .orderBy('e.codice', 'asc')
+}
+
+/**
+ * Stato di ogni elaborato della commessa in vigore a un istante (ISO o Date):
+ * lo stato attuale se `stato_dal` è precedente, altrimenti la destinazione
+ * dell'ultima transizione precedente all'istante. `null` se all'istante
+ * l'elaborato non aveva ancora uno stato (nato dopo).
+ * Serve all'EVM per l'EV a fine settimana negli snapshot.
+ */
+export async function statiAllIstante(
+  commessaId: number,
+  istante: string | Date,
+  client: TransactionClientContract | typeof db = db
+): Promise<Map<number, number | null>> {
+  const quando = istante instanceof Date ? istante.toISOString() : istante
+  const risultato = await client.rawQuery(
+    `SELECT e.id,
+            CASE WHEN e.stato_dal < :istante THEN e.stato_id ELSE (
+              SELECT t.a_stato_id FROM transizioni_elaborato t
+               WHERE t.elaborato_id = e.id AND t.avvenuta_il < :istante
+               ORDER BY t.avvenuta_il DESC, t.id DESC LIMIT 1
+            ) END AS stato_id
+       FROM elaborati e
+      WHERE e.commessa_id = :commessaId`,
+    { commessaId, istante: quando }
+  )
+  return new Map(
+    (risultato.rows as { id: number; stato_id: number | null }[]).map((r) => [
+      Number(r.id),
+      r.stato_id === null ? null : Number(r.stato_id),
+    ])
+  )
+}
+
+export interface TransizioneStorico {
+  id: number
+  daStatoNome: string | null
+  aStatoNome: string
+  avvenutaIl: string
+  utenteNome: string | null
+  motivo: string | null
+  wipSforato: boolean
+  /** true se si è tornati indietro (rilavorazione) */
+  indietro: boolean
+}
+
+/** Storico delle transizioni di un elaborato, dalla più recente */
+export async function storicoElaborato(elaboratoId: number): Promise<TransizioneStorico[]> {
+  const righe = await db
+    .from('transizioni_elaborato as t')
+    .join('stati_elaborato as a', 'a.id', 't.a_stato_id')
+    .leftJoin('stati_elaborato as d', 'd.id', 't.da_stato_id')
+    .leftJoin('utenti as u', 'u.id', 't.utente_id')
+    .where('t.elaborato_id', elaboratoId)
+    .select(
+      't.id',
+      't.avvenuta_il',
+      't.motivo',
+      't.wip_sforato',
+      'a.nome as a_nome',
+      'a.ordine as a_ordine',
+      'd.nome as da_nome',
+      'd.ordine as da_ordine',
+      'u.nome as utente_nome'
+    )
+    .orderBy('t.avvenuta_il', 'desc')
+    .orderBy('t.id', 'desc')
+  return righe.map((r) => ({
+    id: Number(r.id),
+    daStatoNome: r.da_nome ?? null,
+    aStatoNome: String(r.a_nome),
+    avvenutaIl: istanteIso(r.avvenuta_il),
+    utenteNome: r.utente_nome ?? null,
+    motivo: r.motivo ?? null,
+    wipSforato: Boolean(r.wip_sforato),
+    indietro: r.da_ordine !== null && Number(r.da_ordine) > Number(r.a_ordine),
+  }))
+}
+
+/** Kanban della commessa con WIP, età e throughput, alla data `oggi` */
+export async function riepilogoFlusso(commessaId: number, oggi: DataIso): Promise<RiepilogoFlusso> {
+  const conf = await configurazioneFlusso(commessaId)
+
+  // Elaborati con stato e disciplina; le ore registrate (AC) dal modulo ore
+  const [righe, acPerElaborato] = await Promise.all([
+    righeKanban(commessaId),
+    minutiPerElaborato(commessaId),
+  ])
 
   const schedePerColonna = new Map<number, SchedaKanban[]>()
   for (const r of righe) {
@@ -142,7 +222,7 @@ export async function riepilogoFlusso(commessaId: number, oggi: DataIso): Promis
       statoOrdine: r.stato_ordine,
       etaGiorni: inFinale ? null : workItemAge(istanteIso(r.stato_dal), oggi),
       budgetMinuti: r.budget_minuti,
-      acMinuti: Number(r.ac_minuti ?? 0),
+      acMinuti: acPerElaborato.get(r.id) ?? 0,
       version: r.version,
     }
     const elenco = schedePerColonna.get(stato.colonnaId) ?? []

@@ -9,6 +9,7 @@
  * in join (sola lettura); l'unica tabella scritta dal modulo è `registrazioni_ore`.
  */
 import db from '@adonisjs/lucid/services/db'
+import type { TransactionClientContract } from '@adonisjs/lucid/types/database'
 import type { DataIso, Lunedi, Minuti } from '#domain/types'
 import { domenicaDi } from '#shared/calendario'
 
@@ -257,6 +258,68 @@ export async function minutiPeriodoUtente(
   if (elaboratoId !== undefined) q.where('elaborato_id', elaboratoId)
   const r = await q.sum('minuti as totale').first()
   return intero(r?.totale)
+}
+
+/**
+ * Minuti registrati su ogni elaborato della commessa (tutte le persone), dall'inizio
+ * fino a `finoAl` incluso (senza data: tutte le registrazioni). Gli elaborati senza
+ * ore non compaiono: chi legge usa 0 come valore mancante.
+ * È la lettura dell'AC per elaborato usata da flusso ed EVM.
+ */
+export async function minutiPerElaborato(
+  commessaId: number,
+  opzioni: { finoAl?: DataIso; client?: TransactionClientContract | typeof db } = {}
+): Promise<Map<number, Minuti>> {
+  const q = (opzioni.client ?? db)
+    .from('registrazioni_ore as r')
+    .join('elaborati as e', 'e.id', 'r.elaborato_id')
+    .where('e.commessa_id', commessaId)
+    .groupBy('r.elaborato_id')
+    .select('r.elaborato_id')
+    .select(db.raw('SUM(r.minuti)::int AS minuti'))
+  if (opzioni.finoAl) q.where('r.data', '<=', opzioni.finoAl)
+  const righe = await q
+  return new Map(righe.map((r) => [Number(r.elaborato_id), intero(r.minuti)]))
+}
+
+export interface OrePersonaElaborato {
+  utenteId: number
+  nome: string
+  minutiTotali: Minuti
+}
+
+/**
+ * Ore per persona su un elaborato, dall'inizio. Da mostrare SOLO se
+ * `vedeOrePerPersona` lo consente. Ordine alfabetico: mai per ore.
+ */
+export async function orePerPersonaElaborato(elaboratoId: number): Promise<OrePersonaElaborato[]> {
+  const righe = await db
+    .from('registrazioni_ore as r')
+    .join('utenti as u', 'u.id', 'r.utente_id')
+    .where('r.elaborato_id', elaboratoId)
+    .groupBy('u.id', 'u.nome')
+    .orderBy('u.nome', 'asc')
+    .select('u.id', 'u.nome')
+    .select(db.raw('SUM(r.minuti)::int AS minuti_totali'))
+  return righe.map((r) => ({
+    utenteId: Number(r.id),
+    nome: String(r.nome),
+    minutiTotali: intero(r.minuti_totali),
+  }))
+}
+
+/** Ore dell'elaborato per settimana (lunedì), tutte le persone, in ordine di data */
+export async function oreSettimanaliElaborato(
+  elaboratoId: number
+): Promise<{ settimana: Lunedi; minuti: Minuti }[]> {
+  const righe = await db
+    .from('registrazioni_ore')
+    .where('elaborato_id', elaboratoId)
+    .groupByRaw("date_trunc('week', data)::date")
+    .orderByRaw("date_trunc('week', data)::date")
+    .select(db.raw("to_char(date_trunc('week', data)::date, 'YYYY-MM-DD') AS settimana"))
+    .select(db.raw('SUM(minuti)::int AS minuti'))
+  return righe.map((r) => ({ settimana: String(r.settimana) as Lunedi, minuti: intero(r.minuti) }))
 }
 
 /** Minuti di tutti sull'elaborato, dall'inizio */

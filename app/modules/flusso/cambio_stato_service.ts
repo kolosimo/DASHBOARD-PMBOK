@@ -16,7 +16,7 @@
  *
  *   const iniziale = await CambioStatoService.statoIniziale(trx)
  *   const el = await Elaborato.create({ ...campi, statoId: iniziale.statoId, statoDal: iniziale.statoDal }, { client: trx })
- *   await CambioStatoService.registraNascita(el, utenteId, trx)
+ *   await CambioStatoService.registraCreazione(el.id, utenteId, trx)
  */
 import { DateTime } from 'luxon'
 import db from '@adonisjs/lucid/services/db'
@@ -226,18 +226,47 @@ export default class CambioStatoService {
 
   /**
    * Stato di partenza di un elaborato nuovo: il primo stato in ordine
-   * ("Non iniziato" nei dati di esempio), da oggi.
+   * ("Non iniziato" nei dati di esempio), da adesso. Null se non c'è nessuno
+   * stato configurato (il chiamante mostra un messaggio all'utente).
    */
-  static async statoIniziale(
+  static async statoInizialeSeConfigurato(
     client?: TransactionClientContract
-  ): Promise<{ statoId: number; statoDal: DateTime }> {
+  ): Promise<{ statoId: number; statoDal: DateTime } | null> {
     const riga = await (client ?? db)
       .from('stati_elaborato')
       .select('id')
       .orderBy('ordine', 'asc')
+      .orderBy('id', 'asc')
       .first()
-    if (!riga) throw new Error('Nessuno stato dell’elaborato configurato')
-    return { statoId: riga.id, statoDal: DateTime.now() }
+    return riga ? { statoId: Number(riga.id), statoDal: DateTime.now() } : null
+  }
+
+  /** Come `statoInizialeSeConfigurato`, ma lancia un errore se non c'è nessuno stato */
+  static async statoIniziale(
+    client?: TransactionClientContract
+  ): Promise<{ statoId: number; statoDal: DateTime }> {
+    const iniziale = await CambioStatoService.statoInizialeSeConfigurato(client)
+    if (!iniziale) throw new Error('Nessuno stato dell’elaborato configurato')
+    return iniziale
+  }
+
+  /**
+   * Registra la creazione di un elaborato appena inserito (anche da import):
+   * scrive la transizione di nascita (nessuno stato → stato attuale, all'istante
+   * `stato_dal`). Va chiamata nella stessa transazione dell'inserimento, dopo
+   * aver creato la riga con lo stato restituito da `statoIniziale()`.
+   */
+  static async registraCreazione(
+    elaboratoId: number,
+    utenteId: number | null,
+    trx: TransactionClientContract
+  ): Promise<TransizioneElaborato> {
+    const el = await Elaborato.query({ client: trx })
+      .where('id', elaboratoId)
+      .select('id', 'stato_id', 'stato_dal')
+      .first()
+    if (!el) throw new ElaboratoNonTrovato()
+    return CambioStatoService.registraNascita(el, utenteId, trx)
   }
 
   /**

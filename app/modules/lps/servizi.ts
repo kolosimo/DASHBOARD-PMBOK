@@ -15,7 +15,7 @@ import { aggiornaConVersione, ConflittoVersione, type RendiFrammento } from '#sh
 import { istantaneaPerAudit, registraAudit } from '#shared/audit'
 import { eLunedi, oggiRoma } from '#shared/calendario'
 import type { CategoriaVincolo, DataIso, Lunedi, TipoAttivitaLookahead } from '#domain/types'
-import { AttivitaLps } from './modelli.js'
+import AttivitaLookahead from '#models/attivita_lookahead'
 import { STATI_VINCOLO_APERTI } from './queries.js'
 
 /** Errore di validazione con messaggio per l'utente (422) */
@@ -117,7 +117,7 @@ export async function creaAttivita(commessaId: number, dati: DatiAttivita, autor
   try {
     return await db.transaction(async (trx) => {
       await controllaAttivita(trx, commessaId, dati)
-      const a = await AttivitaLps.create({ commessaId, ...dati }, { client: trx })
+      const a = await AttivitaLookahead.create({ commessaId, ...dati }, { client: trx })
       await registraAudit(
         {
           utenteId: autore.utenteId,
@@ -149,7 +149,7 @@ export async function modificaAttivita(
     return await db.transaction(async (trx) => {
       await controllaAttivita(trx, commessaId, dati)
       await attivitaDellaCommessaOErrore(trx, commessaId, attivitaId)
-      return aggiornaConVersione(AttivitaLps, attivitaId, versione, dati, {
+      return aggiornaConVersione(AttivitaLookahead, attivitaId, versione, dati, {
         client: trx,
         audit: { ...autore, azione: 'lps.attivita.modificata', commessaId },
       })
@@ -181,7 +181,7 @@ export async function eliminaAttivita(
   autore: Autore
 ) {
   await db.transaction(async (trx) => {
-    const a = await AttivitaLps.query({ client: trx })
+    const a = await AttivitaLookahead.query({ client: trx })
       .where('id', attivitaId)
       .where('commessa_id', commessaId)
       .forUpdate()
