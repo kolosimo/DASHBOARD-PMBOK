@@ -429,12 +429,12 @@ test.group('Accesso locale · admin iniziale da console', (group) => {
       () => creaAdminIniziale({ email: 'capo.pilota@climosfera.example' }),
       EmailGiaUsata
     )
-    const di_nuovo = await creaAdminIniziale({
+    const diNuovo = await creaAdminIniziale({
       email: 'pm2@climosfera.example',
       reimposta: true,
     })
-    assert.isFalse(di_nuovo.creato)
-    assert.equal(di_nuovo.utente.ruolo, 'admin')
+    assert.isFalse(diNuovo.creato)
+    assert.equal(diNuovo.utente.ruolo, 'admin')
   })
 })
 
