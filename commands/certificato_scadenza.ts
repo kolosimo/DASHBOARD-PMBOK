@@ -3,8 +3,8 @@
  *
  * Legge il certificato HTTPS (PFX indicato da HTTPS_PFX_PATH e
  * HTTPS_PFX_PASSPHRASE nel .env) e mostra soggetto, nomi alternativi (SAN),
- * emittente e giorni alla scadenza. Esce con codice 1 se il PFX non si legge
- * o se mancano meno di --avviso giorni (default 30), così si può usare in
+ * emittente e giorni alla scadenza. Codice di uscita: 2 se il PFX non si legge,
+ * 1 se è scaduto o mancano meno di --avviso giorni (default 30), così si può usare in
  * un'attività pianificata di Windows.
  *
  * Le funzioni esportate servono anche a bin/server.ts (avvio in HTTPS).
@@ -113,7 +113,7 @@ function dataItaliana(d: Date) {
 export default class CertificatoScadenza extends BaseCommand {
   static commandName = 'certificato:scadenza'
   static description = 'Mostra i dati del certificato HTTPS (PFX) e i giorni alla scadenza'
-  static options: CommandOptions = { startApp: false }
+  static options: CommandOptions = { startApp: true }
 
   @flags.number({ description: 'Giorni sotto i quali segnalare (default 30)', default: 30 })
   declare avviso: number
@@ -149,7 +149,7 @@ export default class CertificatoScadenza extends BaseCommand {
     } catch (errore) {
       if (errore instanceof CertificatoNonValido) {
         this.logger.error(errore.message)
-        this.exitCode = 1
+        this.exitCode = 2
         return
       }
       throw errore
