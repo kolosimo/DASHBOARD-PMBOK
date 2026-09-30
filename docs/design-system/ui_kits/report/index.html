@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<!-- @dsCard group="UI Kit — Report" name="Report UI Kit" subtitle="Interactive A4 document: cover, TOC, body, table, figure pages" viewport="1100x860" -->
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Climosfera — Documento Tecnico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  @font-face { font-family: 'Lora'; src: url('../../fonts/Lora-VariableFont_wght.ttf') format('truetype'); font-weight: 100 900; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Lora'; src: url('../../fonts/Lora-VariableFont_wght.ttf') format('truetype'); font-weight: 100 900; font-style: italic; font-display: swap; }
+</style>
+<style>
+/* ── Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Tokens ────────────────────────────────────────────────── */
+:root {
+  --blue:       #0084D1;
+  --blue-2:     #0082C2;
+  --black:      #000000;
+  --meta:       #7C8392;
+  --table-bg:   #E6E6E6;
+  --white:      #FFFFFF;
+  --f:          'Lora', Georgia, 'Times New Roman', serif;
+
+  --page-w:     794px;   /* A4 at 96dpi */
+  --page-h:     1123px;
+  --margin:     64px;
+  --sidebar-w:  36px;
+}
+
+/* ── App shell ─────────────────────────────────────────────── */
+body {
+  background: #d0d0d0;
+  font-family: var(--f);
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Left nav ──────────────────────────────────────────────── */
+.doc-nav {
+  width: 220px;
+  flex-shrink: 0;
+  background: #1a1a1a;
+  color: #ccc;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 32px 0;
+  display: flex;
+  flex-direction: column;
+}
+.doc-nav-title {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--blue);
+  padding: 0 20px 16px;
+  border-bottom: 1px solid #333;
+  margin-bottom: 12px;
+}
+.doc-nav-item {
+  padding: 9px 20px;
+  font-size: 11px;
+  color: #999;
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  transition: background 120ms, color 120ms;
+  border-left: 2px solid transparent;
+  text-decoration: none;
+  font-style: italic;
+}
+.doc-nav-item:hover { background: #2a2a2a; color: #eee; }
+.doc-nav-item.active { color: var(--white); border-left-color: var(--blue); background: #222; }
+.doc-nav-num { font-size: 9px; color: #555; min-width: 18px; font-style: normal; }
+
+/* ── Document area ─────────────────────────────────────────── */
+.doc-area {
+  flex: 1;
+  padding: 48px 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  overflow-y: auto;
+}
+
+/* ── Page ──────────────────────────────────────────────────── */
+.page {
+  width: var(--page-w);
+  min-height: var(--page-h);
+  background: var(--white);
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+}
+
+/* top accent rule */
+.page-top-rule {
+  position: absolute;
+  top: 0; left: 0;
+  right: var(--sidebar-w);
+  height: 4px;
+  background: var(--blue);
+}
+
+/* content area */
+.page-body {
+  position: absolute;
+  top: var(--margin);
+  left: var(--margin);
+  right: calc(var(--margin) + var(--sidebar-w));
+  bottom: var(--margin);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Sidebar ───────────────────────────────────────────────── */
+.sidebar {
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: var(--sidebar-w);
+  border-left: 2px solid var(--blue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 16px;
+  background: var(--white);
+}
+.sidebar-text {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--f);
+  font-size: 7px;
+  font-weight: 400;
+  color: var(--black);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.sidebar-num {
+  font-family: var(--f);
+  font-size: 7px;
+  color: var(--meta);
+}
+
+/* ── Type ──────────────────────────────────────────────────── */
+.doc-h1 {
+  font-size: 28px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  color: var(--black);
+}
+.doc-h2 {
+  font-size: 22px;
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.2;
+  color: var(--black);
+}
+.doc-h3 {
+  font-size: 16px;
+  font-weight: 400;
+  font-style: italic;
+  text-decoration: underline;
+  line-height: 1.3;
+  color: var(--black);
+  margin-bottom: 6px;
+}
+.doc-body {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--black);
+  text-wrap: pretty;
+}
+.doc-caption {
+  font-size: 10px;
+  font-style: italic;
+  color: var(--black);
+  text-align: center;
+  display: block;
+  margin-top: 6px;
+}
+.doc-meta {
+  font-size: 9px;
+  color: var(--meta);
+}
+.rule {
+  border: none;
+  border-top: 2px solid var(--blue);
+  margin: 10px 0 20px;
+}
+.rule-thin {
+  border: none;
+  border-top: 1px solid var(--table-bg);
+  margin: 14px 0;
+}
+
+/* ── Bullets ───────────────────────────────────────────────── */
+.bullets { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.bullets li {
+  display: flex; gap: 12px; align-items: baseline;
+  font-size: 13px; line-height: 1.55; color: var(--black);
+}
+.bullets li::before { content: '—'; color: var(--blue); font-weight: 700; flex-shrink: 0; }
+
+/* ── Table ─────────────────────────────────────────────────── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 3px double var(--black);
+  font-family: var(--f);
+  font-size: 11.5px;
+}
+.data-table th {
+  font-weight: 700;
+  background: var(--table-bg);
+  border: 1px solid var(--black);
+  padding: 7px 10px;
+  text-align: left;
+}
+.data-table td {
+  border: 1px solid var(--black);
+  padding: 7px 10px;
+  background: var(--white);
+}
+.data-table tr:nth-child(even) td { background: var(--table-bg); }
+
+/* ── Figure placeholder ─────────────────────────────────────── */
+.fig-placeholder {
+  background: var(--table-bg);
+  border: 1px solid var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--meta);
+  font-style: italic;
+  font-size: 11px;
+}
+
+/* ── Cover special ──────────────────────────────────────────── */
+.cover-body {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--margin);
+  padding-right: calc(var(--margin) + var(--sidebar-w));
+}
+.logo-box {
+  border: 2px solid var(--blue);
+  padding: 8px 20px;
+  margin-bottom: 6px;
+}
+.logo-box-text {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+.logo-sub {
+  font-size: 9px;
+  color: var(--meta);
+  font-style: italic;
+  letter-spacing: 0.08em;
+}
+
+/* ── Section divider page ───────────────────────────────────── */
+.section-stripe {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: var(--blue);
+}
+
+/* ── Inactive pages (greyed out) ──────────────────────────── */
+.page.inactive { opacity: 0.4; pointer-events: none; }
+
+/* ── Active highlight ───────────────────────────────────────── */
+.page { transition: box-shadow 200ms; }
+.page.focused { box-shadow: 0 0 0 3px var(--blue), 0 4px 28px rgba(0,0,0,0.22); }
+</style>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="doc-nav">
+  <div class="doc-nav-title">Climosfera S.r.l.</div>
+  <a class="doc-nav-item active" data-page="page-cover" href="#page-cover">
+    <span class="doc-nav-num">—</span>Copertina
+  </a>
+  <a class="doc-nav-item" data-page="page-indice" href="#page-indice">
+    <span class="doc-nav-num">—</span>Indice
+  </a>
+  <a class="doc-nav-item" data-page="page-1" href="#page-1">
+    <span class="doc-nav-num">1</span>Relazione Generale
+  </a>
+  <a class="doc-nav-item" data-page="page-2" href="#page-2">
+    <span class="doc-nav-num">2</span>Impianti Meccanici
+  </a>
+  <a class="doc-nav-item" data-page="page-3" href="#page-3">
+    <span class="doc-nav-num">3</span>Tabelle di Calcolo
+  </a>
+  <a class="doc-nav-item" data-page="page-4" href="#page-4">
+    <span class="doc-nav-num">4</span>Schemi e Figure
+  </a>
+  <a class="doc-nav-item" data-page="page-sec" href="#page-sec">
+    <span class="doc-nav-num">§</span>Impianti Elettrici
+  </a>
+</nav>
+
+<!-- ── Document area ───────────────────────────────────────── -->
+<main class="doc-area" id="docArea">
+
+  <!-- ═══════════════ COVER PAGE ═══════════════ -->
+  <div class="page" id="page-cover">
+    <div class="page-top-rule"></div>
+    <div class="cover-body">
+      <div style="margin-bottom:36px; text-align:center;">
+        <div class="logo-box"><span class="logo-box-text">Climosfera</span></div>
+        <div class="logo-sub">S.r.l. — Ingegneria MEP</div>
+        <div style="font-size:9px; font-style:italic; color:var(--blue); letter-spacing:0.22em; text-transform:uppercase; margin-top:10px;">Think. Manage. Do.</div>
+      </div>
+
+      <h1 class="doc-h1" style="font-size:32px; max-width:580px; margin-bottom:20px;">
+        Relazione Tecnica Specialistica
+      </h1>
+      <hr class="rule" style="width:100px; margin:0 auto 20px;">
+      <p class="doc-h2" style="font-size:18px; max-width:420px; margin-bottom:40px; color:#000;">
+        Impianti Meccanici, Elettrici e Speciali<br>Edificio Direzionale Via Roma 14
+      </p>
+
+      <div style="display:flex; gap:0; border-top:1px solid var(--table-bg); border-bottom:1px solid var(--table-bg); padding:16px 0; width:100%; justify-content:center; gap:48px; margin-bottom:32px;">
+        <div style="text-align:left;">
+          <div class="doc-meta" style="margin-bottom:3px; text-transform:uppercase; letter-spacing:0.1em;">Committente</div>
+          <div class="doc-body" style="font-size:12px;">Nome Cliente S.p.A.</div>
+        </div>
+        <div style="width:1px; background:var(--table-bg);"></div>
+        <div style="text-align:left;">
+          <div class="doc-meta" style="margin-bottom:3px; text-transform:uppercase; letter-spacing:0.1em;">Progetto N°</div>
+          <div class="doc-body" style="font-size:12px;">2024-031 Rev. 0</div>
+        </div>
+        <div style="width:1px; background:var(--table-bg);"></div>
+        <div style="text-align:left;">
+          <div class="doc-meta" style="margin-bottom:3px; text-transform:uppercase; letter-spacing:0.1em;">Data</div>
+          <div class="doc-body" style="font-size:12px;">Maggio 2026</div>
+        </div>
+      </div>
+
+      <!-- Studio contact strip -->
+      <div style="display:flex; gap:36px; justify-content:center; margin-top:8px;">
+        <div style="text-align:left;">
+          <div class="doc-meta" style="font-weight:700; color:var(--blue); letter-spacing:0.14em; text-transform:uppercase; margin-bottom:4px;">Sede Treviso</div>
+          <div class="doc-meta" style="line-height:1.6;">Via Monte Grappa, 25 — 31020 Villorba (TV)<br>Tel. +39 0422 608987 · Fax +39 0422 241801</div>
+        </div>
+        <div style="width:1px; background:var(--table-bg);"></div>
+        <div style="text-align:left;">
+          <div class="doc-meta" style="font-weight:700; color:var(--blue); letter-spacing:0.14em; text-transform:uppercase; margin-bottom:4px;">Sede Milano</div>
+          <div class="doc-meta" style="line-height:1.6;">Via G. Fiamma, 12 — 20129 Milano (MI)<br>info@climosfera.it · www.climosfera.it</div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="sidebar-text">PROGETTO ESECUTIVO · CLIMOSFERA S.R.L.</div>
+      <div class="sidebar-num">—</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ INDICE ═══════════════ -->
+  <div class="page" id="page-indice">
+    <div class="page-top-rule"></div>
+    <div class="page-body">
+      <h2 class="doc-h2" style="margin-bottom:8px;">Indice</h2>
+      <hr class="rule">
+
+      <div style="display:flex; flex-direction:column; gap:0;">
+        <!-- TOC entries -->
+        <div style="display:flex; justify-content:space-between; align-items:baseline; padding:8px 0; border-bottom:1px solid var(--table-bg);">
+          <span class="doc-body" style="font-weight:700;">1. Relazione Generale</span>
+          <span class="doc-meta">3</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:baseline; padding:6px 0 6px 16px; border-bottom:1px solid var(--table-bg);">
+          <span class="doc-body" style="font-size:12px; font-style:italic;">1.1 Premessa e normativa di riferimento</span>
+          <span class="doc-meta">3</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:baseline; padding:6px 0 6px 16px; border-bottom:1px solid var(--table-bg);">
+          <span class="doc-body" style="font-size:12px; font-style:italic;">1.2 Dati climatici di progetto</span>
+          <span class="doc-meta">4</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:baseline; padding:8px 0; border-bottom:1px solid var(--table-bg);">
+          <span class="doc-body" style="font-weight:700;">2. Impianti Meccanici</span>
+          <span class="doc-meta">5</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:baseline; padding:6px 0 6px 16px; border-bottom:1px solid var(--table-bg);">
+          <span class="doc-body" style="font-size:12px; font-style:italic;">2.1 Centrale frigorifera e pompe di calore</span>
+          <span class="doc-meta">5</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:baseline; padding:6px 0 6px 16px; border-bottom:1px solid var(--table-bg);">
+          <span class="doc-body" style="font-size:12px; font-style:italic;">2.2 Unità di trattamento aria</span>
+          <span class="doc-meta">7</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:baseline; padding:6px 0 6px 16px; border-bottom:1px solid var(--table-bg);">
+          <span class="doc-body" style="font-size:12px; font-style:italic;">2.3 Impianti idrico-sanitari</span>
+          <span class="doc-meta">9</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:baseline; padding:8px 0; border-bottom:1px solid var(--table-bg);">
+          <span class="doc-body" style="font-weight:700;">3. Tabelle di Calcolo</span>
+          <span class="doc-meta">11</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:baseline; padding:8px 0; border-bottom:1px solid var(--table-bg);">
+          <span class="doc-body" style="font-weight:700;">4. Schemi e Figure</span>
+          <span class="doc-meta">14</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:baseline; padding:8px 0; border-bottom:1px solid var(--table-bg);">
+          <span class="doc-body" style="font-weight:700;">5. Impianti Elettrici</span>
+          <span class="doc-meta">16</span>
+        </div>
+      </div>
+
+      <!-- List of tables -->
+      <div style="margin-top:32px;">
+        <h3 class="doc-h3">Elenco delle Tabelle</h3>
+        <div class="doc-meta" style="margin-top:8px; line-height:2;">
+          Tabella 1: Unità di trattamento aria — dati di progetto · · · · · 7<br>
+          Tabella 2: Carichi termici per zona — estate/inverno · · · · · · 8<br>
+          Tabella 3: Portate idriche circuiti secondari · · · · · · · · · ·11
+        </div>
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="sidebar-text">INDICE · CLIMOSFERA S.R.L.</div>
+      <div class="sidebar-num">ii</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ PAGE 1 — RELAZIONE GENERALE ═══════════════ -->
+  <div class="page" id="page-1">
+    <div class="page-top-rule"></div>
+    <div class="page-body">
+      <h2 class="doc-h2" style="margin-bottom:8px;">1. Relazione Generale</h2>
+      <hr class="rule">
+
+      <h3 class="doc-h3">1.1 Premessa e normativa di riferimento</h3>
+      <p class="doc-body" style="margin-bottom:14px;">
+        La presente relazione tecnica descrive la progettazione definitiva-esecutiva degli impianti meccanici ed elettrici dell'edificio direzionale ubicato in Via Roma 14. Il progetto è redatto in conformità alle vigenti normative nazionali ed europee e in particolare:
+      </p>
+
+      <ul class="bullets" style="margin-bottom:18px;">
+        <li>D.Lgs. 192/2005 e s.m.i. — Efficienza energetica degli edifici</li>
+        <li>UNI 10339:2021 — Impianti aeraulici ai fini del benessere</li>
+        <li>UNI EN ISO 7730 — Ergonomia degli ambienti termici</li>
+        <li>CEI 64-8 V3 — Impianti elettrici utilizzatori</li>
+        <li>D.M. 3 agosto 2015 — Prevenzione incendi</li>
+      </ul>
+
+      <hr class="rule-thin">
+
+      <h3 class="doc-h3">1.2 Dati climatici di progetto</h3>
+      <p class="doc-body" style="margin-bottom:10px;">
+        I dati climatici di riferimento per il sito sono ricavati dalla norma UNI 10349-1:2016 — Riscaldamento e raffrescamento degli edifici. La località di progetto ricade in Zona Climatica D.
+      </p>
+      <p class="doc-body">
+        <strong>Estate:</strong> Temperatura esterna +35 °C, umidità relativa 50%. Irradiazione solare su superficie orizzontale: 850 W/m².<br>
+        <strong>Inverno:</strong> Temperatura esterna di progetto −2 °C (percentile 99,6%). Gradi giorno: 1.415.
+      </p>
+    </div>
+    <div class="sidebar">
+      <div class="sidebar-text">RELAZIONE GENERALE · CAP. 1</div>
+      <div class="sidebar-num">03</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ PAGE 2 — MECCANICI ═══════════════ -->
+  <div class="page" id="page-2">
+    <div class="page-top-rule"></div>
+    <div class="page-body">
+      <h2 class="doc-h2" style="margin-bottom:8px;">2. Impianti Meccanici</h2>
+      <hr class="rule">
+
+      <h3 class="doc-h3">2.1 Centrale frigorifera e pompe di calore</h3>
+      <p class="doc-body" style="margin-bottom:12px;">
+        La produzione di energia termica e frigorifera è affidata a n. 2 pompe di calore aria/acqua ad alta efficienza con compressore a inverter installate in copertura. Le macchine operano in configurazione a 4 tubi, fornendo simultaneamente energia frigorifera e termica ai circuiti idronici dell'edificio.
+      </p>
+      <p class="doc-body" style="margin-bottom:16px;">
+        Il sistema è integrato da un buffer termico da 500 l per la stabilizzazione della produzione e da n. 2 pompe di circolazione primaria ridondanti (funzionamento in alternanza automatica).
+      </p>
+
+      <h3 class="doc-h3">2.2 Unità di trattamento aria</h3>
+      <p class="doc-body" style="margin-bottom:12px;">
+        Le unità di trattamento aria sono dimensionate per garantire la portata minima di aria esterna prevista dalla norma UNI 10339 in funzione della destinazione d'uso e dell'occupazione di progetto. Tutte le UTA sono dotate di recuperatore di calore a flussi incrociati con efficienza sensibile η<sub>s</sub> ≥ 80%.
+      </p>
+
+      <p class="doc-body" style="margin-bottom:4px; font-weight:700; font-size:12px;">Caratteristiche principali dei filtri:</p>
+      <ul class="bullets">
+        <li>Prefiltro: classe ISO ePM<sub>10</sub> 50% (ex G4)</li>
+        <li>Filtro principale: classe ISO ePM<sub>1</sub> 60% (ex F7)</li>
+      </ul>
+    </div>
+    <div class="sidebar">
+      <div class="sidebar-text">IMPIANTI MECCANICI · CAP. 2</div>
+      <div class="sidebar-num">05</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ PAGE 3 — TABLE ═══════════════ -->
+  <div class="page" id="page-3">
+    <div class="page-top-rule"></div>
+    <div class="page-body">
+      <h2 class="doc-h2" style="margin-bottom:8px;">3. Tabelle di Calcolo</h2>
+      <hr class="rule">
+
+      <h3 class="doc-h3" style="margin-bottom:14px;">Tabella 1 — Unità di trattamento aria</h3>
+
+      <table class="data-table" style="margin-bottom:6px;">
+        <thead>
+          <tr>
+            <th>Sigla</th>
+            <th>Zona</th>
+            <th>Portata [m³/h]</th>
+            <th>Frigorifera [kW]</th>
+            <th>Termica [kW]</th>
+            <th>η recupero</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>UTA-01</td><td>PT — Uffici</td><td>4.800</td><td>28,5</td><td>32,0</td><td>0,83</td></tr>
+          <tr><td>UTA-02</td><td>P1 — Riunioni</td><td>3.200</td><td>19,0</td><td>22,5</td><td>0,81</td></tr>
+          <tr><td>UTA-03</td><td>P2 — Open Space</td><td>6.000</td><td>35,0</td><td>40,0</td><td>0,85</td></tr>
+          <tr><td>UTA-04</td><td>P3 — Direzione</td><td>2.400</td><td>14,0</td><td>16,5</td><td>0,82</td></tr>
+        </tbody>
+      </table>
+      <span class="doc-caption">Tabella 1: Unità di trattamento aria — dati di progetto definitivo</span>
+
+      <hr class="rule-thin" style="margin-top:24px;">
+      <h3 class="doc-h3" style="margin-bottom:14px;">Tabella 2 — Carichi termici per zona</h3>
+
+      <table class="data-table" style="margin-bottom:6px;">
+        <thead>
+          <tr>
+            <th>Zona</th>
+            <th>Sup. [m²]</th>
+            <th>Q<sub>est</sub> [W]</th>
+            <th>Q<sub>inv</sub> [W]</th>
+            <th>q<sub>est</sub> [W/m²]</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Uffici PT</td><td>420</td><td>28.500</td><td>16.800</td><td>67,9</td></tr>
+          <tr><td>Sale Riunioni P1</td><td>185</td><td>19.200</td><td>11.400</td><td>103,8</td></tr>
+          <tr><td>Open Space P2</td><td>530</td><td>35.800</td><td>21.200</td><td>67,5</td></tr>
+          <tr><td>Direzione P3</td><td>210</td><td>14.400</td><td>9.600</td><td>68,6</td></tr>
+        </tbody>
+      </table>
+      <span class="doc-caption">Tabella 2: Carichi termici per zona — estate/inverno</span>
+    </div>
+    <div class="sidebar">
+      <div class="sidebar-text">TABELLE DI CALCOLO · CAP. 3</div>
+      <div class="sidebar-num">11</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ PAGE 4 — FIGURE ═══════════════ -->
+  <div class="page" id="page-4">
+    <div class="page-top-rule"></div>
+    <div class="page-body">
+      <h2 class="doc-h2" style="margin-bottom:8px;">4. Schemi e Figure</h2>
+      <hr class="rule">
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; flex:1;">
+        <div style="display:flex; flex-direction:column;">
+          <div class="fig-placeholder" style="flex:1; min-height:200px;">
+            [Schema idronico — Figura 1]
+          </div>
+          <span class="doc-caption">Figura 1: Schema di principio impianto idronico a 4 tubi</span>
+        </div>
+        <div style="display:flex; flex-direction:column;">
+          <div class="fig-placeholder" style="flex:1; min-height:200px;">
+            [Planimetria UTA — Figura 2]
+          </div>
+          <span class="doc-caption">Figura 2: Posizionamento UTA in copertura — Piano 4</span>
+        </div>
+        <div style="display:flex; flex-direction:column; grid-column:1/-1;">
+          <div class="fig-placeholder" style="height:220px;">
+            [Diagramma psicrometrico — Figura 3]
+          </div>
+          <span class="doc-caption">Figura 3: Diagramma psicrometrico — stato estivo di progetto</span>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="sidebar-text">SCHEMI E FIGURE · CAP. 4</div>
+      <div class="sidebar-num">14</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SECTION DIVIDER — ELETTRICI ═══════════════ -->
+  <div class="page" id="page-sec">
+    <div class="section-stripe"></div>
+    <div class="page-body" style="padding-left:28px; justify-content:center;">
+      <span class="doc-meta" style="letter-spacing:0.14em; text-transform:uppercase; margin-bottom:16px;">Sezione 5</span>
+      <h1 class="doc-h1" style="font-size:38px; max-width:500px; line-height:1.05; margin-bottom:16px;">Impianti Elettrici</h1>
+      <hr class="rule" style="width:80px; margin:0 0 20px;">
+      <p class="doc-body" style="max-width:460px;">
+        Distribuzione in bassa tensione, impianti di illuminazione ordinaria e di sicurezza, sistemi speciali e Building Automation.
+      </p>
+    </div>
+    <div class="sidebar">
+      <div class="sidebar-text">IMPIANTI ELETTRICI · CAP. 5</div>
+      <div class="sidebar-num">16</div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  // Nav active state + focus highlight
+  const navItems = document.querySelectorAll('.doc-nav-item');
+  const pages    = document.querySelectorAll('.page');
+
+  navItems.forEach(item => {
+    item.addEventListener('click', e => {
+      e.preventDefault();
+      const targetId = item.dataset.page;
+      const target   = document.getElementById(targetId);
+      if (!target) return;
+
+      // Scroll to page
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Highlight nav
+      navItems.forEach(n => n.classList.remove('active'));
+      item.classList.add('active');
+
+      // Focus ring
+      pages.forEach(p => p.classList.remove('focused'));
+      target.classList.add('focused');
+      setTimeout(() => target.classList.remove('focused'), 1400);
+    });
+  });
+
+  // Update nav on scroll
+  const docArea = document.getElementById('docArea');
+  docArea.addEventListener('scroll', () => {
+    let closest = null, minDist = Infinity;
+    pages.forEach(page => {
+      const rect = page.getBoundingClientRect();
+      const dist = Math.abs(rect.top - 80);
+      if (dist < minDist) { minDist = dist; closest = page; }
+    });
+    if (closest) {
+      navItems.forEach(n => n.classList.remove('active'));
+      const match = document.querySelector(`.doc-nav-item[data-page="${closest.id}"]`);
+      if (match) match.classList.add('active');
+    }
+  });
+</script>
+</body>
+</html>

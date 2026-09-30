@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Components" name="Sidebar Brand Element" subtitle="2px blue line, rotated black text, grey page number" viewport="700x170" -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  @font-face { font-family: 'Lora'; src: url('../fonts/Lora-VariableFont_wght.ttf') format('truetype'); font-weight: 100 900; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Lora'; src: url('../fonts/Lora-VariableFont_wght.ttf') format('truetype'); font-weight: 100 900; font-style: italic; font-display: swap; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #fff; font-family: 'Lora', Georgia, serif; padding: 24px 28px; }
+  .demo { display: flex; gap: 0; align-items: stretch; height: 120px; border: 1px solid #E6E6E6; overflow: hidden; }
+  .page { flex: 1; padding: 16px; background: #fff; display: flex; flex-direction: column; gap: 6px; }
+  .page-h2 { font-size: 0.9rem; font-weight: 700; font-style: italic; color: #000; }
+  .page-body { font-size: 0.65rem; color: #000; line-height: 1.5; }
+  .sidebar {
+    width: 36px;
+    border-left: 2px solid #0084D1;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+  }
+  .sidebar-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 0.38rem;
+    font-weight: 400;
+    color: #000;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .sidebar-num {
+    font-size: 0.38rem;
+    color: #7C8392;
+  }
+  .desc { font-size: 0.6rem; color: #7C8392; font-style: italic; margin-top: 8px; line-height: 1.4; }
+</style>
+</head>
+<body>
+  <div class="demo">
+    <div class="page">
+      <div class="page-h2">Impianti di Ventilazione</div>
+      <div class="page-body">Il sistema garantisce un ricambio d'aria minimo conforme alla UNI 10339 con portate differenziate per zona.</div>
+    </div>
+    <div class="sidebar">
+      <div class="sidebar-text">PROGETTO ESECUTIVO · CAPITOLO 3</div>
+      <div class="sidebar-num">03</div>
+    </div>
+  </div>
+  <div class="desc">Sidebar: 2px left border #0084D1 · Text black (#000) rotated · Page number #7C8392 bottom</div>
+</body>
+</html>

@@ -1,0 +1,162 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "slides/**"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Lora))/i]",
+        "message": "Font not provided by the design system. Available: Lora."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {},
+    "tokens": [
+      "--border-radius-max",
+      "--border-radius-none",
+      "--border-width-accent",
+      "--border-width-table-inner",
+      "--border-width-table-outer",
+      "--color-accent-line",
+      "--color-bg-divider",
+      "--color-bg-page",
+      "--color-bg-table",
+      "--color-black",
+      "--color-blue-primary",
+      "--color-blue-secondary",
+      "--color-border-structure",
+      "--color-border-table",
+      "--color-cta-bg",
+      "--color-cta-bg-hover",
+      "--color-cta-text",
+      "--color-grey-meta",
+      "--color-grey-table",
+      "--color-hover",
+      "--color-press-opacity",
+      "--color-text-meta",
+      "--color-text-primary",
+      "--color-text-sidebar",
+      "--color-white",
+      "--font-family-base",
+      "--font-size-body",
+      "--font-size-caption",
+      "--font-size-h1",
+      "--font-size-h2",
+      "--font-size-h3",
+      "--font-size-meta",
+      "--font-weight-bold",
+      "--font-weight-regular",
+      "--letter-spacing-h1",
+      "--line-height-body",
+      "--line-height-caption",
+      "--line-height-heading",
+      "--sidebar-line-width",
+      "--sidebar-width",
+      "--slide-margin",
+      "--space-1",
+      "--space-2",
+      "--space-3",
+      "--space-4",
+      "--space-5",
+      "--space-6",
+      "--space-7",
+      "--space-8",
+      "--space-9"
+    ],
+    "tokenKinds": {
+      "--color-blue-primary": "color",
+      "--color-blue-secondary": "color",
+      "--color-black": "color",
+      "--color-grey-meta": "color",
+      "--color-grey-table": "color",
+      "--color-white": "color",
+      "--color-hover": "color",
+      "--color-press-opacity": "color",
+      "--color-bg-page": "color",
+      "--color-bg-table": "color",
+      "--color-bg-divider": "color",
+      "--color-text-primary": "font",
+      "--color-text-meta": "font",
+      "--color-text-sidebar": "font",
+      "--color-border-structure": "color",
+      "--color-border-table": "color",
+      "--color-cta-bg": "color",
+      "--color-cta-bg-hover": "color",
+      "--color-cta-text": "font",
+      "--color-accent-line": "color",
+      "--font-family-base": "font",
+      "--font-size-h1": "font",
+      "--font-size-h2": "font",
+      "--font-size-h3": "font",
+      "--font-size-body": "font",
+      "--font-size-caption": "font",
+      "--font-size-meta": "font",
+      "--font-weight-regular": "font",
+      "--font-weight-bold": "font",
+      "--line-height-heading": "font",
+      "--line-height-body": "font",
+      "--line-height-caption": "font",
+      "--letter-spacing-h1": "font",
+      "--space-1": "spacing",
+      "--space-2": "spacing",
+      "--space-3": "spacing",
+      "--space-4": "spacing",
+      "--space-5": "spacing",
+      "--space-6": "spacing",
+      "--space-7": "spacing",
+      "--space-8": "spacing",
+      "--space-9": "spacing",
+      "--border-radius-max": "radius",
+      "--border-radius-none": "radius",
+      "--border-width-accent": "spacing",
+      "--border-width-table-outer": "spacing",
+      "--border-width-table-inner": "spacing",
+      "--sidebar-width": "spacing",
+      "--sidebar-line-width": "spacing",
+      "--slide-margin": "spacing"
+    },
+    "fontFamilies": [
+      "Lora"
+    ]
+  }
+}

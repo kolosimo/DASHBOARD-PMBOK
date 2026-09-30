@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Slides" name="NotebookLM Presentation" subtitle="17 slides — NotebookLM intro + 7 principi per l'uso dell'IA" viewport="1280x720" -->
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotebookLM e l'utilizzo intelligente dell'IA · Climosfera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  @font-face { font-family: 'Lora'; src: url('../fonts/Lora-VariableFont_wght.ttf') format('truetype'); font-weight: 100 900; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Lora'; src: url('../fonts/Lora-VariableFont_wght.ttf') format('truetype'); font-weight: 100 900; font-style: italic; font-display: swap; }
+</style>
+<script src="deck-stage.js"></script>
+<style>
+  /* ═══ TOKENS — from Climosfera Design System ═══ */
+  :root {
+    --blue:       #0084D1;
+    --blue-2:     #0082C2;
+    --black:      #000000;
+    --grey-meta:  #7C8392;
+    --grey-table: #E6E6E6;
+    --white:      #FFFFFF;
+    --margin:     80px;
+    --sidebar-w:  44px;
+    --f:          'Lora', Georgia, serif;
+
+    /* ── Tweakable expressive layer (driven by Tweaks panel) ── */
+    --rule-w:     3px;    /* thickness of structural blue rules */
+    --card-bw:    2px;    /* card / framed-box border weight */
+    --h1-track:   0.08em; /* H1 letter-spacing — heading personality */
+    --eyebrow-track: 0.16em;
+    --stripe-h:   6px;    /* cover/closing top stripe height */
+  }
+
+  /* ═══ COMPOSIZIONE — structural intensity ═══ */
+  body.comp-editoriale     { --rule-w: 2px; --card-bw: 1px; --sidebar-w: 38px; --stripe-h: 3px; }
+  body.comp-tecnico        { --rule-w: 3px; --card-bw: 2px; --sidebar-w: 44px; --stripe-h: 6px; }
+  body.comp-architettonico { --rule-w: 5px; --card-bw: 3px; --sidebar-w: 70px; --stripe-h: 11px; }
+
+  /* heavier sidebar text breathing room when architettonico */
+  body.comp-architettonico .sidebar { padding-left: 6px; padding-right: 6px; }
+
+  /* ═══ TRATTAMENTO TITOLI — heading personality ═══ */
+  body.tit-sobria      { --h1-track: 0.015em; --eyebrow-track: 0.10em; }
+  body.tit-sobria      .eyebrow { font-style: normal; }
+  body.tit-sobria      .h2 { font-style: normal; }
+  body.tit-editoriale  { --h1-track: 0.08em; --eyebrow-track: 0.16em; }
+  body.tit-monumentale { --h1-track: 0.20em; --eyebrow-track: 0.30em; }
+  body.tit-monumentale .eyebrow { font-weight: 700; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  deck-stage { --deck-bg: #1a1a1a; }
+
+  /* ═══ SHELL ═══ */
+  section.slide {
+    width: 1920px;
+    height: 1080px;
+    background: var(--white);
+    position: relative;
+    font-family: var(--f);
+    overflow: hidden;
+  }
+
+  /* ═══ SIDEBAR ═══ */
+  .sidebar {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: var(--sidebar-w);
+    border-left: 2px solid var(--blue);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 36px 0 28px;
+    background: var(--white);
+  }
+  .sidebar-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: var(--f);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--black);
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .sidebar-num {
+    font-family: var(--f);
+    font-size: 12px;
+    color: var(--grey-meta);
+  }
+
+  /* ═══ CONTENT AREA ═══ */
+  .content {
+    position: absolute;
+    top: var(--margin);
+    left: var(--margin);
+    right: calc(var(--margin) + var(--sidebar-w));
+    bottom: var(--margin);
+  }
+
+  /* ═══ TYPE ═══ */
+  .h1 {
+    font-size: 80px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--h1-track);
+    line-height: 1.1;
+    color: var(--black);
+  }
+  .h2 {
+    font-size: 56px;
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1.15;
+    color: var(--black);
+  }
+  .h3 {
+    font-size: 38px;
+    font-weight: 400;
+    font-style: italic;
+    text-decoration: underline;
+    line-height: 1.2;
+    color: var(--black);
+  }
+  .body-text {
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.55;
+    color: var(--black);
+  }
+  .caption {
+    font-size: 22px;
+    font-style: italic;
+    color: var(--black);
+    text-align: center;
+    display: block;
+    margin-top: 14px;
+  }
+  .meta {
+    font-size: 18px;
+    color: var(--grey-meta);
+  }
+  .eyebrow {
+    font-size: 22px;
+    font-style: italic;
+    color: var(--blue);
+    letter-spacing: var(--eyebrow-track);
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  /* ═══ RULE ═══ */
+  .rule { border: none; border-top: var(--rule-w) solid var(--blue); margin: 0; }
+  .rule-thin { border: none; border-top: 1px solid var(--grey-table); margin: 0; }
+
+  /* ═══ BULLETS ═══ */
+  ul.bullets { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 22px; }
+  ul.bullets li {
+    display: flex; gap: 20px; align-items: baseline;
+    font-size: 32px; line-height: 1.5; color: var(--black);
+  }
+  ul.bullets li::before { content: '—'; color: var(--blue); font-weight: 700; flex-shrink: 0; }
+
+  /* ═══ CARD GRIDS ═══ */
+  .card {
+    background: var(--white);
+    border: var(--card-bw) solid var(--black);
+    padding: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .card-num {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .card-title {
+    font-size: 32px;
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1.15;
+    color: var(--black);
+  }
+  .card-body {
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--black);
+  }
+
+  /* ═══ COLUMN GRID ═══ */
+  .col-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
+  .col-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+  }
+  .col-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+
+  /* ═══ PROMPT BOX ═══ */
+  .prompt-box {
+    background: var(--grey-table);
+    border-left: 4px solid var(--blue);
+    padding: 32px 40px;
+    font-style: italic;
+    font-size: 32px;
+    line-height: 1.45;
+    color: var(--black);
+  }
+  .prompt-label {
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  /* ═══ PULL QUOTE ═══ */
+  .pull-quote {
+    border-top: 3px solid var(--blue);
+    border-bottom: 3px solid var(--blue);
+    padding: 40px 0;
+    font-size: 44px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.35;
+    color: var(--black);
+    text-wrap: pretty;
+  }
+  .quote-attrib {
+    font-size: 22px;
+    font-style: italic;
+    color: var(--grey-meta);
+    margin-top: 18px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ═══ RULE-BADGE — "regola d'oro" callout ═══ */
+  .rule-badge {
+    display: inline-block;
+    background: var(--blue);
+    color: var(--white);
+    padding: 6px 18px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  /* ═══ BIG NUMBER ═══ */
+  .big-num {
+    font-size: 320px;
+    font-weight: 700;
+    line-height: 0.9;
+    color: var(--blue);
+    letter-spacing: -0.02em;
+  }
+
+  /* ═══ LOGO LOCKUP ═══ */
+  .logo-box {
+    display: inline-block;
+    border: 2px solid var(--blue);
+    padding: 8px 26px;
+  }
+  .logo-box-text {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+
+  /* ═══ SECTION DIVIDER STRIPE ═══ */
+  .section-stripe {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 6px;
+    background: var(--blue);
+  }
+
+  /* ═══ SLIDE CITATION (fonte in fondo) ═══ */
+  .slide-citation {
+    margin-top: auto;
+    padding-top: 18px;
+    border-top: 1px solid var(--grey-table);
+    font-size: 0.85rem;
+    font-style: italic;
+    color: #888;
+    line-height: 1.4;
+    max-width: 1400px;
+  }
+
+</style>
+</head>
+<body>
+<deck-stage>
+
+  <!-- ════════════════════════════════════════════════════════
+       01 · COVER
+  ════════════════════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="01 Cover">
+    <div style="position:absolute; top:0; left:0; right:var(--sidebar-w); height:var(--stripe-h); background:var(--blue);"></div>
+
+    <div class="content" style="display:flex; flex-direction:column; align-items:flex-start; justify-content:space-between;">
+      <!-- Top: logo + part marker -->
+      <div style="display:flex; align-items:center; gap:24px; width:100%; justify-content:space-between;">
+        <div style="display:flex; align-items:center; gap:18px;">
+          <div class="logo-box"><span class="logo-box-text">Climosfera</span></div>
+          <span class="meta" style="font-size:20px; font-style:italic;">S.r.l. — Ingegneria MEP</span>
+        </div>
+        <span class="eyebrow">Formazione Interna · Maggio 2026</span>
+      </div>
+
+      <!-- Middle: title block -->
+      <div style="max-width:1400px;">
+        <span class="eyebrow" style="display:block; margin-bottom:20px;">Parte 01 + 02</span>
+        <h1 class="h1" style="font-size:118px; line-height:1.02; margin-bottom:36px;">
+          NotebookLM e l'Utilizzo<br>Intelligente dell'IA
+        </h1>
+        <hr class="rule" style="width:180px; margin:0 0 36px;">
+        <p class="h2" style="font-size:42px; max-width:1200px; font-style:italic; font-weight:400; color:var(--black);">
+          Sette principi per lavorare meglio con gli strumenti di intelligenza artificiale.
+        </p>
+      </div>
+
+      <!-- Bottom: author -->
+      <div style="display:flex; gap:36px; align-items:baseline;">
+        <div>
+          <p class="body-text" style="font-size:28px; font-weight:700; margin-bottom:4px;">Formazione Interna</p>
+          <p class="meta" style="font-size:20px; font-style:italic;">Climosfera S.r.l.</p>
+        </div>
+        <div style="width:2px; background:var(--grey-table); align-self:stretch;"></div>
+        <div>
+          <p class="meta" style="font-size:18px; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:4px;">Tagline</p>
+          <p class="body-text" style="font-size:22px; font-style:italic; color:var(--blue); letter-spacing:0.14em; text-transform:uppercase;">Think. Manage. Do.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">NOTEBOOKLM · COPERTINA</div>
+      <div class="sidebar-num">01</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       02 · COS'È L'IA — TIMELINE 4 CARD
+  ════════════════════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="02 Cos'è l'IA">
+    <div class="content" style="display:flex; flex-direction:column;">
+      <span class="eyebrow" style="margin-bottom:14px;">Parte 01 · Capitolo 1</span>
+      <h2 class="h2" style="margin-bottom:18px;">Cos'è l'IA — Come è nata e perché</h2>
+      <hr class="rule" style="margin-bottom:56px;">
+
+      <div class="col-4">
+        <div class="card">
+          <span class="card-num">01 · Definizione</span>
+          <h3 class="card-title">Sistemi che<br>imitano funzioni<br>cognitive umane</h3>
+          <p class="card-body">Apprendimento, ragionamento, percezione, pianificazione e generazione di linguaggio.</p>
+        </div>
+        <div class="card">
+          <span class="card-num">02 · Anni '50</span>
+          <h3 class="card-title">Nascita del<br>termine "AI"</h3>
+          <p class="card-body">Dartmouth Workshop, 1956. Turing, McCarthy, Minsky. Si pongono le basi simboliche.</p>
+        </div>
+        <div class="card">
+          <span class="card-num">03 · Breakthrough</span>
+          <h3 class="card-title">Reti neurali<br>e deep learning</h3>
+          <p class="card-body">Anni 2010: GPU, dataset massivi e architetture profonde rendono praticabile il riconoscimento.</p>
+        </div>
+        <div class="card" style="border-color:var(--blue); border-width:3px; position:relative;">
+          <div style="position:absolute; top:-3px; left:-3px; right:-3px; height:8px; background:var(--blue);"></div>
+          <span class="card-num" style="margin-top:8px;">04 · 2022 · LLM</span>
+          <h3 class="card-title">ChatGPT<br>e l'IA generativa</h3>
+          <p class="card-body">I Large Language Model rendono il linguaggio naturale l'interfaccia universale.</p>
+        </div>
+      </div>
+
+      <p class="slide-citation">«C'è lì un aggeggio in tasca che ti può fare il lavoro di mezza azienda e tu lo usi per chiedere il meteo.»</p>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">NOTEBOOKLM · CAP. 1 — STORIA</div>
+      <div class="sidebar-num">02</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       03 · TRE AREE DI NOTEBOOKLM
+  ════════════════════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="03 Tre Aree">
+    <div class="content" style="display:flex; flex-direction:column;">
+      <span class="eyebrow" style="margin-bottom:14px;">Parte 01 · Capitolo 2</span>
+      <h2 class="h2" style="margin-bottom:18px;">Tre Aree di NotebookLM</h2>
+      <hr class="rule" style="margin-bottom:60px;">
+
+      <div class="col-3" style="flex:1; align-items:stretch;">
+        <!-- Sources -->
+        <div style="display:flex; flex-direction:column; gap:24px; padding-right:32px; border-right:1px solid var(--grey-table);">
+          <span class="big-num" style="font-size:150px;">01</span>
+          <h3 class="h3" style="font-size:44px;">Sources</h3>
+          <p class="body-text" style="font-size:30px;">Il punto di partenza: documenti, PDF, link e note. Tutto ciò che NotebookLM userà come base di verità.</p>
+        </div>
+        <!-- Chat -->
+        <div style="display:flex; flex-direction:column; gap:24px; padding-right:32px; border-right:1px solid var(--grey-table);">
+          <span class="big-num" style="font-size:150px;">02</span>
+          <h3 class="h3" style="font-size:44px;">Chat</h3>
+          <p class="body-text" style="font-size:30px;">Conversazione contestuale sulle fonti. Domande, sintesi e rielaborazioni con citazioni puntuali.</p>
+        </div>
+        <!-- Studio -->
+        <div style="display:flex; flex-direction:column; gap:18px;">
+          <span class="big-num" style="font-size:150px;">03</span>
+          <h3 class="h3" style="font-size:44px;">Studio</h3>
+          <p class="body-text" style="font-size:24px;">Output strutturati generati dalle fonti:</p>
+          <ul class="bullets" style="gap:9px;">
+            <li style="font-size:22px;">Audio overview &amp; report sintetici</li>
+            <li style="font-size:22px;">Mappe mentali, timeline e briefing</li>
+            <li style="font-size:22px;">Video Overview cinematico generato dalle fonti</li>
+            <li style="font-size:22px;">Presentazioni esportabili in PPTX</li>
+            <li style="font-size:22px;">Sincronizzazione automatica con Google Drive <span style="color:var(--grey-meta); font-style:italic;">(solo fonti Drive)</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">NOTEBOOKLM · CAP. 2 — STRUTTURA</div>
+      <div class="sidebar-num">03</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       04 · VERIFICA DELLE FONTI
+  ════════════════════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="04 Verifica Fonti">
+    <div class="content" style="display:flex; flex-direction:column;">
+      <span class="eyebrow" style="margin-bottom:14px;">Parte 01 · Capitolo 3</span>
+      <h2 class="h2" style="margin-bottom:18px;">Verifica delle Fonti</h2>
+      <hr class="rule" style="margin-bottom:80px;">
+
+      <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:60px;">
+        <!-- Feature description -->
+        <div>
+          <span class="rule-badge">Come funziona</span>
+          <p class="body-text" style="font-size:44px; line-height:1.35; max-width:1400px;">
+            Ogni risposta di NotebookLM è ancorata alle fonti caricate. Ogni affermazione riporta una citazione numerata cliccabile.
+          </p>
+        </div>
+
+        <!-- Mechanic detail -->
+        <div class="pull-quote" style="max-width:1500px; font-style:normal; font-size:38px;">
+          Ogni citazione numerata è cliccabile: porta direttamente al passaggio esatto del documento che ha generato la risposta. Nessuna affermazione senza fonte.
+          <div class="quote-attrib">— Citazioni ancorate alla fonte</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">NOTEBOOKLM · CAP. 3 — FONTI</div>
+      <div class="sidebar-num">04</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       05 · DEEP RESEARCH
+  ════════════════════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="05 Deep Research">
+    <div class="content" style="display:flex; flex-direction:column;">
+      <span class="eyebrow" style="margin-bottom:14px;">Parte 01 · Capitolo 4</span>
+      <h2 class="h2" style="margin-bottom:18px;">Deep Research</h2>
+      <hr class="rule" style="margin-bottom:50px;">
+
+      <div class="col-2" style="flex:1; gap:80px;">
+        <!-- Concept — due modalità -->
+        <div style="display:flex; flex-direction:column; gap:28px; justify-content:center;">
+          <div style="display:flex; gap:22px; align-items:baseline;">
+            <span style="font-size:38px; font-weight:700; color:var(--blue); flex-shrink:0;">01</span>
+            <div>
+              <h3 class="h3" style="font-size:36px; margin-bottom:12px;">Analisi del corpus interno</h3>
+              <p class="body-text" style="font-size:26px;">
+                Analisi multi-step sulle fonti già caricate, con <em>piano di ricerca esplicito</em> e cross-referencing tra documenti. Ogni affermazione è tracciata alla fonte originale.
+              </p>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:22px; align-items:baseline;">
+            <span style="font-size:38px; font-weight:700; color:var(--blue); flex-shrink:0;">02</span>
+            <div>
+              <h3 class="h3" style="font-size:36px; margin-bottom:12px;">Web search</h3>
+              <p class="body-text" style="font-size:26px;">
+                Cerca e aggiunge <em>automaticamente</em> fino a 50 fonti rilevanti dal web direttamente al notebook.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prompt example -->
+        <div style="display:flex; flex-direction:column; justify-content:center; gap:36px;">
+          <div>
+            <span class="rule-badge">Regola d'oro</span>
+            <p class="body-text" style="font-size:28px; font-style:italic;">
+              Verifica <strong>sempre</strong> le fonti trovate prima di usarle: la qualità dipende dalla precisione della query di ricerca.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="h3" style="font-size:42px; margin-bottom:18px;">Prompt esemplare</h3>
+            <div class="prompt-box">
+              <span class="prompt-label">Prompt</span>
+              "Cerca le norme tecniche europee più recenti sui sistemi di rilevazione incendi per edifici industriali."
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">NOTEBOOKLM · CAP. 4 — RESEARCH</div>
+      <div class="sidebar-num">05</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       06 · NON USARLO COME GOOGLE
+  ════════════════════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="06 Non come Google">
+    <div class="content" style="display:flex; flex-direction:column;">
+      <span class="eyebrow" style="margin-bottom:14px;">Parte 01 · Capitolo 5</span>
+      <h2 class="h2" style="margin-bottom:18px;">Non Usarlo Come Google</h2>
+      <hr class="rule" style="margin-bottom:60px;">
+
+      <div style="display:flex; flex-direction:column; gap:48px; justify-content:center;">
+        <!-- Principle -->
+        <div>
+          <span class="rule-badge">Principio</span>
+          <p class="body-text" style="font-size:40px; line-height:1.35; max-width:1500px;">
+            Google risponde a <em>parole chiave</em>. NotebookLM ragiona su <em>domande complete</em>. Cambiare strumento senza cambiare il modo di interrogarlo significa sprecarne il 90% del valore.
+          </p>
+        </div>
+
+        <!-- Strategic questions box -->
+        <div style="background:var(--grey-table); border:2px solid var(--black); padding:36px 44px;">
+          <span class="prompt-label" style="font-size:18px; margin-bottom:20px;">Domande strategiche · esempi</span>
+          <ul class="bullets" style="gap:14px;">
+            <li style="font-size:28px;">«Quali sono le tre obiezioni più frequenti nel feedback cliente e in che ordine vengono sollevate?»</li>
+            <li style="font-size:28px;">«Confronta gli approcci dei tre fornitori e indica trade-off principali in tabella.»</li>
+            <li style="font-size:28px;">«Cosa <em>manca</em> in questo corpus rispetto a una analisi rigorosa di efficienza energetica?»</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="slide-citation">«Gli dai un input generico, ti dà una risposta generica. Garbage in, garbage out.»</p>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">NOTEBOOKLM · CAP. 5 — APPROCCIO</div>
+      <div class="sidebar-num">06</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       07 · TRANSIZIONE — DEMO DAL VIVO
+  ════════════════════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="07 Demo">
+    <div class="section-stripe"></div>
+
+    <div class="content" style="display:flex; flex-direction:column; justify-content:center; padding-left:48px;">
+      <span class="eyebrow" style="margin-bottom:32px; font-size:26px;">Intermezzo · Fine Parte 01</span>
+      <h1 class="h1" style="font-size:160px; line-height:1; margin-bottom:48px;">Demo<br>dal Vivo</h1>
+      <hr class="rule" style="width:200px; margin:0 0 48px;">
+      <p class="h2" style="font-size:40px; font-style:italic; font-weight:400; max-width:1200px; color:var(--grey-meta);">
+        Vediamo NotebookLM in azione prima di analizzare i principi che lo rendono efficace. Un caso reale su norme antincendio.
+      </p>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">DEMO · TRANSIZIONE</div>
+      <div class="sidebar-num">07</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       08 · AGENDA 7 PUNTI
+  ════════════════════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="08 Agenda 7 Punti">
+    <div class="content" style="display:flex; flex-direction:column;">
+      <span class="eyebrow" style="margin-bottom:14px;">Parte 02 · Apertura</span>
+      <h2 class="h2" style="margin-bottom:18px;">Sette Punti sull'Utilizzo dell'IA</h2>
+      <hr class="rule" style="margin-bottom:54px;">
+
+      <div class="col-2" style="flex:1; gap:80px;">
+        <div style="display:flex; flex-direction:column; gap:28px; justify-content:center;">
+          <div style="display:flex; gap:24px; align-items:baseline;">
+            <span style="font-size:38px; font-weight:700; color:var(--blue); min-width:60px;">01</span>
+            <span class="body-text" style="font-size:32px;">Il contesto è tutto</span>
+          </div>
+          <div style="display:flex; gap:24px; align-items:baseline;">
+            <span style="font-size:38px; font-weight:700; color:var(--blue); min-width:60px;">02</span>
+            <span class="body-text" style="font-size:32px;">Sii specifico, non generico</span>
+          </div>
+          <div style="display:flex; gap:24px; align-items:baseline;">
+            <span style="font-size:38px; font-weight:700; color:var(--blue); min-width:60px;">03</span>
+            <span class="body-text" style="font-size:32px;">Itera, non aspettarti la risposta perfetta al primo colpo</span>
+          </div>
+          <div style="display:flex; gap:24px; align-items:baseline;">
+            <span style="font-size:38px; font-weight:700; color:var(--blue); min-width:60px;">04</span>
+            <span class="body-text" style="font-size:32px;">Verifica sempre le fonti</span>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:28px; justify-content:center;">
+          <div style="display:flex; gap:24px; align-items:baseline;">
+            <span style="font-size:38px; font-weight:700; color:var(--blue); min-width:60px;">05</span>
+            <span class="body-text" style="font-size:32px;">L'IA amplifica le tue competenze, non le sostituisce</span>
+          </div>
+          <div style="display:flex; gap:24px; align-items:baseline;">
+            <span style="font-size:38px; font-weight:700; color:var(--blue); min-width:60px;">06</span>
+            <span class="body-text" style="font-size:32px;">Impara a fare le domande giuste</span>
+          </div>
+          <div style="display:flex; gap:24px; align-items:baseline;">
+            <span style="font-size:38px; font-weight:700; color:var(--blue); min-width:60px;">07</span>
+            <span class="body-text" style="font-size:32px;">Mantieni il controllo del processo</span>
+          </div>
+          <div style="margin-top:24px; padding-top:24px; border-top:1px solid var(--grey-table);">
+            <span class="meta" style="font-size:22px; font-style:italic;">+ Bonus: i 3 prompt di validazione</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">SETTE PUNTI · AGENDA</div>
+      <div class="sidebar-num">08</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       09 · PUNTO 1 — CONTESTO
+  ════════════════════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="09 Punto 1 Contesto">
+    <div class="content" style="display:flex; flex-direction:column;">
+      <div style="display:grid; grid-template-columns: 460px 1fr; gap:60px; align-items:center; flex:1;">
+        <div>
+          <span class="eyebrow" style="display:block; margin-bottom:24px;">Punto 01 di 07</span>
+          <span class="big-num">01</span>
+        </div>
+        <div>
+          <h1 class="h1" style="font-size:80px; line-height:1.05; margin-bottom:26px;">Il Contesto<br>è Tutto</h1>
+          <hr class="rule" style="width:160px; margin:0 0 26px;">
+          <p class="body-text" style="font-size:30px; max-width:1100px; margin-bottom:20px;">
+            Specifica sempre <strong>ruolo</strong>, <strong>obiettivo</strong>, <strong>vincoli</strong> e <strong>formato</strong> della risposta. Più contesto fornisci, più l'output è utile.
+          </p>
+          <p class="body-text" style="font-size:30px; max-width:1100px; margin-bottom:20px;">
+            <strong>Tecnica inversa:</strong> se non sai da dove partire, capovolgi il processo. Chiedi all'AI: «Fammi le domande che ti servono per capire il mio problema.» Sarà lei a strutturare il contesto al posto tuo.
+          </p>
+          <p class="body-text" style="font-size:26px; font-style:italic; color:var(--grey-meta); max-width:1100px;">
+            «Sei un ingegnere MEP senior; rivedi questo capitolato; segnala incongruenze normative; rispondi in tabella.»
+          </p>
+        </div>
+      </div>
+
+      <p class="slide-citation">«L'intelligenza artificiale non legge nel pensiero. Quello che legge sono dei fascicoli.»</p>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">PUNTO 01 · CONTESTO</div>
+      <div class="sidebar-num">09</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       10 · PUNTO 2 — SPECIFICITÀ
+  ════════════════════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="10 Punto 2 Specifico">
+    <div class="content" style="display:flex; flex-direction:column;">
+      <div style="display:grid; grid-template-columns: 460px 1fr; gap:60px; align-items:center; flex:1;">
+        <div>
+          <span class="eyebrow" style="display:block; margin-bottom:24px;">Punto 02 di 07</span>
+          <span class="big-num">02</span>
+        </div>
+        <div>
+          <h1 class="h1" style="font-size:88px; line-height:1.05; margin-bottom:32px;">Sii Specifico,<br>Non Generico</h1>
+          <hr class="rule" style="width:160px; margin:0 0 32px;">
+          <p class="body-text" style="font-size:34px; max-width:1100px; margin-bottom:32px;">
+            La specificità della domanda determina la qualità della risposta.
+          </p>
+
+          <div style="display:flex; flex-direction:column; gap:18px; max-width:1100px;">
+            <div style="display:flex; gap:24px; align-items:baseline; padding:14px 0; border-bottom:1px solid var(--grey-table);">
+              <span class="meta" style="font-size:22px; min-width:140px; letter-spacing:0.14em; text-transform:uppercase;">Generico</span>
+              <span class="body-text" style="font-size:26px; color:var(--grey-meta); font-style:italic;">«Riassumi questo documento.»</span>
+            </div>
+            <div style="display:flex; gap:24px; align-items:baseline; padding:14px 0;">
+              <span class="meta" style="font-size:22px; min-width:140px; letter-spacing:0.14em; text-transform:uppercase; color:var(--blue); font-weight:700;">Specifico</span>
+              <span class="body-text" style="font-size:26px;">«Estrai le 5 obiezioni del committente al § 3 in elenco numerato con riferimento al paragrafo originale.»</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="slide-citation">«Lei risponde meglio a chi domanda meglio, tutti gli altri ricevono la stessa risposta mediocre.»</p>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">PUNTO 02 · SPECIFICITÀ</div>
+      <div class="sidebar-num">10</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       11 · PUNTO 3 — ITERA
+  ════════════════════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="11 Punto 3 Itera">
+    <div class="content" style="display:grid; grid-template-columns: 460px 1fr; gap:60px; align-items:center;">
+      <div>
+        <span class="eyebrow" style="display:block; margin-bottom:24px;">Punto 03 di 07</span>
+        <span class="big-num">03</span>
+      </div>
+      <div>
+        <h1 class="h1" style="font-size:88px; line-height:1.05; margin-bottom:32px;">Itera,<br>Non Aspettarti la<br>Risposta Perfetta</h1>
+        <hr class="rule" style="width:160px; margin:0 0 32px;">
+        <p class="body-text" style="font-size:32px; max-width:1100px; margin-bottom:28px;">
+          La prima risposta è un punto di partenza, non l'arrivo. Affina con richieste successive.
+        </p>
+
+        <ul class="bullets" style="gap:14px;">
+          <li style="font-size:28px;">«Più conciso, max 4 righe.»</li>
+          <li style="font-size:28px;">«Aggiungi un esempio concreto su un impianto reale.»</li>
+          <li style="font-size:28px;">«Verifica questa affermazione contro la UNI 10339.»</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">PUNTO 03 · ITERA</div>
+      <div class="sidebar-num">11</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       12 · PUNTO 4 — VERIFICA FONTI
+  ════════════════════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="12 Punto 4 Fonti">
+    <div class="content" style="display:grid; grid-template-columns: 460px 1fr; gap:60px; align-items:center;">
+      <div>
+        <span class="eyebrow" style="display:block; margin-bottom:24px;">Punto 04 di 07</span>
+        <span class="big-num">04</span>
+      </div>
+      <div>
+        <h1 class="h1" style="font-size:88px; line-height:1.05; margin-bottom:32px;">Verifica<br>Sempre le Fonti</h1>
+        <hr class="rule" style="width:160px; margin:0 0 32px;">
+        <p class="body-text" style="font-size:34px; max-width:1100px; margin-bottom:28px;">
+          L'IA può <em>allucinare</em>: generare affermazioni plausibili ma false. Per ogni claim che useresti in un documento ufficiale, chiedi il riferimento e verificalo direttamente alla fonte.
+        </p>
+
+        <div style="background:var(--grey-table); border-left:4px solid var(--blue); padding:24px 32px; max-width:1100px;">
+          <p class="body-text" style="font-size:26px; font-style:italic;">
+            <strong>Regola operativa:</strong> nessun numero, normativa o citazione esce da un nostro documento senza verifica indipendente.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">PUNTO 04 · FONTI</div>
+      <div class="sidebar-num">12</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       13 · PUNTO 5 — AMPLIFICATORE
+  ════════════════════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="13 Punto 5 Amplifica">
+    <div class="content" style="display:grid; grid-template-columns: 460px 1fr; gap:60px; align-items:center;">
+      <div>
+        <span class="eyebrow" style="display:block; margin-bottom:24px;">Punto 05 di 07</span>
+        <span class="big-num">05</span>
+      </div>
+      <div>
+        <h1 class="h1" style="font-size:82px; line-height:1.05; margin-bottom:32px;">L'IA Amplifica le<br>Competenze, Non le<br>Sostituisce</h1>
+        <hr class="rule" style="width:160px; margin:0 0 32px;">
+        <p class="body-text" style="font-size:32px; max-width:1100px; margin-bottom:24px;">
+          Un ingegnere senior con IA è <strong>più veloce</strong>. Un junior con IA produce contenuto plausibile ma non sa distinguere gli errori.
+        </p>
+        <p class="body-text" style="font-size:28px; font-style:italic; color:var(--blue); max-width:1100px;">
+          La competizione si gioca sulla competenza che valuta l'output, non sull'output stesso.
+        </p>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">PUNTO 05 · AMPLIFICATORE</div>
+      <div class="sidebar-num">13</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       14 · PUNTO 6 — DOMANDE GIUSTE
+  ════════════════════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="14 Punto 6 Domande">
+    <div class="content" style="display:grid; grid-template-columns: 460px 1fr; gap:60px; align-items:center;">
+      <div>
+        <span class="eyebrow" style="display:block; margin-bottom:24px;">Punto 06 di 07</span>
+        <span class="big-num">06</span>
+      </div>
+      <div>
+        <h1 class="h1" style="font-size:82px; line-height:1.05; margin-bottom:32px;">Impara a Fare<br>le Domande Giuste</h1>
+        <hr class="rule" style="width:160px; margin:0 0 32px;">
+        <p class="body-text" style="font-size:32px; max-width:1100px; margin-bottom:24px;">
+          Il <strong>prompt</strong> è la nuova competenza professionale. Investi tempo nel formulare richieste chiare e strutturate, non nello sperare in risposte intelligenti.
+        </p>
+        <p class="body-text" style="font-size:28px; font-style:italic; color:var(--grey-meta); max-width:1100px;">
+          Una domanda ben formulata vale più di dieci risposte mal cercate.
+        </p>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">PUNTO 06 · PROMPTING</div>
+      <div class="sidebar-num">14</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       15 · PUNTO 7 — CONTROLLO
+  ════════════════════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="15 Punto 7 Controllo">
+    <div class="content" style="display:grid; grid-template-columns: 460px 1fr; gap:60px; align-items:center;">
+      <div>
+        <span class="eyebrow" style="display:block; margin-bottom:24px;">Punto 07 di 07</span>
+        <span class="big-num">07</span>
+      </div>
+      <div>
+        <h1 class="h1" style="font-size:88px; line-height:1.05; margin-bottom:32px;">Mantieni il<br>Controllo del Processo</h1>
+        <hr class="rule" style="width:160px; margin:0 0 32px;">
+        <p class="body-text" style="font-size:34px; max-width:1100px; margin-bottom:28px;">
+          L'IA propone, <strong>tu decidi</strong>. Mai delegare l'ultima parola su valutazioni di rischio, costi, o responsabilità tecniche e professionali.
+        </p>
+
+        <div style="background:var(--grey-table); border-left:4px solid var(--blue); padding:24px 32px; max-width:1100px;">
+          <p class="body-text" style="font-size:26px; font-style:italic;">
+            Firmiamo noi il documento. Quindi la responsabilità non è negoziabile.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">PUNTO 07 · CONTROLLO</div>
+      <div class="sidebar-num">15</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       16 · 3 PROMPT DI VALIDAZIONE
+  ════════════════════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="16 Tre Prompt">
+    <div class="content" style="display:flex; flex-direction:column;">
+      <span class="eyebrow" style="margin-bottom:14px;">Bonus · Metodo di Validazione</span>
+      <h2 class="h2" style="margin-bottom:18px;">I Tre Prompt di Validazione</h2>
+      <hr class="rule" style="margin-bottom:30px;">
+      <p class="body-text" style="font-size:28px; font-style:italic; color:var(--grey-meta); max-width:1500px; margin-bottom:44px;">
+        Tre richieste sequenziali da applicare a qualsiasi output dell'IA prima di considerarlo utilizzabile.
+      </p>
+
+      <div class="col-3" style="flex:1; align-items:stretch;">
+        <div class="card" style="justify-content:flex-start;">
+          <span class="card-num">PROMPT 01 · CRITICA</span>
+          <h3 class="card-title">«Trova i tre<br>punti deboli»</h3>
+          <div class="rule-thin" style="margin:4px 0 8px;"></div>
+          <p class="card-body">"Analizza la risposta che hai appena dato e identifica i 3 punti più deboli o le 3 assunzioni più discutibili."</p>
+        </div>
+        <div class="card" style="justify-content:flex-start;">
+          <span class="card-num">Prompt 02 · Contraddittorio</span>
+          <h3 class="card-title">«Argomenta il<br>contrario»</h3>
+          <div class="rule-thin" style="margin:4px 0 8px;"></div>
+          <p class="card-body">"Adotta la posizione opposta e costruisci l'argomento migliore contro la tua stessa conclusione. Sii rigoroso."</p>
+        </div>
+        <div class="card" style="border-color:var(--blue); border-width:3px; justify-content:flex-start; position:relative;">
+          <div style="position:absolute; top:-3px; left:-3px; right:-3px; height:8px; background:var(--blue);"></div>
+          <span class="card-num" style="margin-top:8px;">Prompt 03 · Sintesi</span>
+          <h3 class="card-title">«Cosa rimane,<br>cosa cade»</h3>
+          <div class="rule-thin" style="margin:4px 0 8px;"></div>
+          <p class="card-body">"Alla luce della critica e del contraddittorio, riscrivi la risposta finale tenendo solo ciò che resiste."</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">METODO DI VALIDAZIONE</div>
+      <div class="sidebar-num">16</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       17 · CLOSING — GRAZIE + CONTATTI
+  ════════════════════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="17 Closing">
+    <div style="position:absolute; top:0; left:0; right:var(--sidebar-w); height:var(--stripe-h); background:var(--blue);"></div>
+    <div style="position:absolute; bottom:0; left:0; right:var(--sidebar-w); height:3px; background:var(--grey-table);"></div>
+
+    <div class="content" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+      <h1 class="h1" style="font-size:120px; margin-bottom:32px; letter-spacing:0.12em;">Grazie</h1>
+      <hr class="rule" style="width:200px; margin:0 auto 28px;">
+      <p class="h2" style="font-size:32px; margin-bottom:14px; color:var(--grey-meta);">Per ulteriori informazioni</p>
+      <p class="body-text" style="font-size:22px; font-style:italic; color:var(--blue); letter-spacing:0.18em; text-transform:uppercase; margin-bottom:52px;">Think. Manage. Do.</p>
+
+      <div style="display:flex; gap:64px; align-items:flex-start;">
+        <div style="text-align:left;">
+          <p class="body-text" style="font-size:18px; font-weight:700; color:var(--blue); letter-spacing:0.16em; text-transform:uppercase; margin-bottom:10px;">Sede Centrale · Treviso</p>
+          <p class="body-text" style="font-size:22px; font-weight:700; margin-bottom:4px;">Climosfera S.r.l.</p>
+          <p class="body-text" style="font-size:21px; color:var(--grey-meta);">Via Monte Grappa, 25</p>
+          <p class="body-text" style="font-size:21px; color:var(--grey-meta);">31020 Villorba (TV) — Italia</p>
+          <p class="body-text" style="font-size:21px; color:var(--grey-meta); margin-top:6px;">Tel. +39 0422 608987</p>
+          <p class="body-text" style="font-size:21px; color:var(--grey-meta);">Fax +39 0422 241801</p>
+        </div>
+        <div style="width:2px; background:var(--grey-table); align-self:stretch;"></div>
+        <div style="text-align:left;">
+          <p class="body-text" style="font-size:18px; font-weight:700; color:var(--blue); letter-spacing:0.16em; text-transform:uppercase; margin-bottom:10px;">Sede Operativa · Milano</p>
+          <p class="body-text" style="font-size:22px; font-weight:700; margin-bottom:4px;">Climosfera S.r.l.</p>
+          <p class="body-text" style="font-size:21px; color:var(--grey-meta);">Via G. Fiamma, 12</p>
+          <p class="body-text" style="font-size:21px; color:var(--grey-meta);">20129 Milano (MI) — Italia</p>
+          <p class="body-text" style="font-size:21px; color:var(--grey-meta); margin-top:6px;">info@climosfera.it</p>
+          <p class="body-text" style="font-size:21px; color:var(--grey-meta);">www.climosfera.it</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">NOTEBOOKLM · CHIUSURA</div>
+      <div class="sidebar-num">17</div>
+    </div>
+  </section>
+
+</deck-stage>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TWEAKS PANEL — expressive controls (React root, deck stays vanilla)
+═══════════════════════════════════════════════════════════ -->
+<div id="tweaks-root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+
+<script type="text/babel">
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "composizione": "tecnico",
+    "accento": ["#0084D1", "#0082C2"],
+    "titoli": "editoriale"
+  }/*EDITMODE-END*/;
+
+  function TweaksApp() {
+    const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+    React.useEffect(() => {
+      const root = document.documentElement;
+      const b = document.body;
+
+      // — Accento cromatico —
+      const accent = Array.isArray(t.accento) ? t.accento : ['#0084D1', '#0082C2'];
+      root.style.setProperty('--blue', accent[0]);
+      root.style.setProperty('--blue-2', accent[1] || accent[0]);
+
+      // — Composizione —
+      b.classList.remove('comp-editoriale', 'comp-tecnico', 'comp-architettonico');
+      b.classList.add('comp-' + (t.composizione || 'tecnico'));
+
+      // — Trattamento titoli —
+      b.classList.remove('tit-sobria', 'tit-editoriale', 'tit-monumentale');
+      b.classList.add('tit-' + (t.titoli || 'editoriale'));
+    }, [t.accento, t.composizione, t.titoli]);
+
+    return (
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Composizione" />
+        <TweakRadio label="Struttura" value={t.composizione}
+          options={['editoriale', 'tecnico', 'architettonico']}
+          onChange={(v) => setTweak('composizione', v)} />
+
+        <TweakSection label="Accento cromatico" />
+        <TweakColor label="Blu" value={t.accento}
+          options={[
+            ['#0084D1', '#0082C2'],
+            ['#0E6E8C', '#0A5E78'],
+            ['#103A5A', '#0C2E48'],
+            ['#3A4654', '#2C3641']
+          ]}
+          onChange={(v) => setTweak('accento', v)} />
+
+        <TweakSection label="Trattamento titoli" />
+        <TweakRadio label="Voce" value={t.titoli}
+          options={['sobria', 'editoriale', 'monumentale']}
+          onChange={(v) => setTweak('titoli', v)} />
+      </TweaksPanel>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('tweaks-root')).render(<TweaksApp />);
+</script>
+<script>
+(async () => {
+  // Prepend so page-supplied @page / break rules (deck-stage's margin:0,
+  // author CSS) keep source-order precedence over the baseline.
+  const baseCss = document.createElement('style');
+  baseCss.textContent = "@media print {\n  @page { margin: 0.5cm; }\n  html, body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }\n  section, article, figure, table { break-inside: avoid; }\n  *, *::before, *::after {\n    animation-delay: -99s !important; animation-duration: .001s !important;\n    animation-iteration-count: 1 !important; animation-fill-mode: both !important;\n    animation-play-state: running !important; transition-duration: 0s !important;\n  }\n}";
+  document.head.prepend(baseCss);
+  if (document.readyState === 'loading') {
+    await new Promise((r) => document.addEventListener('DOMContentLoaded', r, { once: true }));
+  }
+  let ds = document.querySelector('deck-stage');
+  // whenDefined never resolves when nothing registers the element, so only
+  // await it when a <deck-stage> tag exists (and race a timeout regardless).
+  if (ds && !customElements.get('deck-stage')) {
+    try {
+      await Promise.race([
+        customElements.whenDefined('deck-stage'),
+        new Promise((r) => setTimeout(r, 3000)),
+      ]);
+    } catch (e) {}
+    ds = document.querySelector('deck-stage');
+  }
+  // dc-runtime assigns window.DCLogic at init and mounts into #dc-root on
+  // DOMContentLoaded; settle on that subtree so React has rendered before
+  // print(). Non-DC pages fall through to weighing body.
+  const isDc = !ds && 'DCLogic' in window;
+  const settleRoot = ds || (isDc ? document.getElementById('dc-root') : null) || document.body;
+  if (settleRoot) {
+    // Weigh only content children — skip script/style/template so inline
+    // Babel/CSS doesn't register as stable "content" before the framework
+    // has mounted anything.
+    const MEDIA = 'img,svg,canvas,video,picture,iframe,embed,object';
+    const weigh = () => {
+      let text = 0, media = 0;
+      for (const c of settleRoot.children) {
+        const t = c.tagName;
+        if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+        text += (c.textContent || '').trim().length;
+        media += c.querySelectorAll(MEDIA).length + (c.matches(MEDIA) ? 1 : 0);
+      }
+      return text + media * 100;
+    };
+    // "Non-zero and stable" alone is not sufficient to mean rendered: generic
+    // body can carry a static shell while async main content is pending, and
+    // #dc-root can carry the root DC's static text while child refs are still
+    // .sc-placeholder boxes. Gate generic on readyState 'complete', and never
+    // accept stability while a dc-runtime placeholder is present.
+    const isGeneric = settleRoot === document.body;
+    const deadline = Date.now() + 15000;
+    let last = -1, stable = 0;
+    while (Date.now() < deadline) {
+      const n = weigh();
+      const ready =
+        (!isGeneric || document.readyState === 'complete') &&
+        !settleRoot.querySelector('.sc-placeholder');
+      if (n > 0 && n === last && ready) { if (++stable >= 2) break; } else { stable = 0; }
+      last = n;
+      await new Promise((r) => setTimeout(r, 250));
+    }
+  }
+  try { await document.fonts.ready; } catch (e) {}
+  // Jump every animation to its end state so print() never captures a slide
+  // mid-entrance. Ordering matters: the 0s-transition style must be live
+  // BEFORE data-deck-active is set so attribute-keyed transitions don't
+  // start a (now-0s) run from the pre-active base.
+  const st = document.createElement('style');
+  st.textContent = '*,*::before,*::after{animation-delay:-99s !important;animation-duration:.001s !important;animation-iteration-count:1 !important;animation-fill-mode:both !important;animation-play-state:running !important;transition-duration:0s !important}';
+  document.head.appendChild(st);
+  for (const d of document.querySelectorAll('deck-stage')) {
+    for (const c of d.children) {
+      const t = c.tagName;
+      if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+      c.setAttribute('data-deck-active', '');
+    }
+  }
+  try {
+    const sweep = () => {
+      for (const a of document.getAnimations()) {
+        try { a.finish(); } catch (e) {
+          try { a.currentTime = (a.effect && a.effect.getComputedTiming().duration) || 0; a.pause(); } catch (e2) {}
+        }
+      }
+    };
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+  } catch (e) {}
+  setTimeout(() => { try { window.print(); } catch (e) {} }, 200);
+})();
+</script>
+</body>
+</html>

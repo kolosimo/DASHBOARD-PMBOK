@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Type" name="Body & Caption Scale" subtitle="Body · Bold · Italic · Caption · Meta — local Lora TTF" viewport="700x240" -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  @font-face { font-family: 'Lora'; src: url('../fonts/Lora-VariableFont_wght.ttf') format('truetype'); font-weight: 100 900; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Lora'; src: url('../fonts/Lora-VariableFont_wght.ttf') format('truetype'); font-weight: 100 900; font-style: italic; font-display: swap; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #fff; font-family: 'Lora', Georgia, serif; padding: 20px 24px; }
+  .entry { display: flex; align-items: baseline; gap: 20px; padding: 9px 0; border-bottom: 1px solid #E6E6E6; }
+  .entry:last-child { border-bottom: none; }
+  .label { font-size: 0.6rem; color: #7C8392; font-style: italic; min-width: 120px; flex-shrink: 0; line-height: 1.4; }
+</style>
+</head>
+<body>
+  <div class="entry">
+    <div class="label">Body · Lora 400<br>1.125rem · lh 1.5</div>
+    <div style="font-size:1.125rem; font-weight:400; line-height:1.5; color:#000; flex:1;">
+      Il sistema di distribuzione dell'aria è progettato nel rispetto delle normative UNI EN ISO 16890 per la filtrazione e della UNI 10339 per i requisiti microclimatici degli ambienti confinati.
+    </div>
+  </div>
+  <div class="entry">
+    <div class="label">Bold body · Lora 700<br>1.125rem</div>
+    <div style="font-size:1.125rem; font-weight:700; line-height:1.5; color:#000; flex:1;">
+      Potenza termica installata: 42 kW
+    </div>
+  </div>
+  <div class="entry">
+    <div class="label">Italic body · Lora 400i<br>1.125rem</div>
+    <div style="font-size:1.125rem; font-weight:400; font-style:italic; line-height:1.5; color:#000; flex:1;">
+      Vedere Figura 3 per il dettaglio costruttivo della centrale di trattamento aria.
+    </div>
+  </div>
+  <div class="entry">
+    <div class="label">Caption · Lora 400i<br>0.875rem · centered</div>
+    <div style="font-size:0.875rem; font-weight:400; font-style:italic; line-height:1.4; color:#000; text-align:center; flex:1;">
+      Figura 1: Schema di principio dell'impianto di climatizzazione
+    </div>
+  </div>
+  <div class="entry">
+    <div class="label">Meta / Page no · Lora 400<br>0.5rem · #7C8392</div>
+    <div style="font-size:0.5rem; font-weight:400; line-height:1.4; color:#7C8392; flex:1; letter-spacing:0.04em;">
+      07 — PROGETTO ESECUTIVO · CLIMOSFERA S.R.L.
+    </div>
+  </div>
+</body>
+</html>

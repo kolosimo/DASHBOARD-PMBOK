@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Type" name="Heading Scale" subtitle="H1 uppercase 700, H2 italic 700, H3 italic underline 400 — local Lora TTF" viewport="700x200" -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  @font-face { font-family: 'Lora'; src: url('../fonts/Lora-VariableFont_wght.ttf') format('truetype'); font-weight: 100 900; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Lora'; src: url('../fonts/Lora-VariableFont_wght.ttf') format('truetype'); font-weight: 100 900; font-style: italic; font-display: swap; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #fff; font-family: 'Lora', Georgia, serif; padding: 24px 28px; }
+  .entry { display: flex; align-items: baseline; gap: 20px; padding: 10px 0; border-bottom: 1px solid #E6E6E6; }
+  .entry:last-child { border-bottom: none; }
+  .label { font-size: 0.6rem; color: #7C8392; font-style: italic; min-width: 120px; flex-shrink: 0; line-height: 1.3; }
+  .specimen { flex: 1; }
+  .rule-blue { border: none; border-top: 2px solid #0084D1; margin: 6px 0 10px; }
+</style>
+</head>
+<body>
+  <div class="entry">
+    <div class="label">H1 · Lora 700<br>2rem · uppercase<br>tracking 0.08em</div>
+    <div class="specimen" style="font-size:2rem; font-weight:700; font-style:normal; text-transform:uppercase; letter-spacing:0.08em; line-height:1.2; color:#000;">Relazione Tecnica</div>
+  </div>
+  <div class="entry">
+    <div class="label">H2 · Lora 700 italic<br>1.75rem</div>
+    <div class="specimen" style="font-size:1.75rem; font-weight:700; font-style:italic; line-height:1.2; color:#000;">Impianti Meccanici</div>
+  </div>
+  <div class="entry">
+    <div class="label">H3 · Lora 400 italic<br>1.375rem · underline</div>
+    <div class="specimen" style="font-size:1.375rem; font-weight:400; font-style:italic; text-decoration:underline; line-height:1.3; color:#000;">Distribuzione fluidi primari</div>
+  </div>
+</body>
+</html>

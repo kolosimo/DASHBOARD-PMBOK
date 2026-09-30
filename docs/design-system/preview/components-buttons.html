@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Components" name="Button States" subtitle="Primary, Hover, Secondary, Disabled — Lora italic bold" viewport="700x140" -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  @font-face { font-family: 'Lora'; src: url('../fonts/Lora-VariableFont_wght.ttf') format('truetype'); font-weight: 100 900; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Lora'; src: url('../fonts/Lora-VariableFont_wght.ttf') format('truetype'); font-weight: 100 900; font-style: italic; font-display: swap; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #fff; font-family: 'Lora', Georgia, serif; padding: 24px 28px; }
+  .row { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
+  .col-label { font-size: 0.6rem; color: #7C8392; font-style: italic; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+
+  .btn-primary {
+    display: inline-block;
+    background: #0084D1;
+    color: #fff;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1.125rem;
+    font-weight: 700;
+    font-style: italic;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+  }
+  .btn-secondary {
+    display: inline-block;
+    background: transparent;
+    color: #0084D1;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1.125rem;
+    font-weight: 700;
+    font-style: italic;
+    padding: 12px 32px;
+    border: 2px solid #0084D1;
+    border-radius: 0;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+  }
+  .btn-disabled {
+    display: inline-block;
+    background: #E6E6E6;
+    color: #7C8392;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1.125rem;
+    font-weight: 700;
+    font-style: italic;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 0;
+    cursor: not-allowed;
+    letter-spacing: 0.02em;
+  }
+  .btn-hover {
+    display: inline-block;
+    background: #0082C2;
+    color: #fff;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1.125rem;
+    font-weight: 700;
+    font-style: italic;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 0;
+    letter-spacing: 0.02em;
+  }
+  .state-label { font-size: 0.58rem; color: #7C8392; font-style: italic; margin-top: 5px; text-align: center; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div>
+      <div class="col-label">Buttons</div>
+      <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+        <div>
+          <div class="btn-primary">Scarica PDF</div>
+          <div class="state-label">Primary · default</div>
+        </div>
+        <div>
+          <div class="btn-hover">Scarica PDF</div>
+          <div class="state-label">Primary · hover</div>
+        </div>
+        <div>
+          <div class="btn-secondary">Visualizza</div>
+          <div class="state-label">Secondary · default</div>
+        </div>
+        <div>
+          <div class="btn-disabled">Non disponibile</div>
+          <div class="state-label">Disabled</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

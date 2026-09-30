@@ -1,0 +1,379 @@
+/*
+ * Climosfera S.r.l. — Design System
+ * colors_and_type.css
+ *
+ * Single source of truth for all colour and typography tokens.
+ *
+ * FONTS
+ * Primary: Lora variable font loaded from local file (fonts/Lora-VariableFont_wght.ttf).
+ * Italic: only the upright variable file was supplied; italic glyphs are rendered via
+ *         font-synthesis until fonts/Lora-Italic-VariableFont_wght.ttf is added here.
+ * Network fallback: Google Fonts link kept in HTML files for environments without
+ *         access to the fonts/ directory.
+ */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   @font-face — Lora Variable (upright)
+───────────────────────────────────────────────────────────────────────────── */
+@font-face {
+  font-family: 'Lora';
+  src: url('fonts/Lora-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*
+ * Italic: same file, browser applies synthetic oblique until the true italic
+ * variable font (Lora-Italic-VariableFont_wght.ttf) is provided.
+ * Replace src below with the italic TTF when available.
+ */
+@font-face {
+  font-family: 'Lora';
+  src: url('fonts/Lora-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BASE COLOUR TOKENS
+───────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Brand blues */
+  --color-blue-primary:   #0084D1;   /* structural lines, CTAs, sidebar accent */
+  --color-blue-secondary: #0082C2;   /* table borders, hover state */
+
+  /* Neutrals */
+  --color-black:          #000000;   /* all body text, headings, sidebar text */
+  --color-grey-meta:      #7C8392;   /* page numbers, secondary labels */
+  --color-grey-table:     #E6E6E6;   /* table backgrounds, dividers */
+  --color-white:          #FFFFFF;   /* page background — always */
+
+  /* Interaction */
+  --color-hover:          #0082C2;   /* same as secondary blue */
+  --color-press-opacity:  0.85;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SEMANTIC COLOUR TOKENS
+───────────────────────────────────────────────────────────────────────────── */
+:root {
+  --color-bg-page:         var(--color-white);
+  --color-bg-table:        var(--color-grey-table);
+  --color-bg-divider:      var(--color-grey-table);
+
+  --color-text-primary:    var(--color-black);
+  --color-text-meta:       var(--color-grey-meta);
+  --color-text-sidebar:    var(--color-black);     /* MUST be black, never grey */
+
+  --color-border-structure: var(--color-blue-primary);
+  --color-border-table:     var(--color-black);
+
+  --color-cta-bg:          var(--color-blue-primary);
+  --color-cta-bg-hover:    var(--color-blue-secondary);
+  --color-cta-text:        var(--color-white);
+
+  --color-accent-line:     var(--color-blue-primary);  /* sidebar line, hr */
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TYPOGRAPHY TOKENS
+───────────────────────────────────────────────────────────────────────────── */
+:root {
+  --font-family-base: 'Lora', Georgia, 'Times New Roman', serif;
+  /* No sans-serif fallback intentional — Lora must load. */
+
+  /* Scale */
+  --font-size-h1:      2rem;        /* 32px at 16px base */
+  --font-size-h2:      1.75rem;     /* 28px */
+  --font-size-h3:      1.375rem;    /* 22px */
+  --font-size-body:    1.125rem;    /* 18px */
+  --font-size-caption: 0.875rem;    /* 14px */
+  --font-size-meta:    0.5rem;      /* 8pt page numbers */
+
+  /* Weights */
+  --font-weight-regular: 400;
+  --font-weight-bold:    700;
+
+  /* Line heights */
+  --line-height-heading: 1.2;
+  --line-height-body:    1.5;
+  --line-height-caption: 1.4;
+
+  /* Letter spacing */
+  --letter-spacing-h1: 0.08em;     /* uppercase tracking */
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SPACING & GEOMETRY TOKENS
+───────────────────────────────────────────────────────────────────────────── */
+:root {
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  64px;
+  --space-9:  80px;   /* slide safe margin */
+
+  --border-radius-max: 4px;   /* hard cap — never exceed */
+  --border-radius-none: 0px;
+
+  --border-width-accent:    2px;    /* sidebar line, hr */
+  --border-width-table-outer: 3px; /* double border effect outer */
+  --border-width-table-inner: 1px;
+
+  --sidebar-width: 40px;            /* sidebar column width */
+  --sidebar-line-width: 2px;
+  --slide-margin: 80px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BASE RESET & GLOBAL STYLES
+───────────────────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background-color: var(--color-bg-page);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TYPOGRAPHIC ELEMENT STYLES
+───────────────────────────────────────────────────────────────────────────── */
+
+h1, .h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-bold);
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-h1);
+  line-height: var(--line-height-heading);
+  color: var(--color-text-primary);
+}
+
+h2, .h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+  font-style: italic;
+  line-height: var(--line-height-heading);
+  color: var(--color-text-primary);
+}
+
+h3, .h3 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-regular);
+  font-style: italic;
+  text-decoration: underline;
+  line-height: var(--line-height-heading);
+  color: var(--color-text-primary);
+}
+
+p, .body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  font-style: normal;
+  line-height: var(--line-height-body);
+  color: var(--color-text-primary);
+}
+
+.caption, figcaption {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-regular);
+  font-style: italic;
+  line-height: var(--line-height-caption);
+  text-align: center;
+  color: var(--color-text-primary);
+  display: block;
+  margin-top: var(--space-2);
+}
+
+.meta, .page-number {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-meta);
+  font-weight: var(--font-weight-regular);
+  font-style: normal;
+  color: var(--color-text-meta);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HORIZONTAL RULE
+───────────────────────────────────────────────────────────────────────────── */
+hr, .rule {
+  border: none;
+  border-top: var(--border-width-accent) solid var(--color-accent-line);
+  margin: var(--space-5) 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TABLE STYLES
+───────────────────────────────────────────────────────────────────────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: var(--border-width-table-outer) double var(--color-border-table);
+  background-color: var(--color-bg-table);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body);
+}
+
+table th {
+  font-weight: var(--font-weight-bold);
+  font-style: normal;
+  background-color: var(--color-grey-table);
+  border: var(--border-width-table-inner) solid var(--color-border-table);
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+}
+
+table td {
+  border: var(--border-width-table-inner) solid var(--color-border-table);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-white);
+}
+
+table tr:nth-child(even) td {
+  background-color: var(--color-grey-table);
+}
+
+.table-caption, .table-caption {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-caption);
+  font-style: italic;
+  text-align: center;
+  color: var(--color-text-primary);
+  margin-top: var(--space-2);
+  display: block;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BUTTON / CTA STYLES
+───────────────────────────────────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-block;
+  background-color: var(--color-cta-bg);
+  color: var(--color-cta-text);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+  font-style: italic;
+  padding: var(--space-3) var(--space-6);
+  border: none;
+  border-radius: var(--border-radius-none);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 150ms ease, opacity 150ms ease;
+  letter-spacing: 0.02em;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-cta-bg-hover);
+}
+
+.btn-primary:active {
+  opacity: var(--color-press-opacity);
+}
+
+.btn-secondary {
+  display: inline-block;
+  background-color: transparent;
+  color: var(--color-blue-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+  font-style: italic;
+  padding: var(--space-3) var(--space-6);
+  border: 2px solid var(--color-blue-primary);
+  border-radius: var(--border-radius-none);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-blue-primary);
+  color: var(--color-white);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SIDEBAR BRAND ELEMENT
+───────────────────────────────────────────────────────────────────────────── */
+.sidebar {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) 0;
+  border-left: var(--sidebar-line-width) solid var(--color-accent-line);
+}
+
+.sidebar-text {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--font-family-base);
+  font-size: 0.625rem;
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-sidebar);   /* black — never grey */
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sidebar-page-number {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-meta);
+  color: var(--color-text-meta);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SLIDE LAYOUT (1920×1080 fixed canvas)
+───────────────────────────────────────────────────────────────────────────── */
+.slide {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  background-color: var(--color-bg-page);
+  overflow: hidden;
+  font-family: var(--font-family-base);
+}
+
+.slide-content {
+  position: absolute;
+  top: var(--slide-margin);
+  left: var(--slide-margin);
+  right: calc(var(--slide-margin) + var(--sidebar-width));
+  bottom: var(--slide-margin);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   UTILITY
+───────────────────────────────────────────────────────────────────────────── */
+.text-meta    { color: var(--color-text-meta); }
+.text-blue    { color: var(--color-blue-primary); }
+.uppercase    { text-transform: uppercase; }
+.italic       { font-style: italic; }
+.bold         { font-weight: var(--font-weight-bold); }
+.center       { text-align: center; }
+.no-margin    { margin: 0; }

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Slides" name="Slide Deck Template" subtitle="6-slide deck: Cover, Bullets, Table, Figure, Section, Closing" viewport="1280x720" -->
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Climosfera S.r.l. — Presentazione</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  @font-face { font-family: 'Lora'; src: url('../fonts/Lora-VariableFont_wght.ttf') format('truetype'); font-weight: 100 900; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Lora'; src: url('../fonts/Lora-VariableFont_wght.ttf') format('truetype'); font-weight: 100 900; font-style: italic; font-display: swap; }
+</style>
+<script src="deck-stage.js"></script>
+<style>
+  /* ── tokens ─────────────────────────────── */
+  :root {
+    --blue:        #0084D1;
+    --blue-2:      #0082C2;
+    --black:       #000000;
+    --grey-meta:   #7C8392;
+    --grey-table:  #E6E6E6;
+    --white:       #FFFFFF;
+    --margin:      80px;
+    --sidebar-w:   44px;
+    --f:           'Lora', Georgia, serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  deck-stage { --deck-bg: #1a1a1a; }
+
+  /* ── slide shell ─────────────────────────── */
+  section.slide {
+    width: 1920px;
+    height: 1080px;
+    background: var(--white);
+    position: relative;
+    font-family: var(--f);
+    overflow: hidden;
+  }
+
+  /* ── sidebar (right edge, every slide) ───── */
+  .sidebar {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: var(--sidebar-w);
+    border-left: 2px solid var(--blue);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 36px 0 28px;
+    background: var(--white);
+  }
+  .sidebar-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: var(--f);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--black);
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .sidebar-num {
+    font-family: var(--f);
+    font-size: 12px;
+    color: var(--grey-meta);
+  }
+
+  /* ── safe content area ───────────────────── */
+  .content {
+    position: absolute;
+    top: var(--margin);
+    left: var(--margin);
+    right: calc(var(--margin) + var(--sidebar-w));
+    bottom: var(--margin);
+  }
+
+  /* ── type ────────────────────────────────── */
+  .h1 {
+    font-size: 80px;
+    font-weight: 700;
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.1;
+    color: var(--black);
+  }
+  .h2 {
+    font-size: 56px;
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1.15;
+    color: var(--black);
+  }
+  .h3 {
+    font-size: 38px;
+    font-weight: 400;
+    font-style: italic;
+    text-decoration: underline;
+    line-height: 1.2;
+    color: var(--black);
+  }
+  .body-text {
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.55;
+    color: var(--black);
+  }
+  .caption {
+    font-size: 22px;
+    font-style: italic;
+    color: var(--black);
+    text-align: center;
+    display: block;
+    margin-top: 14px;
+  }
+  .meta {
+    font-size: 18px;
+    color: var(--grey-meta);
+  }
+
+  /* ── rule ────────────────────────────────── */
+  .rule { border: none; border-top: 3px solid var(--blue); margin: 0; }
+
+  /* ── bullets ─────────────────────────────── */
+  ul.bullets {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  ul.bullets li {
+    display: flex;
+    gap: 20px;
+    align-items: baseline;
+    font-size: 32px;
+    line-height: 1.5;
+    color: var(--black);
+  }
+  ul.bullets li::before {
+    content: '—';
+    color: var(--blue);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ── table ───────────────────────────────── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 4px double var(--black);
+    font-family: var(--f);
+    font-size: 26px;
+  }
+  .data-table th {
+    font-weight: 700;
+    background: var(--grey-table);
+    border: 1px solid var(--black);
+    padding: 14px 20px;
+    text-align: left;
+  }
+  .data-table td {
+    border: 1px solid var(--black);
+    padding: 14px 20px;
+    background: var(--white);
+  }
+  .data-table tr:nth-child(even) td { background: var(--grey-table); }
+
+  /* ── figure placeholder ──────────────────── */
+  .figure-placeholder {
+    background: var(--grey-table);
+    border: 2px solid var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--grey-meta);
+    font-style: italic;
+    font-size: 28px;
+  }
+
+  /* ── logo placeholder ────────────────────── */
+  .logo-lockup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo-box {
+    width: 120px;
+    height: 40px;
+    border: 2px solid var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .logo-box-text {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  .logo-sub {
+    font-size: 16px;
+    color: var(--grey-meta);
+    font-style: italic;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── two-col layout ──────────────────────── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    height: 100%;
+  }
+
+</style>
+</head>
+<body>
+<deck-stage>
+
+  <!-- ════════════════════════════════════════
+       SLIDE 1 · COVER
+  ═════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="01 Cover">
+    <!-- top rule -->
+    <div style="position:absolute; top:0; left:0; right:44px; height:6px; background:var(--blue);"></div>
+
+    <div class="content" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:0;">
+      <!-- Logo -->
+      <div class="logo-lockup" style="margin-bottom:60px;">
+        <div class="logo-box"><span class="logo-box-text">Climosfera</span></div>
+        <div class="logo-sub">S.r.l. — Ingegneria MEP</div>
+      </div>
+
+      <!-- Title -->
+      <h1 class="h1" style="max-width:1300px; margin-bottom:32px;">
+        Relazione Tecnica Specialistica
+      </h1>
+      <hr class="rule" style="width:200px; margin:0 auto 32px;">
+      <!-- Subtitle -->
+      <p class="h2" style="font-size:42px; max-width:900px; margin-bottom:60px;">
+        Impianti Meccanici, Elettrici e Speciali
+      </p>
+
+      <!-- Meta line -->
+      <div style="display:flex; gap:48px; align-items:center;">
+        <span class="meta">Progetto N° 2024-031</span>
+        <span style="color:var(--grey-table); font-size:20px;">·</span>
+        <span class="meta">Committente: Nome Cliente S.p.A.</span>
+        <span style="color:var(--grey-table); font-size:20px;">·</span>
+        <span class="meta">Maggio 2026</span>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">PROGETTO ESECUTIVO · CLIMOSFERA S.R.L.</div>
+      <div class="sidebar-num">01</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SLIDE 2 · CONTENT — BULLETS
+  ═════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="02 Bullets">
+    <div class="content" style="display:flex; flex-direction:column; gap:0;">
+      <!-- Slide heading -->
+      <h2 class="h2" style="margin-bottom:20px;">Ambito della Progettazione</h2>
+      <hr class="rule" style="margin-bottom:48px;">
+
+      <ul class="bullets">
+        <li>Impianti di riscaldamento e raffrescamento a pompa di calore con distribuzione a 4 tubi</li>
+        <li>Impianti di ventilazione meccanica controllata con recupero di calore ad alto rendimento</li>
+        <li>Impianti idrico-sanitari e antincendio a norma UNI EN 671-1</li>
+        <li>Impianti elettrici di forza motrice, illuminazione ordinaria e di sicurezza</li>
+        <li>Sistemi di Building Automation and Control (BACS) — Classe B secondo EN 15232</li>
+      </ul>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">AMBITO PROGETTUALE · CAP. 1</div>
+      <div class="sidebar-num">02</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SLIDE 3 · CONTENT — TABLE
+  ═════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="03 Table">
+    <div class="content" style="display:flex; flex-direction:column; gap:0;">
+      <h2 class="h2" style="margin-bottom:20px;">Unità di Trattamento Aria</h2>
+      <hr class="rule" style="margin-bottom:40px;">
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Sigla</th>
+            <th>Zona servita</th>
+            <th>Portata [m³/h]</th>
+            <th>Frigorifera [kW]</th>
+            <th>Termica [kW]</th>
+            <th>Efficienza η</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>UTA-01</td>
+            <td>Piano Terra — Zone Uffici</td>
+            <td>4.800</td>
+            <td>28,5</td>
+            <td>32,0</td>
+            <td>0,83</td>
+          </tr>
+          <tr>
+            <td>UTA-02</td>
+            <td>Primo Piano — Sale Riunioni</td>
+            <td>3.200</td>
+            <td>19,0</td>
+            <td>22,5</td>
+            <td>0,81</td>
+          </tr>
+          <tr>
+            <td>UTA-03</td>
+            <td>Secondo Piano — Open Space</td>
+            <td>6.000</td>
+            <td>35,0</td>
+            <td>40,0</td>
+            <td>0,85</td>
+          </tr>
+          <tr>
+            <td>UTA-04</td>
+            <td>Piano Terzo — Direzione</td>
+            <td>2.400</td>
+            <td>14,0</td>
+            <td>16,5</td>
+            <td>0,82</td>
+          </tr>
+        </tbody>
+      </table>
+      <span class="caption" style="font-size:20px;">Tabella 1: Unità di trattamento aria — dati di progetto definitivo</span>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">IMPIANTI MECCANICI · CAP. 2</div>
+      <div class="sidebar-num">03</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SLIDE 4 · CONTENT — FIGURE + TWO COL
+  ═════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="04 Figure">
+    <div class="content" style="display:flex; flex-direction:column; gap:0;">
+      <h2 class="h2" style="margin-bottom:20px;">Schema di Principio — Impianto Idronico</h2>
+      <hr class="rule" style="margin-bottom:40px;">
+
+      <div class="two-col" style="height: calc(100% - 140px);">
+        <!-- Figure -->
+        <div style="display:flex; flex-direction:column;">
+          <div class="figure-placeholder" style="flex:1;">
+            [Schema tecnico — Figura 2]
+          </div>
+          <span class="caption" style="font-size:20px;">Figura 2: Schema idronico a 4 tubi — impianto principale</span>
+        </div>
+
+        <!-- Annotations -->
+        <div style="display:flex; flex-direction:column; justify-content:center; gap:28px;">
+          <div>
+            <h3 class="h3" style="font-size:32px; margin-bottom:12px;">Circuito primario</h3>
+            <p class="body-text" style="font-size:28px;">Pompe di calore centralizzate con buffer termico da 500 l. Temperatura di mandata: 7/12 °C — 45/40 °C.</p>
+          </div>
+          <div>
+            <h3 class="h3" style="font-size:32px; margin-bottom:12px;">Circuiti secondari</h3>
+            <p class="body-text" style="font-size:28px;">Distribuzione orizzontale con collettori di piano. Bilanciamento idraulico su ogni derivazione terminale.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">IMPIANTI MECCANICI · CAP. 3</div>
+      <div class="sidebar-num">04</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SLIDE 5 · SECTION DIVIDER
+  ═════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="05 Section">
+    <!-- Full-height left blue stripe -->
+    <div style="position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--blue);"></div>
+
+    <div class="content" style="display:flex; flex-direction:column; justify-content:center; gap:0; padding-left:40px;">
+      <span class="meta" style="font-size:22px; margin-bottom:24px; letter-spacing:0.12em; text-transform:uppercase;">Sezione 02</span>
+      <h1 class="h1" style="font-size:96px; max-width:1100px; line-height:1.05; margin-bottom:36px;">Impianti Elettrici</h1>
+      <hr class="rule" style="width:160px; margin:0 0 36px;">
+      <p class="body-text" style="max-width:900px; font-size:30px;">Distribuzione BT, illuminazione ordinaria e di sicurezza, impianti speciali e sistema di supervisione integrato.</p>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">PROGETTO ESECUTIVO · SEZ. 02</div>
+      <div class="sidebar-num">05</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SLIDE 6 · CLOSING
+  ═════════════════════════════════════════ -->
+  <section class="slide" data-screen-label="06 Closing">
+    <!-- top + bottom rules -->
+    <div style="position:absolute; top:0; left:0; right:44px; height:6px; background:var(--blue);"></div>
+    <div style="position:absolute; bottom:0; left:0; right:44px; height:3px; background:var(--grey-table);"></div>
+
+    <div class="content" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:0;">
+      <h1 class="h1" style="font-size:120px; margin-bottom:32px; letter-spacing:0.12em;">Grazie</h1>
+      <hr class="rule" style="width:200px; margin:0 auto 28px;">
+      <p class="h2" style="font-size:32px; margin-bottom:14px; color:var(--grey-meta);">Per ulteriori informazioni</p>
+      <p class="body-text" style="font-size:22px; font-style:italic; color:var(--blue); letter-spacing:0.18em; text-transform:uppercase; margin-bottom:52px;">Think. Manage. Do.</p>
+
+      <div style="display:flex; gap:64px; align-items:flex-start;">
+        <!-- Treviso HQ -->
+        <div style="text-align:left;">
+          <p class="body-text" style="font-size:18px; font-weight:700; color:var(--blue); letter-spacing:0.16em; text-transform:uppercase; margin-bottom:10px;">Sede Centrale · Treviso</p>
+          <p class="body-text" style="font-size:22px; font-weight:700; margin-bottom:4px;">Climosfera S.r.l.</p>
+          <p class="body-text" style="font-size:21px; color:var(--grey-meta);">Via Monte Grappa, 25</p>
+          <p class="body-text" style="font-size:21px; color:var(--grey-meta);">31020 Villorba (TV) — Italia</p>
+          <p class="body-text" style="font-size:21px; color:var(--grey-meta); margin-top:6px;">Tel. +39 0422 608987</p>
+          <p class="body-text" style="font-size:21px; color:var(--grey-meta);">Fax +39 0422 241801</p>
+        </div>
+        <div style="width:2px; background:var(--grey-table); align-self:stretch;"></div>
+        <!-- Milano office -->
+        <div style="text-align:left;">
+          <p class="body-text" style="font-size:18px; font-weight:700; color:var(--blue); letter-spacing:0.16em; text-transform:uppercase; margin-bottom:10px;">Sede Operativa · Milano</p>
+          <p class="body-text" style="font-size:22px; font-weight:700; margin-bottom:4px;">Climosfera S.r.l.</p>
+          <p class="body-text" style="font-size:21px; color:var(--grey-meta);">Via G. Fiamma, 12</p>
+          <p class="body-text" style="font-size:21px; color:var(--grey-meta);">20129 Milano (MI) — Italia</p>
+          <p class="body-text" style="font-size:21px; color:var(--grey-meta); margin-top:6px;">info@climosfera.it</p>
+          <p class="body-text" style="font-size:21px; color:var(--grey-meta);">www.climosfera.it</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-text">PROGETTO ESECUTIVO · CLIMOSFERA S.R.L.</div>
+      <div class="sidebar-num">06</div>
+    </div>
+  </section>
+
+</deck-stage>
+</body>
+</html>

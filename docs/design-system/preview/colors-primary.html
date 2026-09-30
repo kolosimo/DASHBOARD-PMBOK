@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Colors" name="Brand Blues" subtitle="Primary #0084D1, Secondary #0082C2, Deep press state" viewport="700x150" -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'Lora';
+    src: url('../fonts/Lora-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Lora';
+    src: url('../fonts/Lora-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: italic;
+    font-display: swap;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #fff; font-family: 'Lora', Georgia, serif; padding: 20px; }
+  .row { display: flex; gap: 12px; align-items: stretch; }
+  .swatch {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .swatch-block {
+    height: 72px;
+    border: 1px solid #e6e6e6;
+  }
+  .swatch-info {
+    padding: 8px 0 0 0;
+  }
+  .swatch-name { font-size: 0.7rem; font-weight: 700; color: #000; letter-spacing: 0.06em; text-transform: uppercase; }
+  .swatch-hex  { font-size: 0.65rem; color: #7C8392; font-style: italic; margin-top: 2px; }
+  .swatch-use  { font-size: 0.6rem; color: #7C8392; margin-top: 3px; line-height: 1.3; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="swatch">
+      <div class="swatch-block" style="background:#0084D1;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Blue Primary</div>
+        <div class="swatch-hex">#0084D1</div>
+        <div class="swatch-use">Structural lines · CTAs · Sidebar accent</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:#0082C2;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Blue Secondary</div>
+        <div class="swatch-hex">#0082C2</div>
+        <div class="swatch-use">Table borders · Hover state</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:#005f99;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Blue Deep</div>
+        <div class="swatch-hex">#005f99</div>
+        <div class="swatch-use">Press state · Active links</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
