@@ -9,16 +9,14 @@
     </div>
     <nav class="campi" aria-label="Cambia settimane">
       <a class="btn" href="{{ base }}/lookahead?da={{ precedente }}&filtro={{ filtro }}">
-        ←
-        {{ formato.settimana(precedente) }}
+        Precedente · {{ formato.settimana(precedente) }}
       </a>
       @if(da !== corrente)
         <a class="btn" href="{{ base }}/lookahead?filtro={{ filtro }}">Da oggi</a>
       @end
 
       <a class="btn" href="{{ base }}/lookahead?da={{ successiva }}&filtro={{ filtro }}">
-        {{ formato.settimana(successiva) }}
-        →
+        Successiva · {{ formato.settimana(successiva) }}
       </a>
       @if(puoGestire)
         <a class="btn primary" href="{{ base }}/attivita/nuova">Nuova attività</a>

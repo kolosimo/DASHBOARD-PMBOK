@@ -19,8 +19,7 @@
       href="/commesse/{{ commessa.id }}/ore?settimana={{ precedente }}"
       data-testid="settimana-precedente"
     >
-      ←
-      {{ formato.settimana(precedente) }}
+      Precedente · {{ formato.settimana(precedente) }}
     </a>
     <b>{{ formato.settimana(settimana) }}</b>
     @if(successiva)
@@ -29,8 +28,7 @@
         href="/commesse/{{ commessa.id }}/ore?settimana={{ successiva }}"
         data-testid="settimana-successiva"
       >
-        {{ formato.settimana(successiva) }}
-        →
+        Successiva · {{ formato.settimana(successiva) }}
       </a>
     @end
   </nav>

@@ -37,11 +37,15 @@ test('la direzione vede tutte e tre le commesse', async ({ page }) => {
   }
 })
 
-test('font e CSS del prototipo caricati', async ({ page }) => {
+test('font Lora del Design System caricato, dritto e corsivo', async ({ page }) => {
   await page.goto('/dev/login?come=mec1')
   const famiglia = await page.evaluate(() => getComputedStyle(document.body).fontFamily)
-  expect(famiglia).toContain('IBM Plex Sans')
+  expect(famiglia).toContain('Lora')
   await page.evaluate(() => document.fonts.ready)
-  const caricato = await page.evaluate(() => document.fonts.check('14px "IBM Plex Sans"'))
-  expect(caricato).toBe(true)
+  const dritto = await page.evaluate(() => document.fonts.check('16px "Lora"'))
+  const corsivo = await page.evaluate(() => document.fonts.check('italic 700 16px "Lora"'))
+  expect(dritto).toBe(true)
+  expect(corsivo).toBe(true)
+  const sfondo = await page.evaluate(() => getComputedStyle(document.body).backgroundColor)
+  expect(sfondo).toBe('rgb(255, 255, 255)')
 })

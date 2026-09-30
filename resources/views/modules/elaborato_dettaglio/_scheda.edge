@@ -138,7 +138,7 @@
           <div class="messaggio conflitto" role="alert" data-testid="conferma-wip">
             @!component('components/pill', { classe: 'w', testo: 'limite WIP' })
             <div>
-              <p>→ {{ confermaWip.aStatoNome }}. {{ confermaWip.messaggio }}</p>
+              <p>Verso {{ confermaWip.aStatoNome }}. {{ confermaWip.messaggio }}</p>
               <form
                 class="campi"
                 method="POST"
@@ -173,7 +173,7 @@
               {{ csrfField() }}
               <input type="hidden" name="version" value="{{ scheda.version }}" />
               <input type="hidden" name="a_stato_id" value="{{ scheda.flusso.successivo.id }}" />
-              <button class="btn primary" type="submit">Porta a “{{ scheda.flusso.successivo.nome }}” →</button>
+              <button class="btn primary" type="submit">Porta a “{{ scheda.flusso.successivo.nome }}”</button>
             </form>
           @end
           @if(scheda.flusso.precedente)
@@ -192,7 +192,7 @@
                 Motivo del ritorno
                 <input type="text" name="motivo" required maxlength="1000" placeholder="per esempio una rilavorazione" />
               </label>
-              <button class="btn" type="submit">← Riporta a “{{ scheda.flusso.precedente.nome }}”</button>
+              <button class="btn" type="submit">Riporta a “{{ scheda.flusso.precedente.nome }}”</button>
             </form>
           @end
           <p class="muted">Si avanza di uno stato alla volta, come nel Kanban; per tornare indietro serve un motivo.</p>

@@ -162,7 +162,7 @@ test.group('Flusso · spostamenti via HTTP', (group) => {
     assert.include(html1, 'Calcoli e dimensionamento')
     // Anche come toast: i caratteri non ASCII sono codificati nell'intestazione
     const evento = JSON.parse(r1.headers.get('hx-trigger') ?? '{}') as { toast?: string }
-    assert.include(evento.toast ?? '', 'freccia →')
+    assert.include(evento.toast ?? '', 'pulsante Avanti')
 
     // Verificato (In verifica) → Emesso: coerente
     const ant = await elaborato('ANT-RT-401')

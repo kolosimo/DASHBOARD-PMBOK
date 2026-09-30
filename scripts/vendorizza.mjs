@@ -34,34 +34,25 @@ writeFileSync(
     `| alpine-${alpine}.min.js | alpinejs | ${alpine} | MIT |\n`
 )
 
-// Font IBM Plex (licenza SIL OFL 1.1): solo latin e latin-ext, pesi usati dal CSS
-const famiglie = [
-  { pkg: '@fontsource/ibm-plex-sans', pesi: [400, 500, 600] },
-  { pkg: '@fontsource/ibm-plex-sans-condensed', pesi: [500, 600] },
-  { pkg: '@fontsource/ibm-plex-mono', pesi: [400, 500] },
-]
-let css = `/* IBM Plex, self-hosted. Generato da "npm run vendorizza". Licenza: SIL OFL 1.1 (vedi OFL.txt) */\n`
-for (const { pkg, pesi } of famiglie) {
-  for (const peso of pesi) {
-    // <peso>.css contiene un blocco @font-face per sottoinsieme, con unicode-range
-    const sorgente = readFileSync(nm(pkg, `${peso}.css`), 'utf8')
-    const blocchi = sorgente.split(/(?=\/\* )/)
-    for (const blocco of blocchi) {
-      const m = blocco.match(/\/\* [a-z-]+-(latin|latin-ext)-\d+-normal \*\//)
-      if (!m) continue
-      const nomi = [...blocco.matchAll(/url\(\.\/files\/([^)]+\.woff2)\)/g)].map((x) => x[1])
-      for (const nome of nomi) copyFileSync(nm(pkg, 'files', nome), join(fonts, nome))
-      css +=
-        blocco
-          .replace(
-            /url\(\.\/files\/([^)]+\.woff2)\) format\('woff2'\), url\(\.\/files\/[^)]+\.woff\) format\('woff'\)/g,
-            "url(/fonts/$1) format('woff2')"
-          )
-          .replace(/\/\*.*?\*\//gs, '')
-          .trim() + '\n'
-    }
+// Font Lora variable (Design System Climosfera, licenza SIL OFL 1.1): dritto e
+// corsivo veri, solo latin e latin-ext
+const lora = '@fontsource-variable/lora'
+let css = `/* Lora (Design System Climosfera), self-hosted. Generato da "npm run vendorizza". Licenza: SIL OFL 1.1 (vedi OFL.txt) */\n`
+for (const stile of ['wght', 'wght-italic']) {
+  // <stile>.css contiene un blocco @font-face per sottoinsieme, con unicode-range
+  const sorgente = readFileSync(nm(lora, `${stile}.css`), 'utf8')
+  for (const blocco of sorgente.split(/(?=\/\* )/)) {
+    if (!/\/\* lora-(latin|latin-ext)-wght-(normal|italic) \*\//.test(blocco)) continue
+    const nomi = [...blocco.matchAll(/url\(\.\/files\/([^)]+\.woff2)\)/g)].map((x) => x[1])
+    for (const nome of nomi) copyFileSync(nm(lora, 'files', nome), join(fonts, nome))
+    css +=
+      blocco
+        .replace("font-family: 'Lora Variable'", "font-family: 'Lora'")
+        .replace(/url\(\.\/files\/([^)]+\.woff2)\)/g, 'url(/fonts/$1)')
+        .replace(/\/\*.*?\*\//gs, '')
+        .trim() + '\n'
   }
 }
-writeFileSync(join(fonts, 'plex.css'), css)
-copyFileSync(nm('@fontsource/ibm-plex-sans', 'LICENSE'), join(fonts, 'OFL.txt'))
-console.log(`vendorizzati: htmx ${htmx}, alpine ${alpine}, font IBM Plex in public/fonts`)
+writeFileSync(join(fonts, 'lora.css'), css)
+copyFileSync(nm(lora, 'LICENSE'), join(fonts, 'OFL.txt'))
+console.log(`vendorizzati: htmx ${htmx}, alpine ${alpine}, font Lora in public/fonts`)

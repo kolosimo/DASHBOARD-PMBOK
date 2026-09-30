@@ -1,0 +1,76 @@
+/*
+ * Token del Climosfera Design System (docs/design-system/colors_and_type.css),
+ * con gli stessi nomi. Unica fonte dei valori grafici dell'app: app.css usa
+ * solo questi token (direttamente o tramite gli alias in cima al file).
+ *
+ * Deroghe al DS, decise per l'app e spiegate in docs/sviluppo/grafica.md:
+ * colori di stato (--stato-*), densità dei dati (--font-size-dati),
+ * nessuna barra laterale destra.
+ */
+:root {
+  /* Blu del marchio */
+  --color-blue-primary: #0084d1; /* linee strutturali, pulsanti principali */
+  --color-blue-secondary: #0082c2; /* hover, bordi tabella */
+
+  /* Neutri */
+  --color-black: #000000; /* tutto il testo */
+  --color-grey-meta: #7c8392; /* metadati, etichette secondarie */
+  --color-grey-table: #e6e6e6; /* fondo intestazioni, divisori */
+  --color-white: #ffffff; /* sfondo: sempre */
+
+  /* Interazione */
+  --color-hover: #0082c2;
+  --color-press-opacity: 0.85;
+
+  /* Semantici del DS */
+  --color-bg-page: var(--color-white);
+  --color-bg-table: var(--color-grey-table);
+  --color-bg-divider: var(--color-grey-table);
+  --color-text-primary: var(--color-black);
+  --color-text-meta: var(--color-grey-meta);
+  --color-border-structure: var(--color-blue-primary);
+  --color-border-table: var(--color-black);
+  --color-cta-bg: var(--color-blue-primary);
+  --color-cta-bg-hover: var(--color-blue-secondary);
+  --color-cta-text: var(--color-white);
+  --color-accent-line: var(--color-blue-primary);
+
+  /* Deroga: colori di stato, solo come quadratino accanto a una parola
+     ("in linea", "attenzione", "critico"), mai come fondo */
+  --stato-ok: #1e7b3a;
+  --stato-att: #b26a00;
+  --stato-crit: #c62828;
+  --stato-nd: var(--color-grey-meta);
+
+  /* Tipografia: solo Lora */
+  --font-family-base: 'Lora', Georgia, 'Times New Roman', serif;
+  --font-size-h1: 1.25rem; /* titolo dell'app nella testata (DS: 2rem per documenti) */
+  --font-size-h2: 1.5rem; /* titolo di pagina (DS: 1.75rem) */
+  --font-size-h3: 1.125rem; /* titolo di pannello (DS: 1.375rem) */
+  --font-size-body: 1rem; /* deroga densità: DS 1.125rem */
+  --font-size-dati: 0.9375rem; /* deroga densità: tabelle di dati */
+  --font-size-caption: 0.875rem;
+  --font-size-meta: 0.8125rem;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-heading: 1.2;
+  --line-height-body: 1.5;
+  --line-height-caption: 1.4;
+  --letter-spacing-h1: 0.08em;
+
+  /* Spaziature e geometria */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --border-radius-max: 4px;
+  --border-radius-none: 0px;
+  --border-width-accent: 2px;
+  --border-width-table-outer: 3px;
+  --border-width-table-inner: 1px;
+  --transition: 150ms ease;
+}

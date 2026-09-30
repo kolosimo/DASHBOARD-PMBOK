@@ -37,7 +37,7 @@
         <div>
           <p id="conferma-wip-testo">
             <b>{{ confermaWip.codice }}</b>
-            →
+            verso
             {{ confermaWip.aStatoNome }}.
             {{ confermaWip.messaggio }}
           </p>
@@ -215,7 +215,7 @@
                         aria-label="Riporta {{ s.codice }} allo stato precedente"
                         title="Stato precedente (serve un motivo)"
                       >
-                        ←
+                        Indietro
                       </button>
                     </form>
                   @end
@@ -235,7 +235,7 @@
                         aria-label="Porta {{ s.codice }} allo stato successivo"
                         title="Stato successivo"
                       >
-                        →
+                        Avanti
                       </button>
                     </form>
                   @end

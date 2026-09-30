@@ -180,7 +180,7 @@
 
     @component('components/pannello', { titolo: 'Affidabilità del piano (PPC)' })
       @slot('azioni')
-        <a class="btn ghost" href="/commesse/{{ commessa.id }}/lps/settimana">Apri piano →</a>
+        <a class="btn ghost" href="/commesse/{{ commessa.id }}/lps/settimana">Apri il piano</a>
       @end
       @if(obeya.graficoPpc)
         <div data-testid="grafico-ppc">{{{ obeya.graficoPpc }}}</div>
@@ -197,7 +197,7 @@
 
   @component('components/pannello', { titolo: 'Curva S in ore' })
     @slot('azioni')
-      <a class="btn ghost" href="/commesse/{{ commessa.id }}/evm">Dettaglio EVM →</a>
+      <a class="btn ghost" href="/commesse/{{ commessa.id }}/evm">Dettaglio EVM</a>
     @end
     @if(obeya.curvaS)
       <div data-testid="curva-s">{{{ obeya.curvaS }}}</div>

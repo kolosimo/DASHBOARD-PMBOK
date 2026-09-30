@@ -9,8 +9,7 @@
 >
   <nav class="campi" aria-label="Settimana" style="align-items:center">
     <a class="btn" href="{{ urlSettimana(ts.precedente) }}" data-testid="settimana-precedente">
-      ←
-      {{ formato.settimana(ts.precedente) }}
+      Precedente · {{ formato.settimana(ts.precedente) }}
     </a>
     <b data-testid="settimana-corrente">
       {{ formato.settimana(ts.settimana) }}
@@ -21,8 +20,7 @@
     </b>
     @if(ts.successiva)
       <a class="btn" href="{{ urlSettimana(ts.successiva) }}" data-testid="settimana-successiva">
-        {{ formato.settimana(ts.successiva) }}
-        →
+        Successiva · {{ formato.settimana(ts.successiva) }}
       </a>
     @end
 

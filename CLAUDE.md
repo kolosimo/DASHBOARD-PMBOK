@@ -34,7 +34,7 @@ Node **24** (`engines >=24`, richiesto da AdonisJS 7). Nel container: `export PA
 | `npm run test:unit` / `npm run test:functional` | singole suite Japa |
 | `npm run e2e` | smoke Playwright (DB `cruscotto_e2e` ricreato ogni volta) |
 | `npm run screenshot` | pagine × ruoli, tema chiaro e scuro, in `screenshots/` (ignorata da git) |
-| `npm run vendorizza` | ricopia HTMX, Alpine e font IBM Plex in `public/` dopo un cambio di versione |
+| `npm run vendorizza` | ricopia HTMX, Alpine e font Lora in `public/` dopo un cambio di versione |
 | `npm run pacchetto` | zip di installazione per Windows Server in `tmp/pacchetto/` |
 | `node ace db:inizializza-produzione` | migrazioni + configurazione iniziale (idempotente; rifiuta un DB con i dati di esempio) |
 | `node ace utenti:crea-admin --email … --nome "…"` | primo amministratore con password temporanea (account locali) |
@@ -83,6 +83,7 @@ perde al riavvio del container: se i test falliscono con `ECONNREFUSED`, esegui
   cambiata) e `registraAudit`; dopo il commit si chiama `pubblica(commessaId, tipo)`.
 - Permessi solo con le abilità Bouncer di `app/abilities/main.ts` (`docs/sviluppo/permessi.md`).
 - Nessuna classifica o KPI per persona (art. 4 Statuto dei lavoratori): solo per commessa o team.
+- Grafica: Climosfera Design System (`docs/design-system/`). Token in `resources/css/tokens.css`, solo tema chiaro, solo font Lora, niente icone né frecce nel testo, raggi 0, niente ombre; regole e deroghe in `docs/sviluppo/grafica.md`. Non usare `npm run format` su tutto il repo: riformatta anche le viste Edge.
 - Formattazione con `formato.*` (it-IT, `n.d.` per i valori non calcolabili),
   semafori solo con `app/domain/soglie.ts`, testi delle sigle da `app/ui/glossario.ts`.
 - Nessuna dipendenza nativa (`npm run controlla-dipendenze`); script npm portabili (niente bash).

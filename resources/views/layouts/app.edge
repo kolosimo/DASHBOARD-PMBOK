@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrfToken }}" />
     <title>{{ titolo }} · Cruscotto commesse</title>
-    <link rel="stylesheet" href="/fonts/plex.css" />
+    <link rel="stylesheet" href="/fonts/lora.css" />
     <script src="/vendor/htmx-2.0.11.min.js" defer></script>
     <script src="/vendor/alpine-3.17.4.min.js" defer></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -22,8 +22,9 @@
       <div class="top-in">
         <div class="brandrow">
           <div class="brand">
+            <span class="marchio" aria-label="Climosfera">CLIMOSFERA</span>
             <h1><a href="/">Cruscotto commesse</a></h1>
-            <small>Climosfera · PMBOK + Last Planner</small>
+            <small>Think. Manage. Do.</small>
           </div>
           @if(utente)
             <div class="utente">

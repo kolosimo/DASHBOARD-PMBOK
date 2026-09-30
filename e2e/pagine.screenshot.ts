@@ -1,6 +1,6 @@
 /// <reference lib="dom" />
 /**
- * Screenshot di pagine × ruoli in screenshots/<ruolo>/<pagina>-<tema>.png
+ * Screenshot di pagine × ruoli in screenshots/<ruolo>/<pagina>-<formato>.png (largo/stretto)
  */
 import { test } from '@playwright/test'
 import { mkdirSync } from 'node:fs'
@@ -70,8 +70,12 @@ for (const ruolo of RUOLI) {
     for (const p of PAGINE) {
       if (p.soloAdmin && ruolo !== 'admin') continue
       if (p.soloRuoli && !p.soloRuoli.includes(ruolo)) continue
-      for (const tema of ['chiaro', 'scuro'] as const) {
-        await page.emulateMedia({ colorScheme: tema === 'scuro' ? 'dark' : 'light' })
+      // Solo tema chiaro (Design System Climosfera): una larghezza da PC e una da telefono
+      for (const [formato, larghezza] of [
+        ['largo', 1280],
+        ['stretto', 390],
+      ] as const) {
+        await page.setViewportSize({ width: larghezza, height: 900 })
         await page.goto(p.percorso)
         if (p.link) {
           const href = await page.getByTestId(p.link).getAttribute('href')
@@ -79,7 +83,7 @@ for (const ruolo of RUOLI) {
         }
         await page.evaluate(() => document.fonts.ready)
         await page.screenshot({
-          path: `screenshots/${ruolo}/${p.nome}-${tema}.png`,
+          path: `screenshots/${ruolo}/${p.nome}-${formato}.png`,
           fullPage: true,
         })
       }

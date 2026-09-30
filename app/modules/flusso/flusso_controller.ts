@@ -166,7 +166,7 @@ export default class FlussoController {
       else {
         const suggerimento =
           dopo && dopo.colonnaId === attuale.colonnaId
-            ? ` Prima completa lo stato "${dopo.nome}" con la freccia →.`
+            ? ` Prima completa lo stato "${dopo.nome}" con il pulsante Avanti.`
             : ''
         return this.rispondi(ctx, commessa, 422, {
           errore: `${elaborato.codice}: si sposta uno stato alla volta.${suggerimento}`,
