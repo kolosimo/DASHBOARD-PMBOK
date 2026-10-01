@@ -16,8 +16,8 @@ Due regole valgono per tutti gli indicatori:
 - **"n.d." (non disponibile)** compare quando un indicatore non si può calcolare,
   di solito perché bisognerebbe dividere per zero (per esempio una commessa senza ore
   registrate). Non è un errore: significa che mancano i dati.
-- **I colori dei semafori** (verde "in linea", giallo "attenzione", rosso "critico",
-  grigio "n.d.") dipendono da soglie decise dall'amministratore. Oggi sono valori di
+- **I colori dei semafori** (quadratino accanto alla parola: verde "in linea", giallo
+  "attenzione", rosso "critico", grigio "n.d.") dipendono da soglie decise dall'amministratore. Oggi sono valori di
   esempio, da tarare con i PM durante il pilota.
 
 Gli indicatori misurano **la commessa o il team, mai la singola persona**. Nel

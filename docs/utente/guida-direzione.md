@@ -42,7 +42,7 @@ Una riga per commessa attiva, con:
 | Vincoli aperti | Quanti ostacoli sono ancora da rimuovere |
 | Prossima milestone | La prossima scadenza importante |
 
-Ogni indicatore ha un semaforo: **verde** (in linea), **giallo** (attenzione), **rosso**
+Ogni indicatore ha un semaforo, cioè un quadratino colorato seguito dalla parola: **verde** (in linea), **giallo** (attenzione), **rosso**
 (critico), **grigio n.d.** (dati mancanti). Le soglie sono quelle di partenza e verranno
 tarate con i PM durante il pilota:
 

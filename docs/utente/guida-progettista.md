@@ -33,8 +33,8 @@ sito come app**; in Safari sul Mac **File** → **Aggiungi al Dock**.
 
 Dalla voce **Le mie ore** in alto:
 
-1. Si apre la **settimana corrente**; con le frecce vai alla settimana precedente o
-   successiva. Sabato e domenica sono nascosti: **Mostra sabato e domenica** li
+1. Si apre la **settimana corrente**; con **Precedente** e **Successiva** cambi
+   settimana. Sabato e domenica sono nascosti: **Mostra sabato e domenica** li
    aggiunge.
 2. Ogni riga è un **elaborato**, ogni colonna un **giorno**. In cima ci sono gli
    elaborati di cui sei responsabile; gli altri elaborati delle tue commesse si aprono
@@ -100,8 +100,8 @@ budget.
 
 Come si usa:
 
-1. Quando fai un passo avanti su un tuo elaborato, **avanzalo di uno stato** con la
-   freccia sulla scheda o trascinandola (per esempio da "Impostato" a "Calcoli e
+1. Quando fai un passo avanti su un tuo elaborato, **avanzalo di uno stato** con il
+   pulsante **Avanti** sulla scheda o trascinandola (per esempio da "Impostato" a "Calcoli e
    dimensionamento"). Non si saltano stati.
 2. Per **tornare indietro** (per esempio dopo i commenti del verificatore) l'app ti
    chiede il **motivo**.

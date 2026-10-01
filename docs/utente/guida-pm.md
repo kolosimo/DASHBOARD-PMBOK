@@ -127,8 +127,8 @@ Avvisi che puoi vedere nella pagina EVM:
 Nella scheda **Lookahead e vincoli** trovi:
 
 - la tabella delle attività delle **prossime 6 settimane** (una colonna per
-  settimana) con lo stato di ciascuna: **pronta** oppure **vincolata**; con le frecce
-  e **Da oggi** ti sposti nelle settimane;
+  settimana) con lo stato di ciascuna: **pronta** oppure **vincolata**; con **Precedente**,
+  **Successiva** e **Da oggi** ti sposti nelle settimane;
 - il **registro vincoli**: ID, vincolo, categoria, attività bloccate, chi lo rimuove,
   serve entro, identificato il, stato; filtro **aperti** / **tutti**.
 
@@ -161,8 +161,8 @@ settimane di una commessa questi indicatori sono **n.d.**
    impegni non si eliminano più e quelli aggiunti dopo sono marcati "aggiunto dopo la
    promessa · fuori dal PPC".
 
-In alto trovi PPC, PCR, TMR, TA e vincoli aperti della settimana. Con le frecce vedi
-le settimane precedenti e successive.
+In alto trovi PPC, PCR, TMR, TA e vincoli aperti della settimana. Con **Precedente** e
+**Successiva** vedi le altre settimane.
 
 Regola d'oro: si promette solo ciò che si è ragionevolmente sicuri di finire. Un PPC
 alto con impegni onesti vale più di tanti impegni non mantenuti.
@@ -188,7 +188,7 @@ Esempio: 5 impegni fatti su 7 promessi → PPC 71%.
   (limite 4), **In verifica** (limite 3), **Emesso**.
 - Un elaborato **avanza di uno stato alla volta** (Non iniziato → Impostato → Calcoli
   e dimensionamento → Emissione interna → Verificato → Emesso al cliente) con i
-  pulsanti freccia sulla scheda o trascinandola. Per tornare indietro l'app chiede il
+  pulsanti **Avanti** e **Indietro** sulla scheda o trascinandola. Per tornare indietro l'app chiede il
   **motivo**.
 - Se la colonna di arrivo supera il limite WIP, l'app chiede conferma e registra lo
   sforamento. Meglio finire un elaborato in corso che aprirne uno nuovo.
@@ -220,7 +220,7 @@ dimostrativi):
 
 Come leggerla, in tre passi:
 
-1. **Guarda SPI e CPI e il loro semaforo.** Verde da 0,95, giallo da 0,85, sotto è
+1. **Guarda SPI e CPI e il loro semaforo** (quadratino colorato con la parola). Verde da 0,95, giallo da 0,85, sotto è
    rosso (soglie di partenza, da tarare nel pilota). Se vedi **n.d.** mancano i dati:
    per esempio nessuno ha ancora registrato ore (CPI) o non c'è una baseline
    approvata (SPI).

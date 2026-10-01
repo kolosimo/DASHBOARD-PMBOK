@@ -82,7 +82,7 @@ sec("Le sigle principali", 2,
         ["WIP", "Lavoro in corso", "Quanti elaborati sono aperti insieme?"],
     ]})
 sec("I colori dei semafori", 2, [
-    "Accanto agli indicatori compare un semaforo: verde significa in linea, giallo attenzione, rosso critico. Le soglie di partenza sono: SPI e CPI verdi da 0,95 e gialli da 0,85; PPC verde dal 70% e giallo dal 55%; PCR verde dall'80% e giallo dal 60%. Sono valori di partenza che verranno tarati con i PM durante il pilota.",
+    "Accanto agli indicatori compare un semaforo: un piccolo quadrato colorato seguito sempre da una parola. Verde vuol dire in linea, giallo (tono ambra) attenzione, rosso critico, grigio n.d. quando mancano i dati. La parola basta da sola: il colore aiuta a trovare subito i punti critici. Le soglie di partenza sono: SPI e CPI verdi da 0,95 e gialli da 0,85; PPC verde dal 70% e giallo dal 55%; PCR verde dall'80% e giallo dal 60%. Sono valori di partenza che verranno tarati con i PM durante il pilota.",
 ])
 
 # ---------------------------------------------------------------- 3
@@ -99,8 +99,8 @@ sec("Entrare nell'applicazione", 2,
 sec("Installare l'app sul computer", 2,
     ["Non è obbligatorio, ma è comodo: il Cruscotto si apre dalla barra delle applicazioni o dal Dock, in una finestra propria, come un normale programma. Gli aggiornamenti arrivano da soli: non c'è nulla da reinstallare."],
     bullets=[
-        "Edge su Windows: menu … poi App, poi Installa questo sito come app.",
-        "Chrome su Windows o Mac: menu ⋮ poi Trasmetti, salva e condividi, poi Installa pagina come app.",
+        "Edge su Windows: menu con i tre puntini, poi App, poi Installa questo sito come app.",
+        "Chrome su Windows o Mac: menu con i tre puntini, poi Trasmetti, salva e condividi, poi Installa pagina come app.",
         "Safari su Mac: menu File poi Aggiungi al Dock.",
     ])
 sec("La pagina iniziale", 2,
@@ -120,7 +120,7 @@ sec("Anagrafica: dati, team, milestone, elaborati", 2,
         "Dati della commessa: inserisci inizio e fine prevista, che servono alla baseline.",
         "Team: scegli la persona, il ruolo (pm, progettista, verificatore, osservatore) e premi Aggiungi. Se una persona non compare, non ha ancora un account: chiedilo all'amministratore.",
         "Milestone: le scadenze contrattuali e interne, con titolo e data.",
-        "Elaborati: con Importa da Excel copia quattro colonne (codice, titolo, disciplina, budget in ore) e incollale; premi Anteprima, controlla le eventuali righe in rosso, poi Importa. In alternativa usa Nuovo elaborato per inserirne uno alla volta.",
+        "Elaborati: con Importa da Excel copia quattro colonne (codice, titolo, disciplina, budget in ore) e incollale; premi Anteprima, controlla le righe segnate come errore (finché ce n'è una non si importa nulla), poi Importa. In alternativa usa Nuovo elaborato per inserirne uno alla volta.",
         "Apri ogni elaborato per assegnare responsabile e milestone.",
         "Se serve, adatta i limiti WIP del Kanban alla tua commessa.",
     ],
@@ -165,7 +165,7 @@ sec("Il Kanban degli elaborati", 2,
     ["Ogni scheda è un elaborato. Le colonne raggruppano gli stati: Da fare (non iniziato), In corso (impostato, calcoli e dimensionamento), In verifica (emissione interna, verificato), Emesso (emesso al cliente).",
      "Tenere aggiornato il Kanban è importante: è lo stato dell'elaborato che determina il valore guadagnato. Se una scheda resta indietro rispetto alla realtà, la commessa sembra più in ritardo di quanto sia."],
     bullets=[
-        "Un elaborato avanza di uno stato alla volta, con le frecce sulla scheda o trascinandola. Non si saltano stati.",
+        "Un elaborato avanza di uno stato alla volta, con i pulsanti Avanti e Indietro sulla scheda oppure trascinandola nella colonna accanto. Non si saltano stati.",
         "Per tornare indietro, per esempio dopo i commenti del verificatore, l'applicazione chiede il motivo.",
         "Se la colonna di arrivo è al limite WIP l'applicazione chiede conferma e un motivo, che resta registrato.",
         "Su ogni scheda si vedono i giorni passati nello stato attuale e le ore spese sul budget. Oltre 10 giorni nello stesso stato l'elaborato è segnalato come fermo: di solito c'è un vincolo da far emergere.",
@@ -176,6 +176,7 @@ sec("Registrare le ore", 2,
     ["Da Le mie ore ognuno registra le proprie ore: una riga per elaborato, una colonna per giorno. Si scrive 1,5 oppure 1:30 e la cella si salva da sola quando si esce dal campo."],
     bullets=[
         "Si registrano solo le proprie ore: nessuno può farlo al posto di un altro, nemmeno il PM.",
+        "Con Precedente e Successiva, sopra la griglia, ti sposti tra le settimane; Mostra sabato e domenica aggiunge il fine settimana.",
         "Al massimo 12 ore al giorno (valore di partenza).",
         "Una settimana si può correggere fino a 7 giorni dopo la sua fine; poi serve l'amministratore, che registra la correzione con il motivo.",
         "Le ore diventano subito il costo effettivo della commessa: registrarle con puntualità rende affidabili i numeri di tutti.",

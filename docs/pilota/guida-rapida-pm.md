@@ -50,7 +50,7 @@ I nomi delle voci cambiano un po' tra una versione e l'altra del browser.
 4. **Milestone:** aggiungi titolo e data target delle scadenze (contrattuali e interne).
 5. **Elaborati:** premi **Importa da Excel**, copia da Excel quattro colonne
    (**codice, titolo, disciplina, budget in ore**) e incollale nel riquadro. Premi
-   **Anteprima**: le righe con errori sono in rosso e non si importa nulla finché non
+   **Anteprima**: le righe con errori sono segnate "errore" e non si importa nulla finché non
    sono tutte corrette. Poi premi **Importa**. Esempio di riga:
    `E-MEC-10  Centrale termica – schema  MEC  24`.
    In alternativa **Nuovo elaborato** per inserirne uno alla volta.
@@ -110,8 +110,8 @@ Senza baseline approvata PV e SPI restano **n.d.**
 ## 8. Leggere EVM e pagina Commessa
 
 **Avanzamento EVM**, in tre passi:
-1. **SPI** (siamo nei tempi?) e **CPI** (spendiamo le ore previste?): verde, giallo,
-   rosso o **n.d.** se mancano dati. Sotto 1 = in ritardo / servono più ore.
+1. **SPI** (siamo nei tempi?) e **CPI** (spendiamo le ore previste?): il quadratino colorato con la
+   parola dice verde "in linea", giallo "attenzione", rosso "critico" o **n.d.** se mancano dati. Sotto 1 = in ritardo / servono più ore.
 2. **Curva S**: EV sotto PV = ritardo; AC sopra EV = più ore del lavoro prodotto.
 3. **Registro per elaborato**: trovi dove nasce lo scarto. L'EV dipende solo dallo
    **stato** sul Kanban: tenete aggiornato il Kanban.
