@@ -388,3 +388,7 @@ Verificato il 28/09. Da applicare alla fine della Fase 1 in `00` D1, in `08` e n
   - modifica concorrente → 409;
   - SSE entro 3 s;
   - `backup.ps1` seguito da `ripristino.ps1` su un database vuoto con dati identici.
+
+## Proposte rimandate
+
+- [RACI per disciplina e punti Fibonacci sugli impegni](proposte/raci-e-punti-fibonacci.md): da riprendere dopo il pilota.
