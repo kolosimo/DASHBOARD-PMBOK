@@ -4,6 +4,7 @@
  */
 import vine from '@vinejs/vine'
 import { CATEGORIE_VINCOLO, TIPI_ATTIVITA_LOOKAHEAD } from '#domain/types'
+import { SCALA_PUNTI } from '#domain/punti'
 
 const DATA = /^\d{4}-\d{2}-\d{2}$/
 
@@ -50,6 +51,22 @@ export const validatoreImpegno = vine.create(
     attivita_id: idFacoltativo(),
     elaborato_id: idFacoltativo(),
     last_planner_id: idFacoltativo(),
+    punti: vine
+      .number()
+      .in([...SCALA_PUNTI])
+      .nullable()
+      .optional(),
+  })
+)
+
+export const validatorePunti = vine.create(
+  vine.object({
+    version: vine.number().withoutDecimals().min(1),
+    punti: vine
+      .number()
+      .in([...SCALA_PUNTI])
+      .nullable()
+      .optional(),
   })
 )
 

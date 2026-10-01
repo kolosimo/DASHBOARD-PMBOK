@@ -18,6 +18,9 @@ import * as D from '#database/dati_esempio'
 type Mappa = Record<string, number>
 
 /** Istante in ora di Roma → ISO con fuso */
+/** Punti Fibonacci di esempio sugli impegni, a rotazione (deterministici) */
+const PUNTI_ESEMPIO = [3, 2, 5, 1, 3, 8, 2, 5] as const
+
 function roma(data: string, ora = '09:00') {
   return DateTime.fromISO(`${data}T${ora}`, { zone: FUSO }).toISO()!
 }
@@ -359,6 +362,7 @@ export default class extends BaseSeeder {
           last_planner_id: utenti[el.resp],
           fatto,
           causa_id: fatto ? null : conf.causaId[codiciCause[indiceCausa++]],
+          punti: PUNTI_ESEMPIO[(i + k) % PUNTI_ESEMPIO.length],
           aggiunto_dopo_promessa: false,
           ordine: k + 1,
         })
@@ -392,6 +396,7 @@ export default class extends BaseSeeder {
         last_planner_id: utenti[imp.lp],
         fatto: imp.fatto,
         causa_id: imp.causa ? conf.causaId[imp.causa] : null,
+        punti: PUNTI_ESEMPIO[k % PUNTI_ESEMPIO.length],
         aggiunto_dopo_promessa: false,
         ordine: k + 1,
       }))

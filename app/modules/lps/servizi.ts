@@ -440,6 +440,8 @@ export interface DatiImpegno {
   attivitaId: number | null
   elaboratoId: number | null
   lastPlannerId: number | null
+  /** Punti Fibonacci, null = non stimato */
+  punti?: number | null
 }
 
 /**
@@ -490,6 +492,7 @@ export async function aggiungiImpegno(
         fatto: null,
         causaId: null,
         cinquePerche: null,
+        punti: dati.punti ?? null,
         aggiuntoDopoPromessa: piano.stato === 'promesso',
         ordine: Number(massimo?.m ?? 0) + 1,
       },
@@ -551,6 +554,39 @@ export async function eliminaImpegno(
         ip: autore.ip,
       },
       trx
+    )
+  })
+}
+
+/**
+ * Cambia i punti di un impegno: solo mentre il piano è in bozza. Dopo la
+ * promessa i punti restano quelli promessi, come gli impegni.
+ */
+export async function cambiaPunti(
+  commessaId: number,
+  impegnoId: number,
+  versione: number,
+  punti: number | null,
+  autore: Autore,
+  rendiFrammento?: RendiFrammento<Impegno>
+) {
+  return db.transaction(async (trx) => {
+    const impegno = await Impegno.query({ client: trx }).where('id', impegnoId).first()
+    if (!impegno) throw new ConflittoVersione(null, versione)
+    const piano = await pianoDellaCommessa(trx, commessaId, impegno.pianoId)
+    if (piano.stato !== 'bozza') {
+      throw new ErroreLps('I punti si cambiano solo mentre il piano è in bozza.')
+    }
+    return aggiornaConVersione(
+      Impegno,
+      impegnoId,
+      versione,
+      { punti },
+      {
+        client: trx,
+        audit: { ...autore, azione: 'lps.impegno.punti', commessaId },
+        rendiFrammento,
+      }
     )
   })
 }

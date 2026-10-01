@@ -87,8 +87,10 @@ Senza baseline approvata PV e SPI restano **n.d.**
 
 **Lunedì**
 1. Scheda **Piano settimanale** → **Prepara il piano (bozza)**.
-2. Con il team aggiungi gli impegni: attività, elaborato, last planner →
-   **Aggiungi impegno**.
+2. Con il team aggiungi gli impegni: attività, elaborato, last planner e, se volete,
+   i **punti** (1, 2, 3, 5, 8, 13) → **Aggiungi impegno**. Se i punti promessi
+   superano la **capacità indicativa** compare "oltre la capacità": valutate se
+   togliere qualcosa. I punti non sono ore.
 3. Quando siete d'accordo premi **Prometti il piano**. Gli impegni aggiunti dopo sono
    segnati "fuori dal PPC".
 

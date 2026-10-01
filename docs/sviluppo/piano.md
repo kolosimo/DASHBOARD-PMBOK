@@ -391,4 +391,5 @@ Verificato il 28/09. Da applicare alla fine della Fase 1 in `00` D1, in `08` e n
 
 ## Proposte rimandate
 
-- [RACI per disciplina e punti Fibonacci sugli impegni](proposte/raci-e-punti-fibonacci.md): da riprendere dopo il pilota.
+- [Matrice RACI per disciplina](proposte/raci.md): da riprendere dopo il pilota.
+- Punti Fibonacci sugli impegni: integrati il 01/10/2026 (`app/domain/punti.ts`).

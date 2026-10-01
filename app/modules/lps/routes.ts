@@ -29,6 +29,10 @@ router
       .where('impegnoId', numero)
       .as('lps.impegni.esito')
     router
+      .post('/impegni/:impegnoId/punti', [PianoController, 'punti'])
+      .where('impegnoId', numero)
+      .as('lps.impegni.punti')
+    router
       .post('/impegni/:impegnoId/elimina', [PianoController, 'eliminaImpegno'])
       .where('impegnoId', numero)
       .as('lps.impegni.elimina')

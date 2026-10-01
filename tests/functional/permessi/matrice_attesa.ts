@@ -153,6 +153,7 @@ export const MATRICE: Record<string, Riga> = {
   // di mec1, quindi il progettista riceve 403 (il caso "propria riga" è nei test LPS).
   'lps.impegni.esito': PM_ADMIN,
   'lps.impegni.elimina': PM_ADMIN,
+  'lps.impegni.punti': PM_ADMIN,
   'lps.attivita.nuova': PM_ADMIN,
   'lps.attivita.crea': PM_ADMIN,
   'lps.attivita.modifica': PM_ADMIN,

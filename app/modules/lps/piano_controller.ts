@@ -13,11 +13,13 @@ import {
   paretoCause,
   personeDelTeam,
   pianoSettimana,
+  puntiSettimana,
   riepilogoLps,
   SETTIMANE_STORICO_PPC,
 } from './queries.js'
 import {
   aggiungiImpegno,
+  cambiaPunti,
   chiudiPiano,
   creaPiano,
   eliminaImpegno,
@@ -40,7 +42,13 @@ import {
   valida,
   type Messaggio,
 } from './contesto.js'
-import { validatoreEsito, validatoreImpegno, validatoreVersione } from './validatori.js'
+import {
+  validatoreEsito,
+  validatoreImpegno,
+  validatorePunti,
+  validatoreVersione,
+} from './validatori.js'
+import { SCALA_PUNTI } from '#domain/punti'
 
 const VISTA = 'modules/lps/settimana'
 const FRAMMENTO = 'modules/lps/_piano'
@@ -77,6 +85,7 @@ export default class PianoController {
       leggiImpostazione('soglie.ppc'),
       leggiImpostazione('soglie.pcr'),
     ])
+    const punti = await puntiSettimana(commessa.id, settimana, piano?.impegni ?? [])
     const lunediCorrente = lunediDellaSettimana(oggiRoma())
     return {
       commessa,
@@ -86,6 +95,8 @@ export default class PianoController {
       corrente: lunediCorrente,
       piano,
       riepilogo,
+      punti,
+      scalaPunti: SCALA_PUNTI,
       pareto,
       daPareto,
       graficoPpc: graficoPpc(riepilogo.storicoPpc, { soglia: sogliaPpc }),
@@ -188,6 +199,7 @@ export default class PianoController {
           attivitaId: dati.attivita_id ?? null,
           elaboratoId: dati.elaborato_id ?? null,
           lastPlannerId: dati.last_planner_id ?? null,
+          punti: dati.punti ?? null,
         },
         autore(ctx)
       )
@@ -232,6 +244,34 @@ export default class PianoController {
     }
     pubblica(commessa.id, 'piano.aggiornato', { settimana })
     return this.rispondi(ctx, commessa, settimana, { tipo: 'ok', testo: 'Impegno eliminato.' })
+  }
+
+  /** Punti Fibonacci di un impegno (piano in bozza, PM o admin) */
+  async punti(ctx: HttpContext) {
+    const commessa = await commessaCorrente(ctx, 'settimana')
+    await richiediGestione(ctx, commessa)
+    const trovato = await impegnoConPiano(commessa.id, Number(ctx.params.impegnoId))
+    if (!trovato) return ctx.response.notFound('Impegno non trovato')
+    const settimana = trovato.piano.settimana
+    try {
+      const dati = await valida(ctx, validatorePunti)
+      await cambiaPunti(
+        commessa.id,
+        trovato.impegno.id,
+        dati.version,
+        dati.punti ?? null,
+        autore(ctx),
+        async (_attuale, messaggio) =>
+          this.rendiFrammento(ctx, commessa, settimana, { conflitto: messaggio })
+      )
+    } catch (errore) {
+      if (errore instanceof ErroreLps) {
+        return this.rispondi(ctx, commessa, settimana, { tipo: 'errore', testo: errore.message })
+      }
+      throw errore
+    }
+    pubblica(commessa.id, 'piano.aggiornato', { settimana })
+    return this.rispondi(ctx, commessa, settimana, { tipo: 'ok', testo: 'Punti salvati.' })
   }
 
   /**

@@ -1,9 +1,13 @@
-# Proposte rimandate: RACI per disciplina e punti Fibonacci
+# Proposta rimandata: matrice RACI per disciplina
 
 **Stato:** proposta, da riprendere dopo il pilota. Nessun codice scritto.
 **Data:** 01/10/2026.
 
-## 1. Matrice RACI per disciplina
+I punti Fibonacci, prima in questa proposta, sono stati integrati nell'app il
+01/10/2026: vedi `docs/formule/formule.md` (Punti Fibonacci e capacità indicativa) e la
+guida del PM.
+
+## Matrice RACI per disciplina
 
 ### Cosa esiste già (verificato nel codice)
 
@@ -53,54 +57,3 @@ che oggi mancano davvero.
   per il team, 409 sulla versione vecchia, permessi;
 - `npm run verifica` ed e2e verdi;
 - guide utente aggiornate.
-
-## 2. Punti Fibonacci
-
-### Decisione aperta
-
-Prima di sviluppare va deciso **dove** si stimano i punti. Sotto c'è la baseline
-proposta, con le assunzioni dichiarate.
-
-### Baseline: punti sugli impegni del piano settimanale
-
-- **Dove:** sugli impegni del Last Planner, non sugli elaborati.
-  - Gli elaborati hanno già `budget_minuti`, e l'EVM in ore si basa su quello.
-  - Una seconda stima sullo stesso oggetto creerebbe due verità.
-  - Sugli impegni i punti servono a una cosa sola: non promettere più di quanto il
-    team riesce a fare in una settimana.
-- **Scala:** 1, 2, 3, 5, 8, 13.
-  - Oltre 13 l'impegno va diviso; un avviso lo segnala senza bloccare.
-  - "?" vuol dire non stimato.
-- **Dati:** colonna additiva `impegni.punti` (smallint, null, CHECK sui valori
-  ammessi), con migrazione con prefisso `lps_`.
-- **Cosa mostra l'app:**
-  - nel piano settimanale: punti promessi e punti fatti, per commessa;
-  - una "capacità indicativa": media dei punti fatti nelle ultime 4 settimane chiuse,
-    per team o per commessa;
-  - il PPC resta il conteggio degli impegni fatti, come da definizione LPS standard;
-  - il "PPC pesato in punti" è solo un dato secondario;
-  - formule in `app/domain/lps.ts` (corpo di A2), casi di prova in
-    `docs/formule/casi-di-prova.md` (T1).
-- **Vincoli:**
-  - nessuna velocità o classifica per persona (art. 4 Statuto dei lavoratori);
-  - i punti non si convertono in ore e non entrano in EVM, curva S o portafoglio;
-  - gli snapshot LPS registrano i punti solo da quando la colonna esiste: lo storico
-    non si ricalcola.
-
-### Alternativa scartata (per ora)
-
-Punti sugli elaborati come stima di complessità da confrontare con `budget_minuti`.
-Si può riprendere se il pilota mostra che i budget in ore sono poco affidabili.
-
-### Rischi
-
-- Doppio lavoro di stima nella riunione settimanale.
-- I punti diventano "ore travestite".
-- Poco storico all'inizio: la capacità si mostra solo dopo 4 settimane chiuse.
-- Da verificare con i 2 PM del pilota se la stima a punti in riunione è accettabile.
-
-### Verifica (quando si sviluppa)
-
-- Test funzionali in `tests/functional/lps/`: valori ammessi, 409 sulla versione.
-- Test unit sulle formule di capacità.
-- `npm run verifica` verde.

@@ -41,6 +41,10 @@ export default class Impegno extends BaseModel {
   })
   declare cinquePerche: string[] | null
 
+  /** Punti Fibonacci (1, 2, 3, 5, 8, 13), null = non stimato. Vedi #domain/punti */
+  @column()
+  declare punti: number | null
+
   /** Escluso dal PPC */
   @column()
   declare aggiuntoDopoPromessa: boolean

@@ -64,6 +64,7 @@ const NOMI_CAMPI: Record<string, string> = {
   version: 'versione',
   fatto: 'fatto',
   causa_id: 'causa',
+  punti: 'punti (1, 2, 3, 5, 8 o 13)',
 }
 
 /**

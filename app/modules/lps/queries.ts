@@ -25,6 +25,13 @@ import type {
   VoceParetoCausa,
 } from '#domain/types'
 import { aggiungiSettimane } from '#shared/calendario'
+import {
+  capacitaIndicativa,
+  puntiPiano,
+  SETTIMANE_CAPACITA,
+  type CapacitaIndicativa,
+  type PuntiPiano,
+} from '#domain/punti'
 
 type Client = TransactionClientContract | typeof db
 
@@ -476,6 +483,8 @@ export interface RigaImpegno {
   causaId: number | null
   causaNome: string | null
   cinquePerche: string[]
+  /** Punti Fibonacci, null = non stimato */
+  punti: number | null
   aggiuntoDopoPromessa: boolean
   ordine: number
   version: number
@@ -506,6 +515,7 @@ const SELECT_IMPEGNO = [
   'c.nome as causa_nome',
   'i.cinque_perche',
   'i.aggiunto_dopo_promessa',
+  'i.punti',
   'i.ordine',
   'i.version',
   'vc.aperti_codici',
@@ -546,6 +556,7 @@ function mappaImpegno(r: Record<string, any>): RigaImpegno {
     causaId: r.causa_id,
     causaNome: r.causa_nome,
     cinquePerche: Array.isArray(r.cinque_perche) ? r.cinque_perche : [],
+    punti: r.punti ?? null,
     aggiuntoDopoPromessa: r.aggiunto_dopo_promessa,
     ordine: r.ordine,
     version: r.version,
@@ -582,6 +593,74 @@ export async function pianoSettimana(
 export async function impegnoPerRiga(impegnoId: number): Promise<RigaImpegno | null> {
   const r = await queryImpegni().where('i.id', impegnoId).first()
   return r ? mappaImpegno(r) : null
+}
+
+export interface PuntiSettimana {
+  piano: PuntiPiano
+  capacita: CapacitaIndicativa
+  /** Punti promessi oltre la capacità indicativa (solo se la capacità è nota) */
+  oltreCapacita: boolean
+}
+
+/**
+ * Punti Fibonacci della settimana: promessi e fatti nel piano, più la capacità
+ * indicativa del team dalle ultime settimane chiuse precedenti. Solo per
+ * commessa, mai per persona. I piani chiusi non cambiano più, quindi si leggono
+ * direttamente dagli impegni (gli snapshot non portano i punti).
+ */
+export async function puntiSettimana(
+  commessaId: number,
+  settimana: Lunedi,
+  impegni: readonly { punti: number | null; fatto: boolean | null; aggiuntoDopoPromessa: boolean }[]
+): Promise<PuntiSettimana> {
+  // Le ultime settimane chiuse con almeno un impegno stimato (al massimo 4)
+  const righe = await db
+    .from('piani_settimanali as p')
+    .join('impegni as i', 'i.piano_id', 'p.id')
+    .where('p.commessa_id', commessaId)
+    .where('p.stato', 'chiuso')
+    .where('p.settimana', '<', settimana)
+    .whereIn(
+      'p.id',
+      db
+        .from('piani_settimanali as p2')
+        .where('p2.commessa_id', commessaId)
+        .where('p2.stato', 'chiuso')
+        .where('p2.settimana', '<', settimana)
+        .whereExists((q) => {
+          q.from('impegni as i2')
+            .whereRaw('i2.piano_id = p2.id')
+            .whereNotNull('i2.punti')
+            .where('i2.aggiunto_dopo_promessa', false)
+        })
+        .orderBy('p2.settimana', 'desc')
+        .limit(SETTIMANE_CAPACITA)
+        .select('p2.id')
+    )
+    .select('p.settimana', 'i.punti', 'i.fatto', 'i.aggiunto_dopo_promessa')
+  const perSettimana = new Map<string, typeof righe>()
+  for (const r of righe) {
+    const k = String(r.settimana)
+    perSettimana.set(k, [...(perSettimana.get(k) ?? []), r])
+  }
+  const chiuse = [...perSettimana.entries()]
+    .sort(([a], [b]) => (a < b ? 1 : -1))
+    .map(([, imp]) =>
+      puntiPiano(
+        imp.map((r) => ({
+          punti: r.punti,
+          fatto: r.fatto,
+          aggiuntoDopoPromessa: r.aggiunto_dopo_promessa,
+        }))
+      )
+    )
+  const piano = puntiPiano(impegni)
+  const capacita = capacitaIndicativa(chiuse)
+  return {
+    piano,
+    capacita,
+    oltreCapacita: capacita.media !== null && piano.promessi > capacita.media,
+  }
 }
 
 // ---------------------------------------------------------------------------

@@ -27,6 +27,16 @@
       },
     })
     @!component('components/kpi', {
+      etichetta: 'Punti promessi',
+      valore: piano ? formato.numero(punti.piano.promessi) : formato.numero(null),
+      sotto:
+        (piano ? punti.piano.fatti + ' fatti · ' : '') +
+        (punti.capacita.media === null
+          ? 'capacità indicativa n.d.: servono 4 settimane chiuse con i punti'
+          : 'capacità indicativa ' + formato.numero(punti.capacita.media, 1) + ' a settimana'),
+      semaforo: punti.oltreCapacita ? { classe: 'w', testo: 'oltre la capacità' } : null,
+    })
+    @!component('components/kpi', {
       etichetta: 'PCR · ' + glossario.PCR.nome,
       valore: formato.percento(riepilogo.pcr),
       sotto: 'vincoli in scadenza nella settimana',
@@ -91,6 +101,7 @@
             <th>Impegno</th>
             <th>Attività / elaborato</th>
             <th>Last planner</th>
+            <th class="r">Punti</th>
             <th>Fatto?</th>
             <th>Causa se non fatto</th>
             @if(piano.stato === 'bozza' && puoGestire)
@@ -134,6 +145,35 @@
                 @end
               </td>
               <td>{{ formato.testo(imp.lastPlannerNome) }}</td>
+              <td class="r num" data-testid="punti-{{ imp.id }}">
+                @if(piano.stato === 'bozza' && puoGestire)
+                  <form
+                    method="POST"
+                    action="{{ base }}/impegni/{{ imp.id }}/punti"
+                    hx-post="{{ base }}/impegni/{{ imp.id }}/punti"
+                    hx-target="#piano-lps"
+                    hx-swap="outerHTML"
+                  >
+                    {{ csrfField() }}
+                    <input type="hidden" name="version" value="{{ imp.version }}" />
+                    <select
+                      name="punti"
+                      aria-label="Punti dell’impegno"
+                      onchange="this.form.requestSubmit()"
+                    >
+                      <option value="">?</option>
+                      @each(n in scalaPunti)
+                        <option value="{{ n }}" {{ n === imp.punti ? 'selected' : '' }}>{{ n }}</option>
+                      @end
+                    </select>
+                    <noscript><button class="btn ghost" type="submit">Salva</button></noscript>
+                  </form>
+                @elseif(imp.punti === null)
+                  <span class="muted" title="non stimato">?</span>
+                @else
+                  {{ imp.punti }}
+                @end
+              </td>
               @if(modificabile)
                 <td colspan="2">
                   <form
@@ -276,7 +316,7 @@
             </tr>
           @else
             <tr>
-              <td colspan="6" class="muted">Nessun impegno: aggiungine qui sotto.</td>
+              <td colspan="7" class="muted">Nessun impegno: aggiungine qui sotto.</td>
             </tr>
           @end
         </tbody>
@@ -349,7 +389,19 @@
               @end
             </select>
           </label>
+          <label>
+            Punti
+            <select name="punti">
+              <option value="">? non stimato</option>
+              @each(n in scalaPunti)
+                <option value="{{ n }}">{{ n }}</option>
+              @end
+            </select>
+          </label>
           <button class="btn" type="submit">Aggiungi impegno</button>
+          <span class="note muted" style="flex-basis:100%;font-size:12.5px">
+            Punti: dimensione relativa dell’impegno (1, 2, 3, 5, 8, 13), decisa insieme al team. Un impegno da più di 13 va diviso. I punti non sono ore e non entrano nell’EVM.
+          </span>
           @if(piano.stato === 'promesso')
             <span class="note muted" style="flex-basis:100%;font-size:12.5px">
               Il piano è già promesso: i nuovi impegni sono marcati e non entrano nel PPC.

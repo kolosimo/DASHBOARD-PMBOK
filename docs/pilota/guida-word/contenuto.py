@@ -153,14 +153,19 @@ sec("Lookahead e vincoli", 2, [
 sec("Il piano settimanale", 2,
     ["Il lunedì il team decide cosa promette di finire entro la settimana; il venerdì verifica cosa ha mantenuto. Esempio: 5 impegni fatti su 7 promessi danno un PPC del 71%."],
     numbered=[
-        "Lunedì: Prepara il piano (bozza), aggiungi gli impegni scegliendo attività, elaborato e responsabile (last planner), poi Prometti il piano.",
+        "Lunedì: Prepara il piano (bozza), aggiungi gli impegni scegliendo attività, elaborato, responsabile (last planner) e, se volete, i punti; poi Prometti il piano.",
         "Gli impegni aggiunti dopo la promessa sono segnati e non entrano nel PPC: così il PPC resta onesto.",
         "Venerdì: ognuno segna Sì o No sui propri impegni; il PM può segnarli tutti. Sì vuol dire finito davvero, non quasi.",
         "Per ogni No va scelta la causa: input mancante da altri, criteri cambiati, approvazione attesa, risorsa non disponibile, stima troppo ottimista, errore o rilavorazione, priorità cambiata, altro. Per i casi importanti c'è l'analisi dei 5 perché.",
         "Premi Chiudi il piano: il PPC e il grafico delle cause si aggiornano subito.",
     ],
-    images=[im("settimana", "piano settimanale con PPC e cause di mancato completamento")])
+    images=[im("settimana", "piano settimanale con PPC, punti promessi e impegni della settimana")])
 S[-1]["body"].append("Il grafico delle cause ordina le cause dalla più frequente: la prima è il primo punto da affrontare nella riunione. La causa non serve a trovare un colpevole, ma a capire cosa blocca il lavoro.")
+sec("I punti degli impegni", 3, [
+    "I punti sono facoltativi e dicono quanto è grande un impegno rispetto agli altri, con la scala 1, 2, 3, 5, 8, 13. Si decidono insieme in riunione; il punto interrogativo vuol dire non stimato. Un impegno più grande di 13 va diviso in impegni più piccoli. In bozza i punti si cambiano dalla colonna Punti; dopo la promessa restano fissi.",
+    "Il riquadro Punti promessi mostra i punti del piano, quelli fatti e la capacità indicativa: la media dei punti fatti nelle ultime 4 settimane chiuse con i punti. Se i punti promessi la superano compare oltre la capacità: è un invito a togliere qualcosa, non un blocco. Esempio con i dati di esempio: capacità 23,8 punti a settimana, piano con 24 punti promessi.",
+    "I punti non sono ore: non entrano nell'avanzamento EVM, nella curva S né nel portafoglio, e non si sommano per persona. Il PPC resta il conteggio degli impegni mantenuti.",
+])
 sec("Il Kanban degli elaborati", 2,
     ["Ogni scheda è un elaborato. Le colonne raggruppano gli stati: Da fare (non iniziato), In corso (impostato, calcoli e dimensionamento), In verifica (emissione interna, verificato), Emesso (emesso al cliente).",
      "Tenere aggiornato il Kanban è importante: è lo stato dell'elaborato che determina il valore guadagnato. Se una scheda resta indietro rispetto alla realtà, la commessa sembra più in ritardo di quanto sia."],

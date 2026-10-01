@@ -57,7 +57,7 @@ Ruoli di commessa: `pm`, `progettista`, `verificatore`, `osservatore`.
 | `/admin/**` (commesse, utenti e ruoli, discipline, stati e pesi, colonne e WIP, cause) | `admin` | 403 |
 | `GET /commesse/:id/lps/settimana`, `/lps/lookahead` e i loro `/frammento` | `vedeCommessa` | 403 |
 | `GET /commesse/:id/lps/attivita/nuova`, `/attivita/:id/modifica`, `/vincoli/nuovo`, `/vincoli/:id/modifica` (form) | `gestisceLps` | 403 |
-| `POST /commesse/:id/lps/**` (lookahead, vincoli, promessa e chiusura del piano) | `gestisceLps` | 403 anche ai POST (niente redirect indietro) |
+| `POST /commesse/:id/lps/**` (lookahead, vincoli, impegni e loro punti, promessa e chiusura del piano) | `gestisceLps` | 403 anche ai POST (niente redirect indietro) |
 | `POST` esito di una riga del piano | `gestisceLps` oppure last planner della riga | 403 |
 | `GET /commesse/:id/flusso/**` | `vedeCommessa` (board in sola lettura senza `spostaElaborati`) | 403 |
 | `POST /commesse/:id/flusso/elaborati/:elaboratoId/stato` | `spostaElaborati` | 403 |

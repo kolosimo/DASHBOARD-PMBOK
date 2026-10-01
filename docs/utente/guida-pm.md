@@ -155,8 +155,9 @@ settimane di una commessa questi indicatori sono **n.d.**
 1. Apri **Piano settimanale** e premi **Prepara il piano (bozza)**.
 2. Con il team aggiungi gli **impegni**: attività del lookahead (quelle vincolate sono
    indicate tra parentesi), testo dell'impegno (vuoto = titolo dell'attività),
-   elaborato e **last planner** → **Aggiungi impegno**. In bozza un impegno si può
-   eliminare.
+   elaborato, **last planner** e, se volete, i **punti** → **Aggiungi impegno**. In
+   bozza un impegno si può eliminare e i suoi punti si possono cambiare dalla colonna
+   **Punti**.
 3. Quando tutti sono d'accordo premi **Prometti il piano**. Da quel momento gli
    impegni non si eliminano più e quelli aggiunti dopo sono marcati "aggiunto dopo la
    promessa · fuori dal PPC".
@@ -166,6 +167,24 @@ In alto trovi PPC, PCR, TMR, TA e vincoli aperti della settimana. Con **Preceden
 
 Regola d'oro: si promette solo ciò che si è ragionevolmente sicuri di finire. Un PPC
 alto con impegni onesti vale più di tanti impegni non mantenuti.
+
+### Punti degli impegni (facoltativi)
+
+I punti dicono quanto è "grande" un impegno rispetto agli altri: **1, 2, 3, 5, 8 o
+13**. Si decidono insieme in riunione; "?" vuol dire non stimato.
+
+- Un impegno che sembra più grande di 13 va **diviso** in impegni più piccoli.
+- Il riquadro **Punti promessi** mostra i punti del piano, quelli fatti e la
+  **capacità indicativa**: la media dei punti fatti nelle ultime 4 settimane chiuse
+  con i punti. Finché non ci sono 4 settimane così, la capacità è **n.d.**
+- Se i punti promessi superano la capacità compare **oltre la capacità**: è un
+  invito a togliere qualcosa, non un blocco.
+- Dopo la promessa i punti non si cambiano più.
+- I punti **non sono ore**: non entrano nell'EVM, nella curva S né nel portafoglio,
+  e non si sommano per persona. Il PPC resta il conteggio degli impegni.
+
+Esempio (dati di esempio, W39): promessi 24 punti, capacità indicativa 23,8 →
+"oltre la capacità".
 
 ## 5. Chiusura della settimana (venerdì)
 

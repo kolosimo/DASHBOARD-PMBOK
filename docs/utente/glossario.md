@@ -126,6 +126,21 @@ L1, L2 e L5 (3 attività). Il piano contiene 5 impegni sulle attività L1, L2, L
 - TMR: di L1, L2, L5 sono entrate nel piano L1 e L2 → 2 ÷ 3 = **0,67 (67%)**.
 - TA: 2 impegni su 5 riguardano attività previste → 2 ÷ 5 = **0,40 (40%)**.
 
+### Punti (Fibonacci) e capacità indicativa
+
+**Cos'è.** I punti misurano la dimensione relativa di un impegno del piano
+settimanale, con la scala **1, 2, 3, 5, 8, 13** (i numeri si allargano perché più un
+lavoro è grande, meno precisa è la stima). Sono facoltativi. La **capacità
+indicativa** è la media dei punti fatti nelle ultime 4 settimane chiuse in cui c'erano
+impegni con i punti.
+
+**Cosa non è.** Non sono ore, non entrano nell'EVM e non si guardano per persona: solo
+per commessa. Il PPC resta il conteggio degli impegni mantenuti.
+
+**Esempio** (dati di esempio). Nelle settimane W35–W38 il team ha fatto 23, 25, 18 e 29
+punti → capacità indicativa (23 + 25 + 18 + 29) ÷ 4 = **23,75**. In W39 ne promette
+24 → l'app segnala "oltre la capacità".
+
 ---
 
 ## Flusso degli elaborati (Kanban)

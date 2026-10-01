@@ -109,6 +109,22 @@ Altro 1 (W39 aggiunge 1 "Input mancante" e 1 "Risorsa non disponibile").
 - PCR: un vincolo annullato senza data di annullamento è escluso dal calcolo.
 - Riaprire un vincolo azzera `rimosso_il` e `annullato_il` (lo storico resta negli snapshot).
 
+### Punti Fibonacci e capacità indicativa (`app/domain/punti.ts`)
+
+- Scala ammessa: 1, 2, 3, 5, 8, 13; `null` = non stimato (CHECK su `impegni.punti`).
+- Punti promessi(w) = somma dei punti degli impegni del piano di w con
+  `aggiunto_dopo_promessa = false`; punti fatti(w) = la stessa somma sui soli `fatto = true`.
+  Gli impegni senza punti non contano nelle somme (sono contati a parte come "non stimati").
+- Capacità indicativa(w) = media dei punti fatti nelle ultime **4** settimane con piano
+  **chiuso** prima di w e con almeno un impegno promesso stimato; **n.d.** se sono meno di 4.
+- "Oltre la capacità" se punti promessi(w) > capacità indicativa(w) (solo avviso).
+- Solo per commessa: niente somme per persona (art. 4 Statuto dei lavoratori). I punti non
+  entrano in EVM, curva S, portafoglio né negli snapshot: i piani chiusi non cambiano, quindi
+  si leggono dagli impegni.
+- Caso di prova (dati di esempio CL-2026-031): punti fatti W35–W38 = 23, 25, 18, 29 →
+  capacità 23,75; W39 promette 24 punti → oltre la capacità
+  (`tests/functional/lps/punti.spec.ts`, `tests/unit/punti.spec.ts`).
+
 ## Flusso (Kanban)
 
 - Si avanza di **uno** stato alla volta; per tornare indietro serve un motivo.
