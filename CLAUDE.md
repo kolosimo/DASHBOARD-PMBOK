@@ -33,7 +33,7 @@ Node **24** (`engines >=24`, richiesto da AdonisJS 7). Nel container: `export PA
 | `npm run verifica` | typecheck + lint + dipendenze native + test unit + funzionali (**deve essere verde prima di ogni merge**) |
 | `npm run test:unit` / `npm run test:functional` | singole suite Japa |
 | `npm run e2e` | smoke Playwright (DB `cruscotto_e2e` ricreato ogni volta) |
-| `npm run screenshot` | pagine × ruoli, tema chiaro e scuro, in `screenshots/` (ignorata da git) |
+| `npm run screenshot` | pagine × ruoli, larghezza PC (1280 px) e telefono (390 px), in `screenshots/` (ignorata da git); da qui si ritagliano le immagini della guida Word (`docs/pilota/guida-word/LEGGIMI.md`) |
 | `npm run vendorizza` | ricopia HTMX, Alpine e font Lora in `public/` dopo un cambio di versione |
 | `npm run pacchetto` | zip di installazione per Windows Server in `tmp/pacchetto/` |
 | `node ace db:inizializza-produzione` | migrazioni + configurazione iniziale (idempotente; rifiuta un DB con i dati di esempio) |
